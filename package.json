@@ -27,6 +27,7 @@
     "@nestjs/typeorm": "^10.0.0",
     "@types/express-session": "^1.17.8",
     "@types/nanoid": "^3.0.0",
+    "@types/uuid": "^9.0.5",
     "compression": "^1.7.4",
     "express-session": "^1.17.3",
     "helmet": "^7.0.0",
@@ -34,7 +35,8 @@
     "nestjs-pino": "^3.5.0",
     "passport": "^0.6.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

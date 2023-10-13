@@ -1,5 +1,5 @@
 import type { Request } from 'express';
-import { nanoid } from 'nanoid';
+import { v4 as uuidv4 } from 'uuid';
 import type { Params } from 'nestjs-pino';
 import { multistream } from 'pino';
 import type { ReqId } from 'pino-http';
@@ -14,7 +14,7 @@ export const loggerOptions: Params = {
       // timestamp: stdTimeFunctions.isoTime,
       quietReqLogger: true,
       genReqId: (req): ReqId =>
-        (<Request>req).header('X-Request-Id') ?? nanoid(),
+        (<Request>req).header('X-Request-Id') ?? uuidv4(),
       ...(process.env['NODE_ENV'] === 'production'
         ? {}
         : {
