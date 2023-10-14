@@ -6,6 +6,7 @@ export class AppController {
   constructor(private config: ConfigService) {}
 
   @Get()
+  // @Roles(Role.User)
   healthCheck(): string {
     return `${this.config.get('db.host')}`;
   }

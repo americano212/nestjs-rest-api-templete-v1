@@ -9,7 +9,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CoreEntity {
   @ApiProperty({ example: 1, description: 'primary key' })
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true, name: 'id' })
-  id!: number;
+  public id!: number;
 
   @ApiProperty({ example: new Date(), description: '생성 일자' })
   @CreateDateColumn()
