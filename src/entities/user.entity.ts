@@ -22,9 +22,8 @@ export class UserEntity extends CoreEntity {
   @Column({
     type: 'enum',
     enum: Role,
-    array: true,
-    default: [Role.User],
+    default: Role.User,
   })
-  @IsString({ each: true })
-  public roles!: Role[];
+  @IsString()
+  public roles!: Role;
 }

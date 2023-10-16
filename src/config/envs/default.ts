@@ -1,6 +1,6 @@
 export const config = {
   db: {
-    entities: [`${__dirname}/../../entity/**/*.{js,ts}`],
+    entities: ['dist/**/*.entity.{ts,js}'],
   },
   hello: 'world',
 };

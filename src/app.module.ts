@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { configuration } from './config';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CommonModule } from './common';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -13,6 +14,12 @@ import { RolesGuard } from './common/guards/roles.guard';
       load: [configuration],
     }),
     CommonModule,
+    TypeOrmModule.forRootAsync({
+      useFactory: (config: ConfigService) => ({
+        ...config.get<TypeOrmModuleOptions>('db'),
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController],
   providers: [

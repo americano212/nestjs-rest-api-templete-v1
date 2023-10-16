@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from './common';
+import { stringify } from 'querystring';
 
 @Controller()
 export class AppController {
@@ -8,6 +9,6 @@ export class AppController {
   @Get()
   // @Roles(Role.User)
   healthCheck(): string {
-    return `${this.config.get('db.host')}`;
+    return `${stringify(this.config.get('db'))}`;
   }
 }
