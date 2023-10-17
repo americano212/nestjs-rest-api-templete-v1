@@ -25,5 +25,5 @@ export class UserEntity extends CoreEntity {
     default: Role.User,
   })
   @IsString()
-  public roles!: Role;
+  public role!: Role;
 }
