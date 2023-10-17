@@ -26,4 +26,8 @@ export class UserEntity extends CoreEntity {
   })
   @IsString()
   public role!: Role;
+
+  @Column()
+  @IsString()
+  refreshToken?: string;
 }
