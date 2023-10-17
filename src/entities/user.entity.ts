@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm';
 import { CoreEntity } from './core.entity';
-import { Role } from 'src/common/enums/role.enum';
+import { Role } from '../common/enums/role.enum';
 import { IsString } from 'class-validator';
 
 // import { ApiProperty } from '@nestjs/swagger';
