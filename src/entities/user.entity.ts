@@ -1,12 +1,13 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { CoreEntity } from './core.entity';
-import { Role } from '../common/enums/role.enum';
-import { IsString } from 'class-validator';
-
-// import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsString } from 'class-validator';
 
 @Entity('user')
 export class UserEntity extends CoreEntity {
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true, name: 'id' })
+  @IsInt()
+  public user_id!: number;
+
   @Column()
   @IsString()
   public username!: string;
@@ -18,14 +19,6 @@ export class UserEntity extends CoreEntity {
   @Column({ unique: true })
   @IsString()
   public email!: string;
-
-  @Column({
-    type: 'enum',
-    enum: Role,
-    default: Role.User,
-  })
-  @IsString()
-  public role!: Role;
 
   @Column()
   @IsString()

@@ -1,16 +1,7 @@
-import {
-  CreateDateColumn,
-  DeleteDateColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CoreEntity {
-  @ApiProperty({ example: 1, description: 'primary key' })
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true, name: 'id' })
-  public id!: number;
-
   @ApiProperty({ example: new Date(), description: '생성 일자' })
   @CreateDateColumn()
   created_at!: Date;
