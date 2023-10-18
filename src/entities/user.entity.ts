@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CoreEntity } from './core.entity';
 import { IsInt, IsString } from 'class-validator';
-import { UserRole } from './user_role.entity';
+import { UserRole } from './user-role.entity';
 
 @Entity('user')
 export class User extends CoreEntity {

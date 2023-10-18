@@ -4,7 +4,7 @@
     "paths": {
       // https://docs.nestjs.com/cli/scripts#build
       // https://nodejs.org/api/packages.html#imports
-      "#entity/*": ["./src/entity/*"]
+      "#entities/*": ["./src/entities/*"]
     },
     "target": "ES2021",
     "outDir": "dist",
