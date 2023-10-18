@@ -1,9 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CoreEntity } from './core.entity';
 import { IsInt, IsString } from 'class-validator';
+import { UserRole } from './user_role.entity';
 
 @Entity('role')
-export class RoleEntity extends CoreEntity {
+export class Role extends CoreEntity {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true, name: 'id' })
   @IsInt()
   public role_id!: number;
@@ -11,4 +12,7 @@ export class RoleEntity extends CoreEntity {
   @Column()
   @IsString()
   public role_name!: string;
+
+  @OneToMany(() => UserRole, (userRole) => userRole.role)
+  users?: UserRole[];
 }
