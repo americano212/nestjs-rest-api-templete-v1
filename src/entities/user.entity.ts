@@ -6,15 +6,15 @@ import { SocialLoginInfo } from './social-login-info.entity';
 
 @Entity('user')
 export class User extends CoreEntity {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true, name: 'id' })
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true, name: 'user_id' })
   @IsInt()
   public user_id!: number;
 
-  @Column()
+  @Column({ type: 'varchar', nullable: true, unique: true })
   @IsString()
   public username?: string;
 
-  @Column({ select: false })
+  @Column({ type: 'varchar', nullable: true, select: false })
   @IsString()
   public passwordHash?: string;
 
@@ -22,7 +22,7 @@ export class User extends CoreEntity {
   @IsString()
   public email!: string;
 
-  @Column()
+  @Column({ type: 'varchar', nullable: true })
   @IsString()
   refreshToken?: string;
 
