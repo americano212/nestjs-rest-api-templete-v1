@@ -4,6 +4,8 @@ import { AppModule } from './app.module';
 
 import { middleware } from './app.middleware';
 import type { NestExpressApplication } from '@nestjs/platform-express';
+import { APIDocument } from './swagger.docs';
+import { SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap(): Promise<string> {
   const isProduction = process.env['NODE_ENV'] === 'production';
@@ -12,6 +14,10 @@ async function bootstrap(): Promise<string> {
   });
   if (isProduction) {
     app.enable('trust proxy');
+  } else {
+    const documentConfig = new APIDocument().initializeOptions();
+    const document = SwaggerModule.createDocument(app, documentConfig);
+    SwaggerModule.setup('api', app, document); // http://localhost/api
   }
   middleware(app);
 
