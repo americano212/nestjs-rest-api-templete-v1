@@ -1,25 +1,27 @@
 import { Logger as NestLogger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-
-import { middleware } from './app.middleware';
-import type { NestExpressApplication } from '@nestjs/platform-express';
-import { APIDocument } from './swagger.docs';
 import { SwaggerModule } from '@nestjs/swagger';
+import type { NestExpressApplication } from '@nestjs/platform-express';
+
+import { AppModule } from './app.module';
+import { middleware } from './app.middleware';
+import { APIDocument } from './swagger.docs';
 
 async function bootstrap(): Promise<string> {
   const isProduction = process.env['NODE_ENV'] === 'production';
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
   });
-  if (isProduction) {
-    app.enable('trust proxy');
-  } else {
+
+  middleware(app);
+
+  if (isProduction) app.enable('trust proxy');
+
+  if (!isProduction) {
     const documentConfig = new APIDocument().initializeOptions();
     const document = SwaggerModule.createDocument(app, documentConfig);
     SwaggerModule.setup('api', app, document); // http://localhost/api
   }
-  middleware(app);
 
   app.enableCors();
   await app.listen(process.env['PORT'] || 3000);
