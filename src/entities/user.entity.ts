@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CoreEntity } from './core.entity';
 import { IsInt, IsString } from 'class-validator';
 import { UserRole } from './user-role.entity';
+import { SocialLoginInfo } from './social-login-info.entity';
 
 @Entity('user')
 export class User extends CoreEntity {
@@ -11,11 +12,11 @@ export class User extends CoreEntity {
 
   @Column()
   @IsString()
-  public username!: string;
+  public username?: string;
 
   @Column({ select: false })
   @IsString()
-  public passwordHash!: string;
+  public passwordHash?: string;
 
   @Column({ unique: true })
   @IsString()
@@ -27,4 +28,7 @@ export class User extends CoreEntity {
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   roles?: UserRole[];
+
+  @OneToMany(() => SocialLoginInfo, (userRole) => userRole.user)
+  social_login_infos?: SocialLoginInfo[];
 }
