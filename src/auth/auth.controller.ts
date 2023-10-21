@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 import { LocalLoginDto } from './dto';
 import { JwtSign } from '.';
@@ -10,6 +10,7 @@ import { JwtSign } from '.';
 export class AuthController {
   // constructor(private readonly authService: AuthService) {}
 
+  @ApiBody({ type: LocalLoginDto })
   @Post('login')
   public async localLogin(@Body() loginData: LocalLoginDto): Promise<JwtSign> {
     console.log(loginData);
