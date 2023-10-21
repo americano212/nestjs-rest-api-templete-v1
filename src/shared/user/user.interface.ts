@@ -1,6 +1,6 @@
 export interface User {
   user_id: number;
-  name: string;
+  username?: string | undefined;
   email: string;
-  roles: string[];
+  roles?: string[];
 }

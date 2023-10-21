@@ -1,23 +1,19 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+import { Payload } from '.';
 import { LocalLoginDto } from './dto';
-import { JwtSign } from '.';
-// import { AuthService } from 'src/auth/auth.service';
+import { LocalLoginGuard } from './guards';
+import { ReqUser } from 'src/common';
 
 @ApiTags('Auth')
 @Controller()
 export class AuthController {
-  // constructor(private readonly authService: AuthService) {}
-
   @ApiBody({ type: LocalLoginDto })
   @Post('login')
-  public async localLogin(@Body() loginData: LocalLoginDto): Promise<JwtSign> {
-    console.log(loginData);
-    return { access_token: 'test', refresh_token: 'test' };
-
-    // const jwtSign = await this.authService.localLogin(loginData);
-    // return jwtSign;
+  @UseGuards(LocalLoginGuard)
+  public async localLogin(@ReqUser() user: Payload): Promise<Payload> {
+    return user;
   }
 
   @Get('logout')

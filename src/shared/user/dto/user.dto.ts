@@ -2,5 +2,5 @@ import { User } from '#entities/user.entity';
 
 export type UserDto = Pick<
   User,
-  'user_id' | 'username' | 'passwordHash' | 'email'
+  'user_id' | 'username' | 'passwordHash' | 'email' | 'roles'
 >;

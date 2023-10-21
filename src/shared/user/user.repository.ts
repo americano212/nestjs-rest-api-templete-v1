@@ -18,6 +18,7 @@ export class UsersRepository {
 
   public async getByUsername(username: string): Promise<UserDto | null> {
     const user = await this.usersRepository.findOneBy({ username });
+    // TODO Join으로 roles 가져오기
     return user;
   }
 }
