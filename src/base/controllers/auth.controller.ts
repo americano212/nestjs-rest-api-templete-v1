@@ -1,9 +1,18 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 import { Payload, LocalLoginGuard } from '../../auth';
-import { LocalLoginDto } from '../dto';
+import { LocalLoginDto, LocalRegisterDto } from '../dto';
 import { ReqUser } from '../../common';
+import { Request, Response } from 'express';
 
 @ApiTags('Auth')
 @Controller()
@@ -16,10 +25,19 @@ export class AuthController {
   }
 
   @Get('logout')
-  public async localLogout() {}
+  public localLogout(@Req() req: Request, @Res() res: Response): void {
+    req.logout(() => {
+      res.redirect('/');
+    });
+  }
 
   @Post('register')
-  public async localRegister() {}
+  public async localRegister(
+    @Body() registerData: LocalRegisterDto,
+  ): Promise<boolean> {
+    console.log(registerData);
+    return true;
+  }
 
   // OAuth Login Controller
   @Post('login/google')
