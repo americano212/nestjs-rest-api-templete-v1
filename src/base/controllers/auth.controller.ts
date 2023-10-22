@@ -1,16 +1,8 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 import { Payload, LocalLoginGuard } from '../../auth';
-import { LocalLoginDto, LocalRegisterDto } from '../dto';
+import { LocalLoginDto } from '../dto';
 import { ReqUser } from '../../common';
 import { Request, Response } from 'express';
 
@@ -29,14 +21,6 @@ export class AuthController {
     req.logout(() => {
       res.redirect('/');
     });
-  }
-
-  @Post('register')
-  public async localRegister(
-    @Body() registerData: LocalRegisterDto,
-  ): Promise<boolean> {
-    console.log(registerData);
-    return true;
   }
 
   // OAuth Login Controller
