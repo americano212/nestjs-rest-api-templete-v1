@@ -10,10 +10,11 @@ export class AuthService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   public async validateUser(
-    username: string,
+    email: string,
     password: string,
   ): Promise<User | null> {
-    const user = await this.usersRepository.getByUsername(username);
+    const user = await this.usersRepository.getByEmail(email);
+    console.log(user);
     const saltOrRounds = 10;
     console.log(password, saltOrRounds);
     const hash = await bcrypt.hash(password, saltOrRounds);

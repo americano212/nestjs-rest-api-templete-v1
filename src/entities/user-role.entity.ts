@@ -4,7 +4,11 @@ import { Role } from './role.entity';
 
 @Entity()
 export class UserRole {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({
+    type: 'int',
+    unsigned: true,
+    name: 'user_role_id',
+  })
   user_role_id!: number;
 
   @ManyToOne(() => User, (user) => user.roles)

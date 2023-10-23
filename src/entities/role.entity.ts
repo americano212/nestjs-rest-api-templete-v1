@@ -5,11 +5,11 @@ import { UserRole } from './user-role.entity';
 
 @Entity('role')
 export class Role extends CoreEntity {
-  @PrimaryGeneratedColumn({ type: 'int', unsigned: true, name: 'id' })
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true, name: 'role_id' })
   @IsInt()
   public role_id!: number;
 
-  @Column()
+  @Column({ unique: true })
   @IsString()
   public role_name!: string;
 

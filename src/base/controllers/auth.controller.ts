@@ -13,6 +13,7 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalLoginGuard)
   public async localLogin(@ReqUser() user: Payload): Promise<Payload> {
+    // TODO change output to JWT Token
     return user;
   }
 

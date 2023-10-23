@@ -1,3 +1,6 @@
 import { User } from '#entities/user.entity';
 
-export type CreateUserDto = Pick<User, 'username' | 'passwordHash' | 'email'>;
+export type CreateUserDto = Pick<
+  User,
+  'username' | 'passwordHash' | 'email' | 'roles'
+>;

@@ -13,4 +13,12 @@ export class LocalRegisterDto {
   @ApiProperty({ example: 'test@example.com' })
   @IsEmail()
   public email!: string;
+
+  @ApiProperty({ example: ['User'] })
+  @IsString({ each: true })
+  public roles!: string[];
+
+  constructor() {
+    this.roles = ['User'];
+  }
 }
