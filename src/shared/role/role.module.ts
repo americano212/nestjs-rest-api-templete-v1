@@ -5,7 +5,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import * as providers from './providers';
-
 const services = Object.values(providers);
 
 @Module({

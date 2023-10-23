@@ -36,11 +36,6 @@ export class UserService {
     return true;
   }
 
-  public async getByUsername(username: string): Promise<UserDto | null> {
-    const user = await this.usersRepository.getByUsername(username);
-    return user;
-  }
-
   public async fetch(user_id: number): Promise<UserDto & { roles: string[] }> {
     const saltOrRounds = 10;
     const password = 'test_password';
