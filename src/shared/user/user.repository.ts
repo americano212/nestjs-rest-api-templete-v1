@@ -19,6 +19,7 @@ export class UsersRepository {
 
   public async getByEmail(email: string): Promise<UserDto | null> {
     // TODO 이중 join문으로 변경
+    // TODO Join으로 roles 가져오기
     const user = await this.usersRepository
       .createQueryBuilder('user')
       .select([
@@ -31,7 +32,7 @@ export class UsersRepository {
       .innerJoin('user.roles', 'roles')
       .where('user.email = :email', { email })
       .getRawOne();
-    // TODO Join으로 roles 가져오기
+
     return user;
   }
 

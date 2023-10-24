@@ -16,7 +16,7 @@ export class LocalRegisterDto {
 
   @ApiProperty({ example: ['User'] })
   @IsString({ each: true })
-  public roles!: string[];
+  public roles?: string[];
 
   constructor() {
     this.roles = ['User'];

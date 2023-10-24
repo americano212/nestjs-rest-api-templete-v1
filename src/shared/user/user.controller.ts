@@ -13,8 +13,9 @@ export class UserController {
   public async localRegister(
     @Body() registerData: LocalRegisterDto,
   ): Promise<boolean> {
-    const isSuccess = this.user.create(registerData);
     console.log(registerData);
+    const isSuccess = this.user.create(registerData);
+
     return isSuccess;
   }
 }
