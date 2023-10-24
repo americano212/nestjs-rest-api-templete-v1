@@ -11,11 +11,11 @@ export class UserRole {
   })
   user_role_id!: number;
 
-  @ManyToOne(() => User, (user) => user.roles)
+  @ManyToOne(() => User, (user) => user.roles, { cascade: true })
   @JoinColumn({ name: 'user_id' })
   user?: User;
 
-  @ManyToOne(() => Role, (role) => role.users)
+  @ManyToOne(() => Role, (role) => role.users, { cascade: true })
   @JoinColumn({ name: 'role_id' })
   role?: Role;
 }

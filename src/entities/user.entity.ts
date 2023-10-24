@@ -10,7 +10,7 @@ export class User extends CoreEntity {
   @IsInt()
   public user_id!: number;
 
-  @Column({ type: 'varchar', nullable: true, unique: true })
+  @Column({ type: 'varchar', nullable: true })
   @IsString()
   public username?: string;
 

@@ -10,11 +10,13 @@ export class RolesRepository {
     @InjectRepository(Role) private rolesRepository: Repository<Role>,
   ) {}
 
-  public async findRoleByName(roleName: string): Promise<Role | undefined> {
-    const role = await this.rolesRepository.upsert({ role_name: roleName }, [
-      'role_name',
-    ]);
-    if (!role) return undefined;
+  public async findRoleByName(roleName: string): Promise<Role> {
+    let role: Role | null;
+    role = await this.rolesRepository.findOneBy({
+      role_name: roleName,
+    });
+    if (!role) role = await this.rolesRepository.save({ role_name: roleName });
+
     return role;
   }
 }
