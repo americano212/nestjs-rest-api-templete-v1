@@ -17,7 +17,7 @@ export class UserService {
   ) {}
 
   public async create(userData: LocalRegisterDto): Promise<boolean> {
-    // TODO Check logic for already exist user
+    // TODO 트랜잭션 처리 필요
     const { password, ...userDataExceptPassword } = userData;
     const passwordHash = await this.util.passwordEncoding(password);
 
@@ -30,13 +30,14 @@ export class UserService {
       console.log('user', user);
       const roles = userData.roles;
       console.log(roles);
-      roles?.forEach(async (role_name) => {
-        console.log('role_name', role_name);
+      // TODO addRole로 때어내기
+      // TODO role이 없을 때
+      for (let i = 0; i < roles?.length; i++) {
+        const role_name = roles[i];
         const role = await this.rolesRepository.findRoleByName(role_name);
         const user_role = await this.userRolesRepository.create({ user, role });
         console.log('user_role', user_role);
-      });
-
+      }
       // TODO 리턴값 고민 필요.
       return true;
     } catch (error: unknown) {

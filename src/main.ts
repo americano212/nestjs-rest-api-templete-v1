@@ -20,7 +20,7 @@ async function bootstrap(): Promise<string> {
   if (!isProduction) {
     const documentConfig = new APIDocument().initializeOptions();
     const document = SwaggerModule.createDocument(app, documentConfig);
-    SwaggerModule.setup('api', app, document); // http://localhost/api
+    SwaggerModule.setup('/', app, document); // http://localhost/api
   }
 
   app.enableCors();
