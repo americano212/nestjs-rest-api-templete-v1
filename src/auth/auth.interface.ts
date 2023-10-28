@@ -8,3 +8,9 @@ export interface Payload {
   username?: string;
   roles?: string[];
 }
+
+export interface JwtPayload {
+  sub: number;
+  username?: string;
+  roles?: string[];
+}

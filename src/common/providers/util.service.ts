@@ -16,8 +16,9 @@ export class UtilService {
 
   public async passwordCompare(
     password: string,
-    passwordHash: string,
+    passwordHash: string | undefined,
   ): Promise<boolean> {
+    if (!passwordHash) return false;
     return await bcrypt.compare(password, passwordHash);
   }
 }
