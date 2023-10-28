@@ -7,6 +7,10 @@ import { UtilService } from 'src/common';
 import { QueryFailedError } from 'typeorm';
 import { RoleService } from '../role/providers';
 
+enum ErrorCode {
+  ALREADY_USER = 'ER_DUP_ENTRY',
+}
+
 @Injectable()
 export class UserService {
   constructor(
@@ -18,14 +22,12 @@ export class UserService {
   public async create(userData: LocalRegisterDto): Promise<boolean> {
     const { password, ...userDataExceptPassword } = userData;
     const passwordHash = await this.util.passwordEncoding(password);
-
     try {
       const user = await this.usersRepository.create({
         passwordHash,
         ...userDataExceptPassword,
       });
       const roles = userData.roles;
-
       for (let i = 0; i < roles?.length; i++) {
         const role_name = roles[i];
         await this.role.addRoleToUser(role_name, user);
@@ -33,12 +35,11 @@ export class UserService {
       return true;
     } catch (error: unknown) {
       if (error instanceof QueryFailedError) {
-        // TODO error Enum화
-        console.log('errno', error?.driverError.code);
-        throw new HttpException(
-          `User's Email already exists`,
-          HttpStatus.BAD_REQUEST,
-        );
+        if (error?.driverError.code === ErrorCode.ALREADY_USER)
+          throw new HttpException(
+            `User's Email already exists`,
+            HttpStatus.BAD_REQUEST,
+          );
       }
       return false;
     }
