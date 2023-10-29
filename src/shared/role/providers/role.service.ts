@@ -9,9 +9,11 @@ export class RoleService {
     private readonly rolesRepository: RolesRepository,
     private readonly userRolesRepository: UserRolesRepository,
   ) {}
+
   public async addRoleToUser(role_name: string, user: User): Promise<boolean> {
     try {
       const role = await this.rolesRepository.findRoleByName(role_name);
+      // TODO Role이 없을 때
       if (!role) return false;
       await this.userRolesRepository.create({ user, role });
       return true;

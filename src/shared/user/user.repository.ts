@@ -17,20 +17,37 @@ export class UsersRepository {
     return user;
   }
 
+  public async getByUserId(user_id: number): Promise<User | null> {
+    const user = await this.usersRepository.findOneBy({ user_id });
+    return user;
+  }
+
   public async getByEmail(email: string): Promise<UserDto> {
-    const user = await this.usersRepository
+    const result = await this.usersRepository
       .createQueryBuilder('user')
       .select([
         'user.user_id AS user_id',
         'user.username AS username',
         'user.passwordHash AS passwordHash',
         'user.email AS email',
+        'role.role_name AS role_name',
       ])
       .leftJoin('user.roles', 'user_role')
       .leftJoin('user_role.role', 'role')
       .where('user.email = :email', { email })
-      .getRawOne();
-    console.log('user', user);
+      .getRawMany();
+
+    const user: UserDto = {
+      user_id: result[0].user_id,
+      username: result[0].username,
+      passwordHash: result[0].passwordHash,
+      email: result[0].email,
+    };
+    const roles = [];
+    for (let i = 0; i < result.length; i++) {
+      roles.push(result[i].role_name);
+    }
+    user.roles = roles;
     return user;
   }
 
