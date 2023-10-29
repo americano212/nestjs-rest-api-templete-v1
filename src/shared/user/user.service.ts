@@ -7,7 +7,7 @@ import { UtilService } from 'src/common';
 import { QueryFailedError } from 'typeorm';
 import { RoleService } from '../role/providers';
 
-enum ErrorCode {
+enum MysqlErrorCode {
   ALREADY_USER = 'ER_DUP_ENTRY',
 }
 
@@ -35,7 +35,7 @@ export class UserService {
       return true;
     } catch (error: unknown) {
       if (error instanceof QueryFailedError) {
-        if (error?.driverError.code === ErrorCode.ALREADY_USER)
+        if (error?.driverError.code === MysqlErrorCode.ALREADY_USER)
           throw new HttpException(
             `User's Email already exists`,
             HttpStatus.BAD_REQUEST,
