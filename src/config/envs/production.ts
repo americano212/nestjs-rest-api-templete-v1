@@ -11,8 +11,10 @@ export const config = {
     autoLoadEntities: true,
   },
   jwt: {
-    secret: process.env['JWT_SECRET'],
-    refreshSecret: process.env['JWT_REFRESH_SECRET'],
+    accessSecret: process.env['DEV_JWT_ACCESS_SECRET'] || 'testAsecret',
+    refreshSecret: process.env['DEV_JWT_REFRESH_SECRET'] || 'testRsecret',
+    accessTokenExpire: process.env['ACCESS_TOKEN_EXPIRE'] || '1d',
+    refreshTokenExpire: process.env['REFRESH_TOKEN_EXPIRE'] || '30d',
   },
   api: {
     port: process.env['PORT'],
