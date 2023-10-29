@@ -46,9 +46,7 @@ export class UserService {
   }
 
   public async addRole(data: addRoleDto): Promise<boolean> {
-    console.log(data);
     const user = await this.usersRepository.getByUserId(data.user_id);
-    console.log('user.s', user);
     if (!user) return false;
     return await this.role.addRoleToUser(data.role_name, user);
   }

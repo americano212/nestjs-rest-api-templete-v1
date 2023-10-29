@@ -19,7 +19,6 @@ export class UserController {
 
   @Post('user/role')
   public async addRoleToUser(@Body() data: addRoleDto): Promise<boolean> {
-    console.log('data', data);
     const isSuccess = this.user.addRole(data);
 
     return isSuccess;

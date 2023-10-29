@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 
-import { Payload, LocalLoginGuard } from '../../auth';
+import { LocalLoginGuard, Payload } from '../../auth';
 import { LocalLoginDto } from '../dto';
 import { ReqUser } from '../../common';
 import { Request, Response } from 'express';
@@ -13,7 +13,6 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalLoginGuard)
   public async localLogin(@ReqUser() user: Payload): Promise<Payload> {
-    console.log('auth.c', user);
     return user;
   }
 

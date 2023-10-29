@@ -10,8 +10,6 @@ export class LocalLoginGuard extends AuthGuard('local') implements CanActivate {
     const result = <boolean>await super.canActivate(context);
     const request = context.switchToHttp().getRequest<Request>();
     await super.logIn(request);
-    console.log('result', result);
-    console.log('request', request);
     return result;
   }
 }

@@ -9,7 +9,6 @@ export class UtilService {
 
   public async passwordEncoding(password: string): Promise<string> {
     const saltOrRounds = this.config.get('bcrypt.salt');
-    console.log(saltOrRounds, typeof saltOrRounds);
     const passwordHash = await bcrypt.hash(password, saltOrRounds);
     return passwordHash;
   }

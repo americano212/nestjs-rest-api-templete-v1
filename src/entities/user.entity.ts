@@ -25,7 +25,7 @@ export class User extends CoreEntity {
   @Column({ type: 'varchar', nullable: true })
   @IsString()
   refreshToken?: string;
-
+  // TODO roles? string -> object 수정
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   roles?: string[];
 
