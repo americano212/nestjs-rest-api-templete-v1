@@ -18,15 +18,13 @@ export class UsersRepository {
   }
 
   public async getByEmail(email: string): Promise<UserDto> {
-    // TODO 이중 join문으로 변경
-    // TODO Join으로 roles 가져오기
     const user = await this.usersRepository
       .createQueryBuilder('user')
       .select([
-        'user.user_id',
-        'user.username',
-        'user.passwordHash',
-        'user.email',
+        'user.user_id AS user_id',
+        'user.username AS username',
+        'user.passwordHash AS passwordHash',
+        'user.email AS email',
       ])
       .leftJoin('user.roles', 'user_role')
       .leftJoin('user_role.role', 'role')
