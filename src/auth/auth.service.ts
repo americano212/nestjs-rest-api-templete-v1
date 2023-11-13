@@ -30,12 +30,10 @@ export class AuthService {
       password,
       user?.passwordHash,
     );
-    if (isMatch) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { passwordHash, ...result } = user;
-      return result;
-    }
-    return null;
+    if (!isMatch) return null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, ...result } = user;
+    return result;
   }
 
   public async jwtSign(data: Payload): Promise<JwtSign> {

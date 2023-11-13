@@ -36,6 +36,7 @@ export class UsersRepository {
       .where('user.email = :email', { email })
       .getRawMany();
 
+    // TODO User가 없을시 result가 없어서 에러가 나는 현상
     const user: UserDto = {
       user_id: result[0].user_id,
       username: result[0].username,
