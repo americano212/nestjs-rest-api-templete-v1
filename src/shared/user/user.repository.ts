@@ -35,9 +35,7 @@ export class UsersRepository {
       .leftJoin('user_role.role', 'role')
       .where('user.email = :email', { email })
       .getRawMany();
-    console.log(result);
     if (!result.length) return null;
-    // TODO User가 없을시 result가 없어서 에러가 나는 현상
     const user: UserDto = {
       user_id: result[0].user_id,
       username: result[0].username,
