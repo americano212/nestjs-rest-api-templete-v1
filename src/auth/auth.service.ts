@@ -26,6 +26,7 @@ export class AuthService {
     password: string,
   ): Promise<User | null> {
     const user = await this.usersRepository.getByEmail(email);
+    if (!user) return null;
     const isMatch = await this.util.passwordCompare(
       password,
       user?.passwordHash,

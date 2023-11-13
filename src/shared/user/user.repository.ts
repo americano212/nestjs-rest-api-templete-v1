@@ -21,7 +21,7 @@ export class UsersRepository {
     return user;
   }
 
-  public async getByEmail(email: string): Promise<UserDto> {
+  public async getByEmail(email: string): Promise<UserDto | null> {
     const result = await this.usersRepository
       .createQueryBuilder('user')
       .select([
@@ -34,14 +34,15 @@ export class UsersRepository {
       .leftJoin('user.roles', 'user_role')
       .leftJoin('user_role.role', 'role')
       .where('user.email = :email', { email })
-      .getRawMany();
-
+      .getRawOne();
+    console.log(result);
+    if (!result) return null;
     // TODO User가 없을시 result가 없어서 에러가 나는 현상
     const user: UserDto = {
-      user_id: result[0].user_id,
-      username: result[0].username,
-      passwordHash: result[0].passwordHash,
-      email: result[0].email,
+      user_id: result.user_id,
+      username: result.username,
+      passwordHash: result.passwordHash,
+      email: result.email,
     };
     const roles = [];
     for (let i = 0; i < result.length; i++) {
