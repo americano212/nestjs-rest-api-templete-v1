@@ -76,10 +76,10 @@ export class UsersRepository {
     user_id: number,
     token: string,
   ): Promise<boolean> {
-    const updateResult = await this.usersRepository.update(
-      { refreshToken: token },
-      { user_id },
-    );
+    console.log(user_id, token);
+    const updateResult = await this.usersRepository.update(user_id, {
+      refreshToken: token,
+    });
     if (updateResult.affected === 0) return false;
     return true;
   }
