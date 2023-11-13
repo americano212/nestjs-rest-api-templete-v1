@@ -18,14 +18,14 @@ export class UserService {
   ) {}
 
   public async create(userData: LocalRegisterDto): Promise<boolean> {
-    const { password, ...userDataExceptPassword } = userData;
+    const { password, ...userWithoutPassword } = userData;
     const passwordHash = await this.util.passwordEncoding(password);
     try {
       const user = await this.usersRepository.create({
         passwordHash,
-        ...userDataExceptPassword,
+        ...userWithoutPassword,
       });
-      const roles = userData.roles;
+      const roles = userWithoutPassword.roles;
       for (let i = 0; i < roles?.length; i++) {
         const role_name = roles[i];
         await this.role.addRoleToUser(role_name, user);

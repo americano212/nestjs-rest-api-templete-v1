@@ -33,8 +33,8 @@ export class AuthService {
     );
     if (!isMatch) return null;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordHash, ...result } = user;
-    return result;
+    const { passwordHash, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 
   public async jwtSign(data: Payload): Promise<JwtSign> {
