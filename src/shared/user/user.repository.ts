@@ -34,15 +34,15 @@ export class UsersRepository {
       .leftJoin('user.roles', 'user_role')
       .leftJoin('user_role.role', 'role')
       .where('user.email = :email', { email })
-      .getRawOne();
+      .getRawMany();
     console.log(result);
-    if (!result) return null;
+    if (!result.length) return null;
     // TODO User가 없을시 result가 없어서 에러가 나는 현상
     const user: UserDto = {
-      user_id: result.user_id,
-      username: result.username,
-      passwordHash: result.passwordHash,
-      email: result.email,
+      user_id: result[0].user_id,
+      username: result[0].username,
+      passwordHash: result[0].passwordHash,
+      email: result[0].email,
     };
     const roles = [];
     for (let i = 0; i < result.length; i++) {
