@@ -1,7 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-
-import { LocalRegisterDto, UserDto, addRoleDto } from './dto';
+import { LocalRegisterDto, addRoleDto } from './dto';
 import { UsersRepository } from './user.repository';
 import { UtilService } from 'src/common';
 import { QueryFailedError } from 'typeorm';
@@ -49,18 +47,5 @@ export class UserService {
     const user = await this.usersRepository.getByUserId(data.user_id);
     if (!user) return false;
     return await this.role.addRoleToUser(data.role_name, user);
-  }
-
-  public async fetch(user_id: number): Promise<UserDto & { roles: string[] }> {
-    const saltOrRounds = 10;
-    const password = 'test_password';
-    const hash = await bcrypt.hash(password, saltOrRounds);
-    return Promise.resolve({
-      user_id: user_id,
-      username: 'test_user',
-      passwordHash: hash,
-      email: 'testUser@test.com',
-      roles: ['Admin'],
-    });
   }
 }
