@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { LocalRegisterDto, addRoleDto } from './dto';
 import { UsersRepository } from './user.repository';
-import { UtilService } from 'src/common';
+import { UtilService } from '../../common';
 import { QueryFailedError } from 'typeorm';
 import { RoleService } from '../role/providers';
 
