@@ -7,6 +7,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { addTransactionalDataSource } from 'typeorm-transactional';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -20,6 +22,11 @@ import { AuthModule } from './auth/auth.module';
         ...config.get<TypeOrmModuleOptions>('db'),
       }),
       inject: [ConfigService],
+      async dataSourceFactory(option) {
+        if (!option) throw new Error('Invalid options passed');
+
+        return addTransactionalDataSource(new DataSource(option));
+      },
     }),
     AuthModule,
   ],

@@ -6,8 +6,11 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { middleware } from './app.middleware';
 import { APIDocument } from './swagger.docs';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 async function bootstrap(): Promise<string> {
+  initializeTransactionalContext();
+
   const isProduction = process.env['NODE_ENV'] === 'production';
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,

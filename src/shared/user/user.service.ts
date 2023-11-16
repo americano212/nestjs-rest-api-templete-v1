@@ -4,6 +4,7 @@ import { UsersRepository } from './user.repository';
 import { UtilService } from '../../common';
 import { QueryFailedError } from 'typeorm';
 import { RoleService } from '../role/providers';
+import { Transactional } from 'typeorm-transactional';
 
 enum MysqlErrorCode {
   ALREADY_USER = 'ER_DUP_ENTRY',
@@ -17,6 +18,7 @@ export class UserService {
     private readonly role: RoleService,
   ) {}
 
+  @Transactional()
   public async create(userData: LocalRegisterDto): Promise<boolean> {
     const { password, ...userWithoutPassword } = userData;
     const passwordHash = await this.util.passwordEncoding(password);
@@ -28,7 +30,8 @@ export class UserService {
       const roles = userWithoutPassword.roles;
       for (let i = 0; i < roles?.length; i++) {
         const role_name = roles[i];
-        await this.role.addRoleToUser(role_name, user);
+        const addRoleResult = await this.role.addRoleToUser(role_name, user);
+        if (!addRoleResult) throw new Error();
       }
       return true;
     } catch (error: unknown) {
@@ -39,7 +42,9 @@ export class UserService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      return false;
+      console.log(error);
+      throw new Error();
+      //return false;
     }
   }
 
