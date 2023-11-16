@@ -26,10 +26,15 @@ const mockRoleService = {
   addRoleToUser: jest.fn(),
 };
 
+jest.mock('typeorm-transactional', () => ({
+  Transactional: () => () => ({}),
+}));
+
 describe('UserService', () => {
   let userService: UserService;
   let roleService: RoleService;
-  let repository: UsersRepository;
+  let utilService: UtilService;
+  let usersRepository: UsersRepository;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -52,7 +57,8 @@ describe('UserService', () => {
 
     userService = module.get<UserService>(UserService);
     roleService = module.get<RoleService>(RoleService);
-    repository = module.get<UsersRepository>(UsersRepository);
+    utilService = module.get<UtilService>(UtilService);
+    usersRepository = module.get<UsersRepository>(UsersRepository);
   });
 
   it('should be defined', () => {
@@ -60,11 +66,12 @@ describe('UserService', () => {
   });
 
   describe('create', () => {
-    it('정상적으로 유저가 create되었을 때 true를 반환한다.', async () => {
+    it('should create a new user.', async () => {
       const username = faker.person.fullName();
       const password = faker.internet.password();
       const email = faker.internet.email();
       const roles = ['User', 'TestRole'];
+      const passwordHash = 'Hash!';
       const localRegisterDto: LocalRegisterDto = {
         username,
         password,
@@ -75,13 +82,17 @@ describe('UserService', () => {
       const savedUser: User = {
         user_id: 1,
         username: username,
-        passwordHash: 'test-password-hash',
+        passwordHash: passwordHash,
         email: email,
         created_at: new Date(),
         updated_at: new Date(),
+        roles: roles,
       };
+      jest
+        .spyOn(utilService, 'passwordEncoding')
+        .mockResolvedValue(passwordHash);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
-      jest.spyOn(repository, 'create').mockResolvedValue(savedUser);
+      jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
 
       const result = await userService.create(localRegisterDto);
 
