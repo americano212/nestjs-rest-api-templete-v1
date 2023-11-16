@@ -1,5 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { LocalRegisterDto, addRoleDto } from './dto';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateUserDto, LocalRegisterDto, addRoleDto } from './dto';
 import { UsersRepository } from './user.repository';
 import { UtilService } from '../../common';
 import { QueryFailedError } from 'typeorm';
@@ -18,22 +23,15 @@ export class UserService {
     private readonly role: RoleService,
   ) {}
 
-  @Transactional()
   public async create(userData: LocalRegisterDto): Promise<boolean> {
     const { password, ...userWithoutPassword } = userData;
     const passwordHash = await this.util.passwordEncoding(password);
     try {
-      const user = await this.usersRepository.create({
+      const result = await this.createUserAndApplyRole({
         passwordHash,
         ...userWithoutPassword,
       });
-      const roles = userWithoutPassword.roles;
-      for (let i = 0; i < roles?.length; i++) {
-        const role_name = roles[i];
-        const addRoleResult = await this.role.addRoleToUser(role_name, user);
-        if (!addRoleResult) throw new Error();
-      }
-      return true;
+      return result;
     } catch (error: unknown) {
       if (error instanceof QueryFailedError) {
         if (error?.driverError.code === MysqlErrorCode.ALREADY_USER)
@@ -42,10 +40,27 @@ export class UserService {
             HttpStatus.BAD_REQUEST,
           );
       }
-      console.log(error);
-      throw new Error();
-      //return false;
+      if (error instanceof NotFoundException) {
+        const message = error?.message;
+        throw new HttpException(message, HttpStatus.BAD_REQUEST);
+      }
+      return false;
     }
+  }
+
+  @Transactional()
+  private async createUserAndApplyRole(
+    createUserData: CreateUserDto,
+  ): Promise<boolean> {
+    const user = await this.usersRepository.create(createUserData);
+    const roles = createUserData.roles;
+    for (let i = 0; i < roles?.length; i++) {
+      const role_name = roles[i];
+      const isSuccess = await this.role.addRoleToUser(role_name, user);
+      if (!isSuccess)
+        throw new NotFoundException(`The role ${role_name} is not valid role`);
+    }
+    return true;
   }
 
   public async addRole(data: addRoleDto): Promise<boolean> {

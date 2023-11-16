@@ -41,6 +41,7 @@ export class UsersRepository {
       username: result[0].username,
       passwordHash: result[0].passwordHash,
       email: result[0].email,
+      roles: [],
     };
     const roles = [];
     for (let i = 0; i < result.length; i++) {

@@ -27,7 +27,7 @@ export class User extends CoreEntity {
   refreshToken?: string;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
-  roles?: string[];
+  roles!: string[];
 
   @OneToMany(() => SocialLoginInfo, (userRole) => userRole.user)
   social_login_infos?: SocialLoginInfo[];
