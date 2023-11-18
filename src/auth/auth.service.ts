@@ -24,7 +24,8 @@ export class AuthService {
   public async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersRepository.getByEmail(email);
     if (!user) return null;
-    const isMatch = await this.util.passwordCompare(password, user?.passwordHash);
+    if (!user.passwordHash) return null;
+    const isMatch = await this.util.passwordCompare(password, user.passwordHash);
     if (!isMatch) return null;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...userWithoutPassword } = user;

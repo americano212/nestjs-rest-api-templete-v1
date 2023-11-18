@@ -13,11 +13,8 @@ export class UtilService {
     return passwordHash;
   }
 
-  public async passwordCompare(
-    password: string,
-    passwordHash: string | undefined,
-  ): Promise<boolean> {
-    if (!passwordHash) return false;
-    return await bcrypt.compare(password, passwordHash);
+  public async passwordCompare(password: string, passwordHash: string): Promise<boolean> {
+    const isMatch = await bcrypt.compare(password, passwordHash);
+    return isMatch;
   }
 }
