@@ -21,16 +21,10 @@ export class AuthService {
     private readonly config: ConfigService,
   ) {}
 
-  public async validateUser(
-    email: string,
-    password: string,
-  ): Promise<User | null> {
+  public async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.usersRepository.getByEmail(email);
     if (!user) return null;
-    const isMatch = await this.util.passwordCompare(
-      password,
-      user?.passwordHash,
-    );
+    const isMatch = await this.util.passwordCompare(password, user?.passwordHash);
     if (!isMatch) return null;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...userWithoutPassword } = user;

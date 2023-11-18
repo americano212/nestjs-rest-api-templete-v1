@@ -10,9 +10,7 @@ export class UserController {
   constructor(private readonly user: UserService) {}
 
   @Post('register')
-  public async localRegister(
-    @Body() registerData: LocalRegisterDto,
-  ): Promise<boolean> {
+  public async localRegister(@Body() registerData: LocalRegisterDto): Promise<boolean> {
     const isSuccess = this.user.create(registerData);
     return isSuccess;
   }

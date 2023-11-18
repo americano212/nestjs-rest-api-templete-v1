@@ -8,9 +8,7 @@ import { CreateUserDto, UserDto } from './dto';
 
 @Injectable()
 export class UsersRepository {
-  constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>,
-  ) {}
+  constructor(@InjectRepository(User) private usersRepository: Repository<User>) {}
 
   public async create(userData: CreateUserDto): Promise<User> {
     const user = await this.usersRepository.save(userData);
@@ -72,10 +70,7 @@ export class UsersRepository {
     return isExist;
   }
 
-  public async setRefreshToken(
-    user_id: number,
-    token: string,
-  ): Promise<boolean> {
+  public async setRefreshToken(user_id: number, token: string): Promise<boolean> {
     console.log(user_id, token);
     const updateResult = await this.usersRepository.update(user_id, {
       refreshToken: token,

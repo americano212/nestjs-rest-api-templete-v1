@@ -6,9 +6,7 @@ import { Role } from '#entities/role.entity';
 
 @Injectable()
 export class RolesRepository {
-  constructor(
-    @InjectRepository(Role) private rolesRepository: Repository<Role>,
-  ) {}
+  constructor(@InjectRepository(Role) private rolesRepository: Repository<Role>) {}
 
   public async findRoleByName(roleName: string): Promise<Role | undefined> {
     const role = await this.rolesRepository.findOneBy({

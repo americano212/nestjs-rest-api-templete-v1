@@ -13,8 +13,7 @@ export const loggerOptions: Params = {
       // Change time value in production log.
       // timestamp: stdTimeFunctions.isoTime,
       quietReqLogger: true,
-      genReqId: (req): ReqId =>
-        (<Request>req).header('X-Request-Id') ?? uuidv4(),
+      genReqId: (req): ReqId => (<Request>req).header('X-Request-Id') ?? uuidv4(),
       ...(process.env['NODE_ENV'] === 'production'
         ? {}
         : {

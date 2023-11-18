@@ -3,11 +3,7 @@ import { faker } from '@faker-js/faker';
 
 import { User } from '#entities/user.entity';
 
-import {
-  MysqlErrorCode,
-  UserService,
-  UsersRepository,
-} from '../../src/shared/user';
+import { MysqlErrorCode, UserService, UsersRepository } from '../../src/shared/user';
 import { LocalRegisterDto } from '../../src/shared/user/dto';
 import { RoleService } from '../../src/shared/role/providers';
 import { UtilService } from '../../src/common';
@@ -93,9 +89,7 @@ describe('UserService', () => {
         updated_at: new Date(),
         roles: roles,
       };
-      jest
-        .spyOn(utilService, 'passwordEncoding')
-        .mockResolvedValue(passwordHash);
+      jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
       const result = await userService.create(localRegisterDto);
@@ -118,9 +112,7 @@ describe('UserService', () => {
         updated_at: new Date(),
         roles: [],
       };
-      jest
-        .spyOn(utilService, 'passwordEncoding')
-        .mockResolvedValue(passwordHash);
+      jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
       const result = await userService.create(localRegisterDto);
@@ -135,22 +127,14 @@ describe('UserService', () => {
         email: existingEmail,
         roles,
       };
-      const mockQueryFailedError = new QueryFailedError(
-        'SELECT',
-        [],
-        new Error('Duplicate entry'),
-      );
+      const mockQueryFailedError = new QueryFailedError('SELECT', [], new Error('Duplicate entry'));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       mockQueryFailedError.driverError = {
         code: MysqlErrorCode.ALREADY_USER,
       } as unknown as Error;
-      jest
-        .spyOn(utilService, 'passwordEncoding')
-        .mockResolvedValue(passwordHash);
-      jest
-        .spyOn(usersRepository, 'create')
-        .mockRejectedValue(mockQueryFailedError);
+      jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
+      jest.spyOn(usersRepository, 'create').mockRejectedValue(mockQueryFailedError);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
       await expect(async () => {
         await userService.create(localRegisterDto);
@@ -175,9 +159,7 @@ describe('UserService', () => {
         updated_at: new Date(),
         roles: roles,
       };
-      jest
-        .spyOn(utilService, 'passwordEncoding')
-        .mockResolvedValue(passwordHash);
+      jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
       await expect(async () => {
@@ -185,4 +167,6 @@ describe('UserService', () => {
       }).rejects.toThrow(`The role ${roles[0]} is not valid role`);
     });
   });
+
+  describe('addRole', () => {});
 });
