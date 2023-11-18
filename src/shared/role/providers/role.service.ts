@@ -1,5 +1,5 @@
 import { User } from '#entities/user.entity';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RolesRepository } from './role.repository';
 import { UserRolesRepository } from './user-role.repository';
 
@@ -17,7 +17,7 @@ export class RoleService {
       await this.userRolesRepository.create({ user, role });
       return true;
     } catch (error) {
-      return false;
+      throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
     }
   }
 }
