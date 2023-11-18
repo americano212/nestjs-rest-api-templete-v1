@@ -1,16 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 import { ConfigService, UtilService } from 'src/common';
 import { User, UsersRepository } from 'src/shared/user';
 import { JwtPayload, JwtSign, Payload } from './auth.interface';
-import { JwtService } from '@nestjs/jwt';
-
-// https://soraji.github.io/back/2022/12/15/sociallogin/
-
-enum EXPIRE_TIME {
-  ACCESS_TOKEN = '1d',
-  REFRESH_TOKEN = '30d',
-}
 
 @Injectable()
 export class AuthService {
@@ -49,7 +42,7 @@ export class AuthService {
 
   private async generateAccessToken(payload: JwtPayload): Promise<string> {
     return this.jwt.signAsync(payload, {
-      expiresIn: EXPIRE_TIME.ACCESS_TOKEN,
+      expiresIn: this.config.get('jwt.accessTokenExpire'),
       secret: this.config.get('jwt.accessSecret'),
     });
   }
@@ -58,7 +51,7 @@ export class AuthService {
     return this.jwt.signAsync(
       { sub },
       {
-        expiresIn: EXPIRE_TIME.REFRESH_TOKEN,
+        expiresIn: this.config.get('jwt.refreshTokenExpire'),
         secret: this.config.get('jwt.refreshSecret'),
       },
     );

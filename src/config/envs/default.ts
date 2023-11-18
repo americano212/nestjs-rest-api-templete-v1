@@ -5,5 +5,4 @@ export const config = {
   bcrypt: {
     salt: Number(process.env['BCRYPT_SALT']) || 10,
   },
-  hello: 'world',
 };
