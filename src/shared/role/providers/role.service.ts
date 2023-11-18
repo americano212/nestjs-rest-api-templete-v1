@@ -1,5 +1,7 @@
-import { User } from '#entities/user.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+
+import { User } from '#entities/user.entity';
+
 import { RolesRepository } from './role.repository';
 import { UserRolesRepository } from './user-role.repository';
 
