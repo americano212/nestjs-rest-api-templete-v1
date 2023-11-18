@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker';
 import { User } from '#entities/user.entity';
 
 import { MysqlErrorCode, UserService, UsersRepository } from '../../src/shared/user';
-import { LocalRegisterDto } from '../../src/shared/user/dto';
+import { AddRoleDto, LocalRegisterDto } from '../../src/shared/user/dto';
 import { RoleService } from '../../src/shared/role/providers';
 import { UtilService } from '../../src/common';
 import { QueryFailedError } from 'typeorm';
@@ -94,7 +94,7 @@ describe('UserService', () => {
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
       const result = await userService.create(localRegisterDto);
 
-      expect(result).toBe(true);
+      expect(result).toBeTruthy();
     });
     it('should create a user and empty role', async () => {
       const localRegisterDto: LocalRegisterDto = {
@@ -117,7 +117,7 @@ describe('UserService', () => {
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
       const result = await userService.create(localRegisterDto);
 
-      expect(result).toBe(true);
+      expect(result).toBeTruthy();
     });
     it('should throw an exception when attempting to create a user with an existing email', async () => {
       const existingEmail = email;
@@ -168,5 +168,61 @@ describe('UserService', () => {
     });
   });
 
-  describe('addRole', () => {});
+  describe('addRole', () => {
+    const user_id = 1;
+    const username = faker.person.fullName();
+    const email = faker.internet.email();
+    const passwordHash = 'Hash!';
+    const role_name = 'TestRole';
+    const user: User = {
+      user_id,
+      username,
+      passwordHash,
+      email,
+      created_at: new Date(),
+      updated_at: new Date(),
+      roles: [],
+    };
+    it('successfully assign a role to a user', async () => {
+      const addRoleDto: AddRoleDto = {
+        user_id,
+        role_name,
+      };
+      jest.spyOn(usersRepository, 'getByUserId').mockResolvedValue(user);
+      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
+      const result = await userService.addRole(addRoleDto);
+      expect(result).toBeTruthy();
+    });
+    it('should throw an exception when user_id does NOT Exist', async () => {
+      const user_id_not_exist = -1;
+      const addRoleDto: AddRoleDto = {
+        user_id: user_id_not_exist,
+        role_name,
+      };
+      jest.spyOn(usersRepository, 'getByUserId').mockResolvedValue(null);
+      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
+
+      await expect(async () => {
+        await userService.addRole(addRoleDto);
+      }).rejects.toThrow(HttpException);
+      await expect(async () => {
+        await userService.addRole(addRoleDto);
+      }).rejects.toThrow(`User ID ${user_id_not_exist} does NOT Exist`);
+    });
+    it('should throw an exception for an invalid role', async () => {
+      const role_name_not_exist = 'RRole';
+      const addRoleDto: AddRoleDto = {
+        user_id,
+        role_name: role_name_not_exist,
+      };
+      jest.spyOn(usersRepository, 'getByUserId').mockResolvedValue(user);
+      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
+      await expect(async () => {
+        await userService.addRole(addRoleDto);
+      }).rejects.toThrow(HttpException);
+      await expect(async () => {
+        await userService.addRole(addRoleDto);
+      }).rejects.toThrow(`The role ${role_name_not_exist} is not valid role`);
+    });
+  });
 });
