@@ -5,7 +5,7 @@ import { Transactional } from 'typeorm-transactional';
 import { UsersRepository } from './user.repository';
 import { RoleService } from '../role/providers';
 import { UtilService } from '../../common';
-import { LocalRegisterDto, addRoleDto } from './dto';
+import { LocalRegisterDto, AddRoleDto } from './dto';
 
 export enum MysqlErrorCode {
   ALREADY_USER = 'ER_DUP_ENTRY',
@@ -48,7 +48,7 @@ export class UserService {
     }
   }
 
-  public async addRole(data: addRoleDto): Promise<boolean> {
+  public async addRole(data: AddRoleDto): Promise<boolean> {
     try {
       const user_id = data.user_id;
       const role_name = data.role_name;

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsString } from 'class-validator';
 
-export class addRoleDto {
+export class AddRoleDto {
   @ApiProperty({ example: 1 })
   @IsInt()
   public user_id!: number;
