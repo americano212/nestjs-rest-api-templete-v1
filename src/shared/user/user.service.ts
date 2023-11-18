@@ -50,7 +50,6 @@ export class UserService {
             `User's Email already exists`,
             HttpStatus.BAD_REQUEST,
           );
-        console.log(error);
       }
       if (error instanceof NotFoundException) {
         const message = error?.message;

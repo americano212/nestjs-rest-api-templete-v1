@@ -102,6 +102,31 @@ describe('UserService', () => {
 
       expect(result).toBe(true);
     });
+    it('should create a user and empty role', async () => {
+      const localRegisterDto: LocalRegisterDto = {
+        username,
+        password,
+        email,
+        roles: [],
+      };
+      const savedUser: User = {
+        user_id: 1,
+        username: username,
+        passwordHash: passwordHash,
+        email: email,
+        created_at: new Date(),
+        updated_at: new Date(),
+        roles: [],
+      };
+      jest
+        .spyOn(utilService, 'passwordEncoding')
+        .mockResolvedValue(passwordHash);
+      jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
+      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
+      const result = await userService.create(localRegisterDto);
+
+      expect(result).toBe(true);
+    });
     it('should throw an exception when attempting to create a user with an existing email', async () => {
       const existingEmail = email;
       const localRegisterDto: LocalRegisterDto = {
@@ -134,8 +159,30 @@ describe('UserService', () => {
         await userService.create(localRegisterDto);
       }).rejects.toThrow("User's Email already exists");
     });
-    it('should throw an exception for an invalid role', () => {
-      expect(true).toBeDefined();
+    it('should throw an exception for an invalid role', async () => {
+      const localRegisterDto: LocalRegisterDto = {
+        username,
+        password,
+        email,
+        roles,
+      };
+      const savedUser: User = {
+        user_id: 1,
+        username: username,
+        passwordHash: passwordHash,
+        email: email,
+        created_at: new Date(),
+        updated_at: new Date(),
+        roles: roles,
+      };
+      jest
+        .spyOn(utilService, 'passwordEncoding')
+        .mockResolvedValue(passwordHash);
+      jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
+      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
+      await expect(async () => {
+        await userService.create(localRegisterDto);
+      }).rejects.toThrow(`The role ${roles[0]} is not valid role`);
     });
   });
 });
