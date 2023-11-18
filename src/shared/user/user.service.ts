@@ -4,12 +4,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { LocalRegisterDto, addRoleDto } from './dto';
-import { UsersRepository } from './user.repository';
-import { UtilService } from '../../common';
 import { QueryFailedError } from 'typeorm';
-import { RoleService } from '../role/providers';
 import { Transactional } from 'typeorm-transactional';
+
+import { UsersRepository } from './user.repository';
+import { RoleService } from '../role/providers';
+import { UtilService } from '../../common';
+import { LocalRegisterDto, addRoleDto } from './dto';
 
 export enum MysqlErrorCode {
   ALREADY_USER = 'ER_DUP_ENTRY',
