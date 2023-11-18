@@ -8,11 +8,11 @@ import { Role } from '#entities/role.entity';
 export class RolesRepository {
   constructor(@InjectRepository(Role) private rolesRepository: Repository<Role>) {}
 
-  public async findRoleByName(roleName: string): Promise<Role | undefined> {
+  public async findRoleByName(roleName: string): Promise<Role | null> {
     const role = await this.rolesRepository.findOneBy({
       role_name: roleName,
     });
-    if (!role) return undefined;
+    if (!role) return null;
     return role;
   }
 }

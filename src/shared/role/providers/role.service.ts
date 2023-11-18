@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 
 import { User } from '#entities/user.entity';
 
@@ -15,10 +15,15 @@ export class RoleService {
   public async addRoleToUser(role_name: string, user: User): Promise<boolean> {
     try {
       const role = await this.rolesRepository.findRoleByName(role_name);
-      if (!role) return false;
-      await this.userRolesRepository.create({ user, role });
+      if (!role) throw new NotFoundException(`The role ${role_name} is not valid role`);
+      const user_role = await this.userRolesRepository.create({ user, role });
+      if (!user_role) throw new Error();
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException) {
+        const message = error?.message;
+        throw new HttpException(message, HttpStatus.NOT_FOUND);
+      }
       throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
     }
   }

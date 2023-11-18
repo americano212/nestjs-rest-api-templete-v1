@@ -12,7 +12,7 @@ export class UserRolesRepository {
     private userRolesRepository: Repository<UserRole>,
   ) {}
 
-  public async create(userRoleData: CreateUserRoleDto) {
+  public async create(userRoleData: CreateUserRoleDto): Promise<UserRole | null> {
     const user_role = await this.userRolesRepository.save(userRoleData);
     return user_role;
   }
