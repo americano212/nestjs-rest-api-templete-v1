@@ -11,7 +11,7 @@ import { QueryFailedError } from 'typeorm';
 import { RoleService } from '../role/providers';
 import { Transactional } from 'typeorm-transactional';
 
-enum MysqlErrorCode {
+export enum MysqlErrorCode {
   ALREADY_USER = 'ER_DUP_ENTRY',
 }
 
@@ -49,6 +49,7 @@ export class UserService {
             `User's Email already exists`,
             HttpStatus.BAD_REQUEST,
           );
+        console.log(error);
       }
       if (error instanceof NotFoundException) {
         const message = error?.message;

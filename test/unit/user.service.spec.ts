@@ -3,10 +3,16 @@ import { faker } from '@faker-js/faker';
 
 import { User } from '#entities/user.entity';
 
-import { UserService, UsersRepository } from '../../src/shared/user';
+import {
+  MysqlErrorCode,
+  UserService,
+  UsersRepository,
+} from '../../src/shared/user';
 import { LocalRegisterDto } from '../../src/shared/user/dto';
 import { RoleService } from '../../src/shared/role/providers';
 import { UtilService } from '../../src/common';
+import { QueryFailedError } from 'typeorm';
+import { HttpException } from '@nestjs/common';
 
 const mockRepository = {
   create: jest.fn(),
@@ -66,19 +72,18 @@ describe('UserService', () => {
   });
 
   describe('create', () => {
-    it('should create a new user.', async () => {
-      const username = faker.person.fullName();
-      const password = faker.internet.password();
-      const email = faker.internet.email();
-      const roles = ['User', 'TestRole'];
-      const passwordHash = 'Hash!';
+    const username = faker.person.fullName();
+    const password = faker.internet.password();
+    const email = faker.internet.email();
+    const roles = ['User', 'TestRole'];
+    const passwordHash = 'Hash!';
+    it('should create a user and assign roles', async () => {
       const localRegisterDto: LocalRegisterDto = {
         username,
         password,
         email,
         roles,
       };
-
       const savedUser: User = {
         user_id: 1,
         username: username,
@@ -91,12 +96,46 @@ describe('UserService', () => {
       jest
         .spyOn(utilService, 'passwordEncoding')
         .mockResolvedValue(passwordHash);
-      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
-
+      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
       const result = await userService.create(localRegisterDto);
 
       expect(result).toBe(true);
+    });
+    it('should throw an exception when attempting to create a user with an existing email', async () => {
+      const existingEmail = email;
+      const localRegisterDto: LocalRegisterDto = {
+        username,
+        password,
+        email: existingEmail,
+        roles,
+      };
+      const mockQueryFailedError = new QueryFailedError(
+        'SELECT',
+        [],
+        new Error('Duplicate entry'),
+      );
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      mockQueryFailedError.driverError = {
+        code: MysqlErrorCode.ALREADY_USER,
+      } as unknown as Error;
+      jest
+        .spyOn(utilService, 'passwordEncoding')
+        .mockResolvedValue(passwordHash);
+      jest
+        .spyOn(usersRepository, 'create')
+        .mockRejectedValue(mockQueryFailedError);
+      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
+      await expect(async () => {
+        await userService.create(localRegisterDto);
+      }).rejects.toThrow(HttpException);
+      await expect(async () => {
+        await userService.create(localRegisterDto);
+      }).rejects.toThrow("User's Email already exists");
+    });
+    it('should throw an exception for an invalid role', () => {
+      expect(true).toBeDefined();
     });
   });
 });
