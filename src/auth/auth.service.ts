@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { ConfigService, UtilService } from 'src/common';
-import { User, UsersRepository } from 'src/shared/user';
+import { ConfigService, UtilService } from '../common';
+import { User, UsersRepository } from '../shared/user';
 import { JwtPayload, JwtSign, Payload } from './auth.interface';
 
 @Injectable()
@@ -21,8 +21,8 @@ export class AuthService {
     const isMatch = await this.util.passwordCompare(password, user.passwordHash);
     if (!isMatch) return null;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordHash, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    const { passwordHash, ...userWithoutPasswordHash } = user;
+    return userWithoutPasswordHash;
   }
 
   public async jwtSign(data: Payload): Promise<JwtSign> {

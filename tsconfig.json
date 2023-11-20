@@ -33,12 +33,6 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": [
-    "typings/global.d.ts",
-    "src/**/*",
-    "test/**/*",
-    "bin/**/*",
-    "jest.config.ts"
-  ],
+  "include": ["typings/global.d.ts", "src/**/*", "test/**/*", "bin/**/*", "jest.config.ts"],
   "exclude": ["node_modules"]
 }
