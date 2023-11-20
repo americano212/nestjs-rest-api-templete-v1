@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 
 import { User } from '#entities/user.entity';
 
-import { AuthService } from '../../src/auth';
+import { AuthService, Payload } from '../../src/auth';
 import { ConfigService, UtilService } from '../../src/common';
 import { UsersRepository } from '../../src/shared/user';
 import { JwtService } from '@nestjs/jwt';
@@ -18,12 +18,13 @@ const mockUtilService = {
 
 const mockUsersRepository = {
   getByEmail: jest.fn(),
+  setRefreshToken: jest.fn(),
 };
 
 describe('AuthService', () => {
   let authService: AuthService;
   let utilService: UtilService;
-  //let configService: ConfigService;
+  let configService: ConfigService;
   let usersRepository: UsersRepository;
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -46,7 +47,7 @@ describe('AuthService', () => {
     }).compile();
     authService = module.get<AuthService>(AuthService);
     utilService = module.get<UtilService>(UtilService);
-    //configService = module.get<ConfigService>(ConfigService);
+    configService = module.get<ConfigService>(ConfigService);
     usersRepository = module.get<UsersRepository>(UsersRepository);
   });
 
@@ -71,11 +72,60 @@ describe('AuthService', () => {
       passwordHash: 'Hash!',
       ...userWithoutPasswordHash,
     };
-    it('should be successful authentication with the correct email and password.', async () => {
+    it('should be successful authentication with the correct email and password', async () => {
       jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(user);
       jest.spyOn(utilService, 'passwordCompare').mockResolvedValue(true);
+
       const result = await authService.validateUser(email, password);
       expect(result).toStrictEqual(userWithoutPasswordHash);
+    });
+    it('should be fail authentication with the wrong email, correct password', async () => {
+      const wrong_email = email + '!';
+      jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(null);
+      jest.spyOn(utilService, 'passwordCompare').mockResolvedValue(true);
+
+      const result = await authService.validateUser(wrong_email, password);
+      expect(result).toBeNull();
+    });
+    it('should be fail authentication with the correct email, wrong password', async () => {
+      const wrong_password = password + '!';
+      jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(user);
+      jest.spyOn(utilService, 'passwordCompare').mockResolvedValue(false);
+
+      const result = await authService.validateUser(email, wrong_password);
+      expect(result).toBeNull();
+    });
+    it('should be fail authentication with the wrong email, wrong password', async () => {
+      const wrong_email = email + '!';
+      const wrong_password = password + '!';
+      jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(null);
+      jest.spyOn(utilService, 'passwordCompare').mockResolvedValue(false);
+
+      const result = await authService.validateUser(wrong_email, wrong_password);
+      expect(result).toBeNull();
+    });
+  });
+  describe('jwtSign', () => {
+    it('should be successfully generate jwt tokens', async () => {
+      jest.spyOn(configService, 'get').mockReturnValueOnce('1d');
+      jest.spyOn(configService, 'get').mockReturnValueOnce('YOUR_ACCESS_SECRET');
+      jest.spyOn(configService, 'get').mockReturnValueOnce('30d');
+      jest.spyOn(configService, 'get').mockReturnValueOnce('YOUR_REFRESH_SECRET');
+
+      const setRefreshTokenSpy = jest
+        .spyOn(usersRepository, 'setRefreshToken')
+        .mockResolvedValue(true);
+
+      const payload: Payload = {
+        user_id: 1,
+        username: faker.person.fullName(),
+        roles: ['user', 'admin'],
+      };
+      const result = await authService.jwtSign(payload);
+
+      expect(setRefreshTokenSpy).toHaveBeenCalledWith(payload.user_id, expect.any(String));
+      expect(result.access_token).toBeTruthy();
+      expect(result.refresh_token).toBeTruthy();
     });
   });
 });
