@@ -1,12 +1,12 @@
 import { Test } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
+import { HttpException } from '@nestjs/common';
 
 import { Role } from '#entities/role.entity';
 import { UserRole } from '#entities/user-role.entity';
 import { User } from '#entities/user.entity';
 
 import { RoleService, RolesRepository, UserRolesRepository } from '../../src/shared/role/providers';
-import { HttpException } from '@nestjs/common';
 
 describe('RoleService', () => {
   let roleService: RoleService;

@@ -2,8 +2,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      // https://docs.nestjs.com/cli/scripts#build
-      // https://nodejs.org/api/packages.html#imports
       "#entities/*": ["./src/entities/*"]
     },
     "target": "ES2021",
@@ -16,19 +14,16 @@
     "strict": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    // "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noPropertyAccessFromIndexSignature": true,
-    // "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "removeComments": true,
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
-    // https://github.com/Microsoft/TypeScript/issues/2577
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "skipLibCheck": true

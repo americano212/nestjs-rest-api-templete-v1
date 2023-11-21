@@ -1,5 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
+import { HttpException } from '@nestjs/common';
+import { QueryFailedError } from 'typeorm';
 
 import { User } from '#entities/user.entity';
 
@@ -7,8 +9,6 @@ import { MysqlErrorCode, UserService, UsersRepository } from '../../src/shared/u
 import { AddRoleDto, LocalRegisterDto } from '../../src/shared/user/dto';
 import { RoleService } from '../../src/shared/role/providers';
 import { UtilService } from '../../src/common';
-import { QueryFailedError } from 'typeorm';
-import { HttpException } from '@nestjs/common';
 
 const mockRepository = {
   create: jest.fn(),
@@ -92,6 +92,7 @@ describe('UserService', () => {
       jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
+
       const result = await userService.create(localRegisterDto);
 
       expect(result).toBeTruthy();
@@ -115,6 +116,7 @@ describe('UserService', () => {
       jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
+
       const result = await userService.create(localRegisterDto);
 
       expect(result).toBeTruthy();
@@ -136,6 +138,7 @@ describe('UserService', () => {
       jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
       jest.spyOn(usersRepository, 'create').mockRejectedValue(mockQueryFailedError);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
+
       await expect(async () => {
         await userService.create(localRegisterDto);
       }).rejects.toThrow(HttpException);
@@ -162,6 +165,7 @@ describe('UserService', () => {
       jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
+
       await expect(async () => {
         await userService.create(localRegisterDto);
       }).rejects.toThrow(`The role ${roles[0]} is not valid role`);
@@ -190,6 +194,7 @@ describe('UserService', () => {
       };
       jest.spyOn(usersRepository, 'getByUserId').mockResolvedValue(user);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
+
       const result = await userService.addRole(addRoleDto);
       expect(result).toBeTruthy();
     });
@@ -217,6 +222,7 @@ describe('UserService', () => {
       };
       jest.spyOn(usersRepository, 'getByUserId').mockResolvedValue(user);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
+
       await expect(async () => {
         await userService.addRole(addRoleDto);
       }).rejects.toThrow(HttpException);

@@ -1,12 +1,12 @@
 import { Test } from '@nestjs/testing';
 import { faker } from '@faker-js/faker';
+import { JwtService } from '@nestjs/jwt';
 
 import { User } from '#entities/user.entity';
 
 import { AuthService, Payload } from '../../src/auth';
 import { ConfigService, UtilService } from '../../src/common';
 import { UsersRepository } from '../../src/shared/user';
-import { JwtService } from '@nestjs/jwt';
 
 const mockConfigService = {
   get: jest.fn(),
