@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { LocalRegisterDto, addRoleDto } from './dto';
+import { LocalRegisterDto, AddRoleDto } from './dto';
 import { UserService } from './user.service';
 
 @ApiTags('User')
@@ -16,7 +16,7 @@ export class UserController {
   }
 
   @Post('user/role')
-  public async addRoleToUser(@Body() data: addRoleDto): Promise<boolean> {
+  public async addRoleToUser(@Body() data: AddRoleDto): Promise<boolean> {
     const isSuccess = this.user.addRole(data);
 
     return isSuccess;
