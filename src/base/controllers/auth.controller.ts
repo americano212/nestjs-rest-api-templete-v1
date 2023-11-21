@@ -5,6 +5,15 @@ import { AuthService, JwtSign, LocalLoginGuard, Payload } from '../../auth';
 import { LocalLoginDto } from '../dto';
 import { ReqUser } from '../../common';
 import { Request, Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+
+interface IOAuthUser {
+  user: {
+    username: string;
+    email: string;
+    password: string;
+  };
+}
 
 @ApiTags('Auth')
 @Controller()
@@ -33,7 +42,11 @@ export class AuthController {
   public async githubLogin() {}
 
   @Post('login/kakao')
-  public async kakaoLogin() {}
+  @UseGuards(AuthGuard('kakao'))
+  public async kakaoLogin(@Req() req: Request & IOAuthUser, @Res() res: Response) {
+    console.log(req, res);
+    this.auth.OAuthLogin();
+  }
 
   @Post('login/naver')
   public async naverLogin() {}
