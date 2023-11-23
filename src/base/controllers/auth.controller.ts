@@ -2,14 +2,7 @@ import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
-import {
-  AuthService,
-  IOAuthUser,
-  JwtSign,
-  KakaoLoginGuard,
-  LocalLoginGuard,
-  Payload,
-} from '../../auth';
+import { AuthService, JwtSign, KakaoLoginGuard, LocalLoginGuard, Payload } from '../../auth';
 import { LocalLoginDto } from '../dto';
 import { ReqUser } from '../../common';
 
@@ -41,7 +34,7 @@ export class AuthController {
 
   @Get('login/kakao')
   @UseGuards(KakaoLoginGuard)
-  async kakaoLogin(@ReqUser() user: IOAuthUser, @Res() res: Response) {
+  async kakaoLogin(@ReqUser() user: Payload, @Res() res: Response) {
     console.log('user : ', user);
     this.auth.OAuthLogin(user, res);
   }

@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { ConfigService, UtilService } from '../common';
 import { User, UsersRepository } from '../shared/user';
-import { IOAuthUser, JwtPayload, JwtSign, Payload } from './auth.interface';
+import { JwtPayload, JwtSign, Payload } from './auth.interface';
 import { Response } from 'express';
 
 @Injectable()
@@ -58,7 +58,11 @@ export class AuthService {
     );
   }
 
-  public async OAuthLogin(_req: IOAuthUser, res: Response) {
+  public async OAuthLogin(_req: Payload, res: Response) {
     res.redirect('/');
+  }
+
+  public async validateSocialUser(username: string, email: string, id: string) {
+    console.log(username, email, id);
   }
 }
