@@ -14,3 +14,10 @@ export interface JwtPayload {
   username?: string;
   roles?: string[];
 }
+
+// TODO Payload로 통합하는 방향 생각해보기
+export interface IOAuthUser {
+  username: string;
+  email: string;
+  password: string;
+}

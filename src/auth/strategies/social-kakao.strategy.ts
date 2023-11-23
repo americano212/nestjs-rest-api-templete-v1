@@ -13,12 +13,12 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any) {
-    console.log('accessToken' + accessToken);
-    console.log('refreshToken' + refreshToken);
+    console.log('accessToken : ' + accessToken);
+    console.log('refreshToken : ' + refreshToken);
     console.log(profile);
     console.log(profile._json.kakao_account.email);
     return {
-      name: profile.displayName,
+      username: profile.displayName,
       email: profile._json.kakao_account.email,
       password: profile.id,
     };

@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 
 import { ConfigService, UtilService } from '../common';
 import { User, UsersRepository } from '../shared/user';
-import { JwtPayload, JwtSign, Payload } from './auth.interface';
-import { Request, Response } from 'express';
+import { IOAuthUser, JwtPayload, JwtSign, Payload } from './auth.interface';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -58,8 +58,7 @@ export class AuthService {
     );
   }
 
-  public async OAuthLogin(req: Request, res: Response) {
-    console.log(req);
+  public async OAuthLogin(_req: IOAuthUser, res: Response) {
     res.redirect('/');
   }
 }
