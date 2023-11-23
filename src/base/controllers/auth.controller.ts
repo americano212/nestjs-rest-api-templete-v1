@@ -9,7 +9,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 interface IOAuthUser {
   user: {
-    username: string;
+    name: string;
     email: string;
     password: string;
   };
@@ -41,11 +41,11 @@ export class AuthController {
   @Post('login/github')
   public async githubLogin() {}
 
-  @Post('login/kakao')
+  @Get('login/kakao')
   @UseGuards(AuthGuard('kakao'))
-  public async kakaoLogin(@Req() req: Request & IOAuthUser, @Res() res: Response) {
+  async kakaoLogin(@Req() req: Request & IOAuthUser, @Res() res: Response) {
     console.log(req, res);
-    this.auth.OAuthLogin();
+    this.auth.OAuthLogin(req, res);
   }
 
   @Post('login/naver')

@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService, UtilService } from '../common';
 import { User, UsersRepository } from '../shared/user';
 import { JwtPayload, JwtSign, Payload } from './auth.interface';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -57,5 +58,8 @@ export class AuthService {
     );
   }
 
-  public async OAuthLogin() {}
+  public async OAuthLogin(req: Request, res: Response) {
+    console.log(req);
+    res.redirect('/');
+  }
 }
