@@ -19,6 +19,6 @@ export interface JwtPayload {
 export interface IOAuthUser {
   username: string;
   email: string;
-  password: string;
-  roles?: string[];
+  social_id: string;
+  vendor: string;
 }

@@ -3,8 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { ConfigService, UtilService } from '../common';
 import { User, UsersRepository } from '../shared/user';
-import { JwtPayload, JwtSign, Payload } from './auth.interface';
-import { Response } from 'express';
+import { IOAuthUser, JwtPayload, JwtSign, Payload } from './auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +34,7 @@ export class AuthService {
     const access_token = await this.generateAccessToken(payload);
     const refresh_token = await this.generateRefreshToken(payload.sub);
     await this.usersRepository.setRefreshToken(data.user_id, refresh_token);
+    // TODO 쿠키에 추가하는 함수 추가
     return {
       access_token,
       refresh_token,
@@ -58,11 +58,9 @@ export class AuthService {
     );
   }
 
-  public async OAuthLogin(_req: Payload, res: Response) {
-    res.redirect('/');
-  }
-
-  public async validateSocialUser(username: string, email: string, id: string) {
-    console.log(username, email, id);
+  public async validateSocialUser(socail_user: IOAuthUser): Promise<Payload> {
+    // TODO
+    console.log('socail_user', socail_user);
+    return { user_id: 1, username: 'test', roles: [] };
   }
 }

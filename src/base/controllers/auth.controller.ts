@@ -34,9 +34,10 @@ export class AuthController {
 
   @Get('login/kakao')
   @UseGuards(KakaoLoginGuard)
-  async kakaoLogin(@ReqUser() user: Payload, @Res() res: Response) {
+  public async kakaoLogin(@ReqUser() user: Payload, @Res() res: Response) {
     console.log('user : ', user);
-    this.auth.OAuthLogin(user, res);
+    this.auth.jwtSign(user);
+    res.redirect('/');
   }
 
   @Post('login/naver')
