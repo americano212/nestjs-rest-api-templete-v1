@@ -33,17 +33,14 @@ export class AuthService {
     if (socialUser.vendor !== user?.vendor) {
       // 이미 가입되어 있다 하고 ERR throw
     }
-    //TODO ID가 다름?
-    console.log('socail_user', socialUser);
+    if (socialUser.social_id !== user?.social_id)
+      //TODO ID가 다름?
+      console.log('socail_user', socialUser);
     return user;
   }
 
   private async socialRegistor(socialUser: IOAuthUser): Promise<User> {
-    const user = await this.usersRepository.create({
-      username: socialUser.username,
-      email: socialUser.email,
-      roles: [],
-    });
+    const user = await this.usersRepository.create({ ...socialUser, roles: [] });
     // TODO Exception
     return user;
   }

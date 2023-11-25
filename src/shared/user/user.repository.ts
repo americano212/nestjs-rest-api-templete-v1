@@ -29,6 +29,7 @@ export class UsersRepository {
         'user.passwordHash AS passwordHash',
         'user.email AS email',
         'user.vendor AS vendor',
+        'user.social AS social',
         'role.role_name AS role_name',
       ])
       .leftJoin('user.roles', 'user_role')
