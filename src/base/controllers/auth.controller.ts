@@ -2,7 +2,7 @@ import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
-import { AuthService, JwtSign, KakaoLoginGuard, LocalLoginGuard, Payload } from '../../auth';
+import { AuthService, KakaoLoginGuard, LocalLoginGuard, Payload } from '../../auth';
 import { LocalLoginDto } from '../dto';
 import { ReqUser } from '../../common';
 
@@ -14,8 +14,11 @@ export class AuthController {
   @ApiBody({ type: LocalLoginDto })
   @Post('login')
   @UseGuards(LocalLoginGuard)
-  public async localLogin(@ReqUser() user: Payload): Promise<JwtSign> {
-    return this.auth.jwtSign(user);
+  public async localLogin(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
+    const { access_token, refresh_token } = await this.auth.jwtSign(user);
+    res.cookie('access_token', access_token, { httpOnly: true });
+    res.cookie('refresh_token', refresh_token, { httpOnly: true });
+    res.send({ access_token, refresh_token });
   }
 
   @Get('logout')
@@ -34,9 +37,10 @@ export class AuthController {
 
   @Get('login/kakao')
   @UseGuards(KakaoLoginGuard)
-  public async kakaoLogin(@ReqUser() user: Payload, @Res() res: Response) {
-    console.log('user : ', user);
-    this.auth.jwtSign(user);
+  public async kakaoLogin(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
+    const { access_token, refresh_token } = await this.auth.jwtSign(user);
+    res.cookie('access_token', access_token, { httpOnly: true });
+    res.cookie('refresh_token', refresh_token, { httpOnly: true });
     res.redirect('/');
   }
 

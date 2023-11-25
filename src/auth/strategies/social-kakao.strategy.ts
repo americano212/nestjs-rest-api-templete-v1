@@ -30,10 +30,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     };
     console.log('accessToken : ' + accessToken);
     console.log('refreshToken : ' + refreshToken);
-    console.log(profile);
-    console.log('social_user2', social_user);
     const user = await this.auth.validateSocialUser(social_user);
-    console.log('user', user);
     return done(null, user);
   }
 }

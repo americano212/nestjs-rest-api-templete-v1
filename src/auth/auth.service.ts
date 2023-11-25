@@ -34,7 +34,6 @@ export class AuthService {
     const access_token = await this.generateAccessToken(payload);
     const refresh_token = await this.generateRefreshToken(payload.sub);
     await this.usersRepository.setRefreshToken(data.user_id, refresh_token);
-    // TODO 쿠키에 추가하는 함수 추가
     return {
       access_token,
       refresh_token,
