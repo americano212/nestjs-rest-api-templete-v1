@@ -2,7 +2,6 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CoreEntity } from './core.entity';
 import { IsInt, IsString } from 'class-validator';
 import { UserRole } from './user-role.entity';
-import { SocialLoginInfo } from './social-login-info.entity';
 
 @Entity('user')
 export class User extends CoreEntity {
@@ -24,11 +23,16 @@ export class User extends CoreEntity {
 
   @Column({ type: 'varchar', nullable: true })
   @IsString()
-  refreshToken?: string;
+  public refreshToken?: string;
+
+  @Column({ type: 'varchar', default: '' })
+  @IsString()
+  public vendor?: string;
+
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  @IsString()
+  public social_id?: string;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   roles!: string[];
-
-  @OneToMany(() => SocialLoginInfo, (userRole) => userRole.user)
-  social_login_infos?: SocialLoginInfo[];
 }
