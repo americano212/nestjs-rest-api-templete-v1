@@ -28,6 +28,7 @@ export class UsersRepository {
         'user.username AS username',
         'user.passwordHash AS passwordHash',
         'user.email AS email',
+        'user.vendor AS vendor',
         'role.role_name AS role_name',
       ])
       .leftJoin('user.roles', 'user_role')
@@ -40,6 +41,7 @@ export class UsersRepository {
       username: result[0].username,
       passwordHash: result[0].passwordHash,
       email: result[0].email,
+      vendor: result[0].vendor,
       roles: [],
     };
     const roles = [];

@@ -25,6 +25,29 @@ export class AuthService {
     return userWithoutPasswordHash;
   }
 
+  public async validateSocialUser(socialUser: IOAuthUser): Promise<User> {
+    // TODO 있었던 user인지 확인
+    const user = await this.usersRepository.getByEmail(socialUser.email);
+    if (!user) return this.socialRegistor(socialUser);
+    // 이메일은 존재하는데 vender가 다름 or
+    if (socialUser.vendor !== user?.vendor) {
+      // 이미 가입되어 있다 하고 ERR throw
+    }
+    //TODO ID가 다름?
+    console.log('socail_user', socialUser);
+    return user;
+  }
+
+  private async socialRegistor(socialUser: IOAuthUser): Promise<User> {
+    const user = await this.usersRepository.create({
+      username: socialUser.username,
+      email: socialUser.email,
+      roles: [],
+    });
+    // TODO Exception
+    return user;
+  }
+
   public async jwtSign(data: Payload): Promise<JwtSign> {
     const payload: JwtPayload = {
       sub: data.user_id,
@@ -55,11 +78,5 @@ export class AuthService {
         secret: this.config.get('jwt.refreshSecret'),
       },
     );
-  }
-
-  public async validateSocialUser(socail_user: IOAuthUser): Promise<Payload> {
-    // TODO
-    console.log('socail_user', socail_user);
-    return { user_id: 1, username: 'test', roles: [] };
   }
 }
