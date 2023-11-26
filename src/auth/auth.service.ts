@@ -39,9 +39,11 @@ export class AuthService {
   }
 
   private async socialRegistor(socialUser: SocialUser): Promise<User> {
-    const user = await this.usersRepository.create({ ...socialUser, roles: [] });
-    // TODO Exception
-    return user;
+    try {
+      return await this.usersRepository.create({ ...socialUser, roles: [] });
+    } catch {
+      throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async jwtSign(data: Payload): Promise<JwtSign> {
