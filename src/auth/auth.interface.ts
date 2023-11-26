@@ -15,7 +15,7 @@ export interface JwtPayload {
   roles?: string[];
 }
 
-// TODO Payload로 통합하는 방향 생각해보기
+// TODO 여기 있는게 맞나 생각해보기 user interface쪽으로?
 export interface SocialUser {
   username: string;
   email: string;
