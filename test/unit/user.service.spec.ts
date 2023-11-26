@@ -95,7 +95,7 @@ describe('UserService', () => {
 
       const result = await userService.create(localRegisterDto);
 
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
     it('should create a user and empty role', async () => {
       const localRegisterDto: LocalRegisterDto = {
@@ -119,7 +119,7 @@ describe('UserService', () => {
 
       const result = await userService.create(localRegisterDto);
 
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
     it('should throw an exception when attempting to create a user with an existing email', async () => {
       const existingEmail = email;
@@ -196,7 +196,7 @@ describe('UserService', () => {
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
 
       const result = await userService.addRole(addRoleDto);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
     it('should throw an exception when user_id does NOT Exist', async () => {
       const user_id_not_exist = -1;

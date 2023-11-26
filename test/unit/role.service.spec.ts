@@ -67,7 +67,7 @@ describe('RoleService', () => {
       jest.spyOn(userRolesRepository, 'create').mockResolvedValue(new UserRole());
 
       const result = await roleService.addRoleToUser(role_name, user);
-      expect(result).toBeTruthy();
+      expect(result).toBe(true);
     });
     it('should throw an exception for an invalid role', async () => {
       jest.spyOn(rolesRepository, 'findRoleByName').mockResolvedValue(null);

@@ -130,7 +130,7 @@ describe('AuthService', () => {
       const result = await authService.jwtSign(payload);
 
       expect(setRefreshTokenSpy).toHaveBeenCalledWith(payload.user_id, expect.any(String));
-      expect(result.access_token).toBeTruthy(); // TODO 왜 true
+      expect(result.access_token).toBeTruthy();
       expect(result.refresh_token).toBeTruthy();
     });
   });
