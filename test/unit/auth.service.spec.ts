@@ -4,9 +4,10 @@ import { JwtService } from '@nestjs/jwt';
 
 import { User } from '#entities/user.entity';
 
-import { AuthService, Payload } from '../../src/auth';
+import { AuthService, Payload, SocialUser } from '../../src/auth';
 import { ConfigService, UtilService } from '../../src/common';
 import { UsersRepository } from '../../src/shared/user';
+import { HttpException } from '@nestjs/common';
 
 const mockConfigService = {
   get: jest.fn(),
@@ -19,7 +20,12 @@ const mockUtilService = {
 const mockUsersRepository = {
   getByEmail: jest.fn(),
   setRefreshToken: jest.fn(),
+  create: jest.fn(),
 };
+
+jest.mock('typeorm-transactional', () => ({
+  Transactional: () => () => ({}),
+}));
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -108,9 +114,9 @@ describe('AuthService', () => {
   describe('jwtSign', () => {
     it('should be successfully generate jwt tokens', async () => {
       jest.spyOn(configService, 'get').mockReturnValueOnce('1d');
-      jest.spyOn(configService, 'get').mockReturnValueOnce('YOUR_ACCESS_SECRET');
+      jest.spyOn(configService, 'get').mockReturnValueOnce('MOCK_ACCESS_SECRET');
       jest.spyOn(configService, 'get').mockReturnValueOnce('30d');
-      jest.spyOn(configService, 'get').mockReturnValueOnce('YOUR_REFRESH_SECRET');
+      jest.spyOn(configService, 'get').mockReturnValueOnce('MOCK_REFRESH_SECRET');
 
       const setRefreshTokenSpy = jest
         .spyOn(usersRepository, 'setRefreshToken')
@@ -124,8 +130,64 @@ describe('AuthService', () => {
       const result = await authService.jwtSign(payload);
 
       expect(setRefreshTokenSpy).toHaveBeenCalledWith(payload.user_id, expect.any(String));
-      expect(result.access_token).toBeTruthy();
+      expect(result.access_token).toBeTruthy(); // TODO 왜 true
       expect(result.refresh_token).toBeTruthy();
+    });
+  });
+  describe('validateSocialUser', () => {
+    const socialUser: SocialUser = {
+      username: faker.person.fullName(),
+      email: faker.internet.email(),
+      social_id: '123456789',
+      vendor: 'test-vendor',
+    };
+    it('should create new user with social user data', async () => {
+      const newUser: User = {
+        ...socialUser,
+        user_id: 1,
+        roles: [],
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+      jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(null);
+      jest.spyOn(usersRepository, 'create').mockResolvedValue(newUser);
+
+      const result = await authService.validateSocialUser(socialUser);
+      expect(result).toStrictEqual(newUser);
+    });
+
+    it('should be login when already social user exist', async () => {
+      const user: User = {
+        ...socialUser,
+        user_id: 1,
+        roles: [],
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+      jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(user);
+
+      const result = await authService.validateSocialUser(socialUser);
+      expect(result).toStrictEqual(user);
+    });
+
+    it('should be throw error when already email exist but vendor or social_id unmatch', async () => {
+      const user: User = {
+        ...socialUser,
+        user_id: 1,
+        roles: [],
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+      user.vendor = 'error-vendor';
+      user.social_id = '987654321';
+      jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(user);
+
+      await expect(async () => {
+        await authService.validateSocialUser(socialUser);
+      }).rejects.toThrow(HttpException);
+      await expect(async () => {
+        await authService.validateSocialUser(socialUser);
+      }).rejects.toThrow(`User's Email already exists in ${user.vendor}`);
     });
   });
 });
