@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Transactional } from 'typeorm-transactional';
 
 import { ConfigService, UtilService } from '../common';
 import { User, UsersRepository } from '../shared/user';
-import { IOAuthUser, JwtPayload, JwtSign, Payload } from './auth.interface';
+import { SocialUser, JwtPayload, JwtSign, Payload } from './auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -25,21 +26,19 @@ export class AuthService {
     return userWithoutPasswordHash;
   }
 
-  public async validateSocialUser(socialUser: IOAuthUser): Promise<User> {
-    // TODO 있었던 user인지 확인
+  @Transactional()
+  public async validateSocialUser(socialUser: SocialUser): Promise<User> {
     const user = await this.usersRepository.getByEmail(socialUser.email);
     if (!user) return this.socialRegistor(socialUser);
-    // 이메일은 존재하는데 vender가 다름 or
-    if (socialUser.vendor !== user?.vendor) {
-      // 이미 가입되어 있다 하고 ERR throw
-    }
-    if (socialUser.social_id !== user?.social_id)
-      //TODO ID가 다름?
-      console.log('socail_user', socialUser);
+    if (socialUser.vendor !== user?.vendor || socialUser.social_id !== user?.social_id)
+      throw new HttpException(
+        `User's Email already exists in ${user.vendor}`,
+        HttpStatus.BAD_REQUEST,
+      );
     return user;
   }
 
-  private async socialRegistor(socialUser: IOAuthUser): Promise<User> {
+  private async socialRegistor(socialUser: SocialUser): Promise<User> {
     const user = await this.usersRepository.create({ ...socialUser, roles: [] });
     // TODO Exception
     return user;

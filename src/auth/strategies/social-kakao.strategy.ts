@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-kakao';
 import { AuthService } from '../auth.service';
-import { IOAuthUser, Payload } from '../auth.interface';
+import { SocialUser, Payload } from '../auth.interface';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -22,15 +22,16 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     profile: any,
     done: CallableFunction,
   ): Promise<Payload> {
-    const social_user: IOAuthUser = {
+    const socialUser: SocialUser = {
       username: profile.displayName,
       email: profile._json.kakao_account.email,
-      social_id: profile.id,
+      social_id: String(profile.id),
       vendor: 'kakao',
     };
+    // KAKAO Access token 이 필요하면 나중에 쿠키에 넣는 방향으로
     console.log('accessToken : ' + accessToken);
     console.log('refreshToken : ' + refreshToken);
-    const user = await this.auth.validateSocialUser(social_user);
+    const user = await this.auth.validateSocialUser(socialUser);
     return done(null, user);
   }
 }
