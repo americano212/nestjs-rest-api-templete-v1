@@ -16,7 +16,7 @@ export interface JwtPayload {
 }
 
 // TODO Payload로 통합하는 방향 생각해보기
-export interface IOAuthUser {
+export interface SocialUser {
   username: string;
   email: string;
   social_id: string;
