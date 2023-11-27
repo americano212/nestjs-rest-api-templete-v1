@@ -3,6 +3,7 @@ import compression from 'compression';
 import session from 'express-session';
 import helmet from 'helmet';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 
 export function middleware(app: INestApplication): INestApplication {
   const isProduction = process.env['NODE_ENV'] === 'production';
@@ -25,6 +26,6 @@ export function middleware(app: INestApplication): INestApplication {
       crossOriginEmbedderPolicy: isProduction ? undefined : false,
     }),
   );
-
+  app.use(cookieParser());
   return app;
 }
