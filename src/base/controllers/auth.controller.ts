@@ -2,9 +2,10 @@ import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
-import { AuthService, KakaoLoginGuard, LocalLoginGuard, Payload } from '../../auth';
+import { AuthService, LocalLoginGuard, Payload } from '../../auth';
 import { LocalLoginDto } from '../dto';
 import { ReqUser } from '../../common';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Auth')
 @Controller()
@@ -36,7 +37,7 @@ export class AuthController {
   public async githubLogin() {}
 
   @Get('login/kakao')
-  @UseGuards(KakaoLoginGuard)
+  @UseGuards(AuthGuard('kakao'))
   public async kakaoLogin(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
     const { access_token, refresh_token } = await this.auth.jwtSign(user);
     res.cookie('access_token', access_token, { httpOnly: true });
@@ -44,6 +45,7 @@ export class AuthController {
     res.redirect('/');
   }
 
-  @Post('login/naver')
+  @Get('login/naver')
+  @UseGuards(AuthGuard('naver'))
   public async naverLogin() {}
 }
