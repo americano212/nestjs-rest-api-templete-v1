@@ -26,6 +26,7 @@ export class AuthService {
     return userWithoutPasswordHash;
   }
 
+  // TODO refactoring : 함수의 역할에 충실하도록 -> 필요한 부분 strategy로 변경
   @Transactional()
   public async validateSocialUser(socialUser: SocialUser): Promise<User> {
     const user = await this.usersRepository.getByEmail(socialUser.email);

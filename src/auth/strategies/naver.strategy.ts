@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-naver-v2';
+import { Strategy, Profile } from 'passport-naver-v2';
 
 import { Payload } from '../auth.interface';
 
@@ -8,7 +8,6 @@ import { Payload } from '../auth.interface';
 export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
   constructor() {
     super({
-      // TODO env 주입방법을 수정할 수 없을지
       clientID: process.env['NAVER_CLIENT_ID'],
       clientSecret: process.env['NAVER_CLIENT_SECRET'],
       callbackURL: process.env['NAVER_CALLBACK_URL'],
@@ -18,7 +17,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
   public async validate(
     accessToken: string,
     refreshToken: string,
-    profile: any,
+    profile: Profile,
     done: CallableFunction,
   ): Promise<Payload> {
     // const socialUser: SocialUser = {
@@ -31,6 +30,11 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     console.log('accessToken : ' + accessToken);
     console.log('refreshToken : ' + refreshToken);
     //const user = await this.auth.validateSocialUser(socialUser);
+
+    // TODO 정책추가
+    // 계정 존재 유무 체크
+    // if 회원가입
+    // else 로그인
     return done(null, profile);
   }
 }
