@@ -1,10 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Transactional } from 'typeorm-transactional';
 
 import { ConfigService, UtilService } from '../common';
-import { User, UsersRepository } from '../shared/user';
-import { SocialUser, JwtPayload, JwtSign, Payload } from './auth.interface';
+import { SNSUser, User, UsersRepository } from '../shared/user';
+import { JwtPayload, JwtSign, Payload } from './auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -26,25 +25,15 @@ export class AuthService {
     return userWithoutPasswordHash;
   }
 
-  // TODO refactoring : 함수의 역할에 충실하도록 -> 필요한 부분 strategy로 변경
-  @Transactional()
-  public async validateSocialUser(socialUser: SocialUser): Promise<User> {
+  public async validateSNSUser(socialUser: SNSUser): Promise<User> {
     const user = await this.usersRepository.getByEmail(socialUser.email);
-    if (!user) return this.socialRegistor(socialUser);
+    if (!user) throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
     if (socialUser.vendor !== user?.vendor || socialUser.social_id !== user?.social_id)
       throw new HttpException(
         `User's Email already exists in ${user.vendor}`,
         HttpStatus.BAD_REQUEST,
       );
     return user;
-  }
-
-  private async socialRegistor(socialUser: SocialUser): Promise<User> {
-    try {
-      return await this.usersRepository.create({ ...socialUser, roles: [] });
-    } catch {
-      throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
-    }
   }
 
   public async jwtSign(data: Payload): Promise<JwtSign> {

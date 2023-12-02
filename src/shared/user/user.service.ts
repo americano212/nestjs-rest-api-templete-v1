@@ -6,6 +6,7 @@ import { UsersRepository } from './user.repository';
 import { RoleService } from '../role/providers';
 import { UtilService } from '../../common';
 import { LocalRegisterDto, AddRoleDto } from './dto';
+import { SNSUser, User } from './user.interface';
 
 export enum MysqlErrorCode {
   ALREADY_USER = 'ER_DUP_ENTRY',
@@ -48,6 +49,14 @@ export class UserService {
     }
   }
 
+  public async createSNSUser(socialUser: SNSUser): Promise<User> {
+    try {
+      return await this.usersRepository.create({ ...socialUser, roles: [] });
+    } catch {
+      throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
+    }
+  }
+
   public async addRole(data: AddRoleDto): Promise<boolean> {
     try {
       const user_id = data.user_id;
@@ -64,5 +73,12 @@ export class UserService {
       }
       throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  // TODO test
+  public async isExistEmail(email: string): Promise<boolean> {
+    const user = await this.usersRepository.getByEmail(email);
+    if (!user) return false;
+    return true;
   }
 }

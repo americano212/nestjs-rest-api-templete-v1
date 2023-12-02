@@ -3,3 +3,10 @@ export interface User {
   username?: string | undefined;
   roles?: string[];
 }
+
+export interface SNSUser {
+  username: string;
+  email: string;
+  social_id: string;
+  vendor: string;
+}
