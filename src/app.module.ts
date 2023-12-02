@@ -9,6 +9,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { DataSource } from 'typeorm';
+import { BaseModule } from './base';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { DataSource } from 'typeorm';
       },
     }),
     AuthModule,
+    BaseModule,
   ],
   controllers: [AppController],
   providers: [
