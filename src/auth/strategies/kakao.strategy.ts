@@ -12,7 +12,6 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     private readonly user: UserService,
   ) {
     super({
-      // TODO env 주입방법을 수정할 수 없을지
       clientID: process.env['KAKAO_CLIENT_ID'],
       clientSecret: process.env['KAKAO_CLIENT_SECRET'],
       callbackURL: process.env['KAKAO_CALLBACK_URL'],
@@ -32,10 +31,8 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       social_id: String(profile.id),
       vendor: 'kakao',
     };
-    // KAKAO Access token 이 필요하면 나중에 쿠키에 넣는 방향으로
     console.log('accessToken : ' + accessToken);
     console.log('refreshToken : ' + refreshToken);
-    // 계정 있는지 확인
     const isExistEmail = await this.user.isExistEmail(kakaoUser.email);
     console.log('isExistEmail', isExistEmail);
     if (!isExistEmail) {
