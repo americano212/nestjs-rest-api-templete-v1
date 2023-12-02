@@ -49,10 +49,14 @@ export class UserService {
     }
   }
 
-  public async createSNSUser(socialUser: SNSUser): Promise<User> {
+  public async createSNSUser(snsUser: SNSUser): Promise<User> {
     try {
-      return await this.usersRepository.create({ ...socialUser, roles: [] });
-    } catch {
+      return await this.usersRepository.create({ ...snsUser, roles: [] });
+    } catch (error: unknown) {
+      if (error instanceof QueryFailedError) {
+        if (error?.driverError.code === MysqlErrorCode.ALREADY_USER)
+          throw new HttpException(`User's Email already exists`, HttpStatus.BAD_REQUEST);
+      }
       throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
     }
   }
@@ -78,7 +82,6 @@ export class UserService {
   // TODO test
   public async isExistEmail(email: string): Promise<boolean> {
     const user = await this.usersRepository.getByEmail(email);
-    if (!user) return false;
-    return true;
+    return user ? true : false;
   }
 }
