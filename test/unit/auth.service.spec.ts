@@ -4,9 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 
 import { User } from '#entities/user.entity';
 
-import { AuthService, Payload, SocialUser } from '../../src/auth';
+import { AuthService, Payload } from '../../src/auth';
 import { ConfigService, UtilService } from '../../src/common';
-import { UsersRepository } from '../../src/shared/user';
+import { SNSUser, UsersRepository } from '../../src/shared/user';
 import { HttpException } from '@nestjs/common';
 
 const mockConfigService = {
@@ -134,27 +134,13 @@ describe('AuthService', () => {
       expect(result.refresh_token).toBeTruthy();
     });
   });
-  describe('validateSocialUser', () => {
-    const socialUser: SocialUser = {
+  describe('validateSNSUser', () => {
+    const socialUser: SNSUser = {
       username: faker.person.fullName(),
       email: faker.internet.email(),
       social_id: '123456789',
       vendor: 'test-vendor',
     };
-    it('should create new user with social user data', async () => {
-      const newUser: User = {
-        ...socialUser,
-        user_id: 1,
-        roles: [],
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
-      jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(null);
-      jest.spyOn(usersRepository, 'create').mockResolvedValue(newUser);
-
-      const result = await authService.validateSocialUser(socialUser);
-      expect(result).toStrictEqual(newUser);
-    });
 
     it('should be login when already social user exist', async () => {
       const user: User = {
@@ -166,7 +152,7 @@ describe('AuthService', () => {
       };
       jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(user);
 
-      const result = await authService.validateSocialUser(socialUser);
+      const result = await authService.validateSNSUser(socialUser);
       expect(result).toStrictEqual(user);
     });
 
@@ -183,10 +169,10 @@ describe('AuthService', () => {
       jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(user);
 
       await expect(async () => {
-        await authService.validateSocialUser(socialUser);
+        await authService.validateSNSUser(socialUser);
       }).rejects.toThrow(HttpException);
       await expect(async () => {
-        await authService.validateSocialUser(socialUser);
+        await authService.validateSNSUser(socialUser);
       }).rejects.toThrow(`User's Email already exists in ${user.vendor}`);
     });
   });

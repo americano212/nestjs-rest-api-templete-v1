@@ -3,7 +3,7 @@ import { Strategy } from 'passport-kakao';
 import { AuthService } from '../auth.service';
 import { Payload } from '../auth.interface';
 import { Injectable } from '@nestjs/common';
-import { SNSUser, UserService } from 'src/shared/user';
+import { SNSUser, UserService } from '../../../src/shared/user';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
