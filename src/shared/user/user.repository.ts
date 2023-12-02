@@ -75,7 +75,7 @@ export class UsersRepository {
   }
 
   public async setRefreshToken(user_id: number, token: string): Promise<boolean> {
-    console.log(user_id, token);
+    console.log('user_id/token : ', user_id, token);
     const updateResult = await this.usersRepository.update(user_id, {
       refreshToken: token,
     });

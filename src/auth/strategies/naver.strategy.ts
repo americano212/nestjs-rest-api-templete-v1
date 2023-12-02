@@ -31,10 +31,8 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
       social_id: profile.id,
       vendor: 'naver',
     };
-    console.log('profile : ', profile);
     console.log('accessToken : ' + accessToken);
     console.log('refreshToken : ' + refreshToken);
-    console.log('_json : ', profile._json);
 
     // 계정 존재 유무 체크
     const isExistEmail = await this.user.isExistEmail(naverUser.email);

@@ -13,11 +13,15 @@ export class RolesGuard implements CanActivate {
       context.getHandler(), // Method Roles
       context.getClass(), // Controller Roles
     ]);
+    console.log('requiredRoles', requiredRoles);
     if (!requiredRoles) return true;
 
-    const { user } = context.switchToHttp().getRequest();
-    if (!user) return false;
+    const { cookies } = context.switchToHttp().getRequest();
+    console.log('cookies', cookies);
+    console.log('AC', cookies.access_token);
+    if (!cookies.access_token) return false;
 
-    return requiredRoles.some((role) => user.roles?.includes(role));
+    // TODO 쿠키 검증 정책 추가
+    return requiredRoles.some((role) => cookies.roles?.includes(role));
   }
 }
