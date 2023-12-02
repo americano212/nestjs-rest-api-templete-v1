@@ -43,7 +43,11 @@ export class AuthController {
 
   @Get('login/kakao')
   @UseGuards(KakaoLoginGuard)
-  public async kakaoLogin(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
+  public async kakaoLogin() {}
+
+  @Get('login/kakao/callback')
+  @UseGuards(KakaoLoginGuard)
+  public async kakaoLoginCallBack(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
     const { access_token, refresh_token } = await this.auth.jwtSign(user);
     res.cookie('access_token', access_token, { httpOnly: true });
     res.cookie('refresh_token', refresh_token, { httpOnly: true });
