@@ -21,7 +21,7 @@ export class UserService {
   ) {}
 
   @Transactional()
-  public async create(userData: LocalRegisterDto): Promise<boolean> {
+  public async createUser(userData: LocalRegisterDto): Promise<boolean> {
     const { password, ...userWithoutPassword } = userData;
     const passwordHash = await this.util.passwordEncoding(password);
     try {
