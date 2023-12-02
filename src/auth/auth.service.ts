@@ -67,4 +67,14 @@ export class AuthService {
       },
     );
   }
+
+  public async jwtVerify(token: string): Promise<Payload> {
+    try {
+      return await this.jwt.verifyAsync(token, {
+        secret: this.config.get('jwt.accessSecret'),
+      });
+    } catch {
+      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+    }
+  }
 }
