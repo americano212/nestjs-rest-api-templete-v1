@@ -3,7 +3,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-kakao';
 
 import { SNSUser, UserService } from '../../../src/shared/user';
-import { AuthService, Payload } from '../';
+import { AuthService } from '../auth.service';
+import { Payload } from '../auth.interface';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
@@ -34,11 +35,10 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     console.log('accessToken : ' + accessToken);
     console.log('refreshToken : ' + refreshToken);
     const isExistEmail = await this.user.isExistEmail(kakaoUser.email);
-    console.log('isExistEmail', isExistEmail);
-    if (!isExistEmail) {
-      return done(null, await this.user.createSNSUser(kakaoUser));
-    } else {
-      return done(null, await this.auth.validateSNSUser(kakaoUser));
-    }
+
+    const user = isExistEmail
+      ? await this.auth.validateSNSUser(kakaoUser)
+      : await this.user.createSNSUser(kakaoUser);
+    return done(null, user);
   }
 }

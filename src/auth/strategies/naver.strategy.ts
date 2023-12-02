@@ -2,11 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, Profile } from 'passport-naver-v2';
 
+import { SNSUser, UserService } from '../../../src/shared/user';
+import { AuthService } from '../auth.service';
 import { Payload } from '../auth.interface';
 
 @Injectable()
 export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
-  constructor() {
+  constructor(
+    private readonly auth: AuthService,
+    private readonly user: UserService,
+  ) {
     super({
       clientID: process.env['NAVER_CLIENT_ID'],
       clientSecret: process.env['NAVER_CLIENT_SECRET'],
@@ -20,21 +25,23 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     profile: Profile,
     done: CallableFunction,
   ): Promise<Payload> {
-    // const socialUser: SocialUser = {
-    //   username: profile.displayName,
-    //   email: profile._json.kakao_account.email,
-    //   social_id: String(profile.id),
-    //   vendor: 'naver',
-    // };c
+    const naverUser: SNSUser = {
+      username: profile.name || '',
+      email: profile.email || '',
+      social_id: profile.id,
+      vendor: 'naver',
+    };
     console.log('profile : ', profile);
     console.log('accessToken : ' + accessToken);
     console.log('refreshToken : ' + refreshToken);
-    //const user = await this.auth.validateSocialUser(socialUser);
+    console.log('_json : ', profile._json);
 
-    // TODO 정책추가
     // 계정 존재 유무 체크
-    // if 회원가입
-    // else 로그인
-    return done(null, profile);
+    const isExistEmail = await this.user.isExistEmail(naverUser.email);
+
+    const user = isExistEmail
+      ? await this.auth.validateSNSUser(naverUser)
+      : await this.user.createSNSUser(naverUser);
+    return done(null, user);
   }
 }
