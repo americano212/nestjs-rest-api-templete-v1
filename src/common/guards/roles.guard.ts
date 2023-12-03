@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 
 import { ROLES_KEY } from '../decorators';
 import { Role } from '../enums';
-import { AuthService } from 'src/auth';
+import { AuthService, Payload } from 'src/auth';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -25,8 +25,12 @@ export class RolesGuard implements CanActivate {
     console.log('AC', cookies.access_token);
     if (!cookies.access_token) return false;
 
-    // TODO 쿠키 검증 정책 추가
-    console.log(await this.auth.jwtVerify(cookies.access_token));
-    return requiredRoles.some((role) => cookies.roles?.includes(role));
+    const payload: Payload = await this.auth.jwtVerify(cookies.access_token);
+    console.log('payload', payload);
+    console.log(
+      'isRole? : ',
+      requiredRoles.some((role) => payload.roles?.includes(role)),
+    );
+    return requiredRoles.some((role) => payload.roles?.includes(role));
   }
 }
