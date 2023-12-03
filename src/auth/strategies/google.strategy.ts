@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-google-oauth20';
-import { SNSUser, UserService } from 'src/shared/user';
+
+import { SNSUser, UserService } from '../../../src/shared/user';
 import { AuthService } from '../auth.service';
 
 @Injectable()

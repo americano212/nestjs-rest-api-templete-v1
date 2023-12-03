@@ -25,7 +25,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     profile: Profile,
     done: CallableFunction,
   ): Promise<void> {
-    if (!profile.emails) throw new HttpException('oauth login need email', HttpStatus.BAD_REQUEST);
+    if (!profile.emails) throw new HttpException('OAuth login need email', HttpStatus.BAD_REQUEST);
     const githubUser: SNSUser = {
       username: profile.displayName,
       email: profile.emails[0].value,
