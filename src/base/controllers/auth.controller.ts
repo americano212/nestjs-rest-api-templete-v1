@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 
 import {
   AuthService,
+  GoogleLoginGuard,
   KakaoLoginGuard,
   LocalLoginGuard,
   NaverLoginGuard,
@@ -35,10 +36,21 @@ export class AuthController {
   }
 
   // OAuth Login Controller
-  @Post('login/google')
+  @Get('login/google')
+  @UseGuards(GoogleLoginGuard)
   public async googleLogin() {}
 
-  @Post('login/github')
+  @Get('login/google/callback')
+  @UseGuards(GoogleLoginGuard)
+  public async googleLoginCallback(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
+    //const { access_token, refresh_token } = await this.auth.jwtSign(user);
+    //res.cookie('access_token', access_token, { httpOnly: true });
+    //res.cookie('refresh_token', refresh_token, { httpOnly: true });
+    console.log('google.co', user);
+    res.redirect('/');
+  }
+
+  @Get('login/github')
   public async githubLogin() {}
 
   @Get('login/kakao')

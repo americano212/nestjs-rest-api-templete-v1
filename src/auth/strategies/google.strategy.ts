@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-google-oauth20';
+import { SNSUser, UserService } from 'src/shared/user';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor() {
+  constructor(
+    private readonly auth: AuthService,
+    private readonly user: UserService,
+  ) {
     super({
       clientID: process.env['GOOGLE_CLIENT_ID'],
       clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
@@ -27,14 +32,19 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: Profile,
     done: CallableFunction,
   ): Promise<void> {
-    console.log('profile', profile);
-    console.log('accessToken', accessToken);
-    console.log('accessToken', refreshToken);
-    const temp_user = {
-      user_id: 1,
-      username: 'temp',
-      roles: [],
+    const googleUser: SNSUser = {
+      username: profile.displayName,
+      email: profile._json.email || '',
+      social_id: profile.id,
+      vendor: 'google',
     };
-    return done(null, temp_user);
+    console.log('accessToken : ' + accessToken);
+    console.log('refreshToken : ' + refreshToken);
+    const isExistEmail = await this.user.isExistEmail(googleUser.email);
+
+    const user = isExistEmail
+      ? await this.auth.validateSNSUser(googleUser)
+      : await this.user.createSNSUser(googleUser);
+    return done(null, user);
   }
 }
