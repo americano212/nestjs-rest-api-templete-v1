@@ -12,6 +12,7 @@ import {
 } from '../../auth';
 import { LocalLoginDto } from '../dto';
 import { ReqUser } from '../../common';
+import { GithubLoginGuard } from 'src/auth/guards/github-login.guard';
 
 @ApiTags('Auth')
 @Controller()
@@ -43,15 +44,26 @@ export class AuthController {
   @Get('login/google/callback')
   @UseGuards(GoogleLoginGuard)
   public async googleLoginCallback(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
-    //const { access_token, refresh_token } = await this.auth.jwtSign(user);
-    //res.cookie('access_token', access_token, { httpOnly: true });
-    //res.cookie('refresh_token', refresh_token, { httpOnly: true });
+    const { access_token, refresh_token } = await this.auth.jwtSign(user);
+    res.cookie('access_token', access_token, { httpOnly: true });
+    res.cookie('refresh_token', refresh_token, { httpOnly: true });
     console.log('google.co', user);
     res.redirect('/');
   }
 
   @Get('login/github')
+  @UseGuards(GithubLoginGuard)
   public async githubLogin() {}
+
+  @Get('login/github/callback')
+  @UseGuards(GithubLoginGuard)
+  public async githubLoginCallback(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
+    const { access_token, refresh_token } = await this.auth.jwtSign(user);
+    res.cookie('access_token', access_token, { httpOnly: true });
+    res.cookie('refresh_token', refresh_token, { httpOnly: true });
+    console.log('auth.co', user);
+    res.redirect('/');
+  }
 
   @Get('login/kakao')
   @UseGuards(KakaoLoginGuard)
