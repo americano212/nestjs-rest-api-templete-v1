@@ -68,6 +68,7 @@ export class AuthService {
     );
   }
 
+  // TODO create TEST
   public async jwtVerify(token: string): Promise<Payload> {
     try {
       return await this.jwt.verifyAsync(token, {

@@ -64,8 +64,7 @@ export class UserService {
 
   public async addRole(data: AddRoleDto): Promise<boolean> {
     try {
-      const user_id = data.user_id;
-      const role_name = data.role_name;
+      const { user_id, role_name } = data;
       const user = await this.usersRepository.getByUserId(user_id);
       if (!user) throw new NotFoundException(`User ID ${user_id} does NOT Exist`);
       const isSuccess = await this.role.addRoleToUser(role_name, user);
@@ -75,6 +74,10 @@ export class UserService {
       if (error instanceof NotFoundException) {
         const message = error?.message;
         throw new HttpException(message, HttpStatus.NOT_FOUND);
+      }
+      if (error instanceof HttpException) {
+        const message = error?.message;
+        throw new HttpException(message, HttpStatus.BAD_REQUEST);
       }
       throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
     }
