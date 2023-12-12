@@ -19,13 +19,13 @@ export function middleware(app: INestApplication): INestApplication {
   );
   app.use(passport.initialize());
   app.use(passport.session());
-
   app.use(
     helmet({
       contentSecurityPolicy: isProduction ? undefined : false,
       crossOriginEmbedderPolicy: isProduction ? undefined : false,
     }),
   );
+  app.enableCors();
   app.use(cookieParser());
   return app;
 }
