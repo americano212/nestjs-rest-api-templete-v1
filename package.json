@@ -43,6 +43,7 @@
     "helmet": "^7.0.0",
     "mysql2": "^3.6.2",
     "nanoid": "^5.0.1",
+    "nest-winston": "^1.9.4",
     "nestjs-pino": "^3.5.0",
     "passport": "^0.6.0",
     "passport-github2": "^0.1.12",
@@ -54,7 +55,8 @@
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.17",
     "typeorm-transactional": "^0.5.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.2.0",
