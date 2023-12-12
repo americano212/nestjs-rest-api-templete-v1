@@ -1,15 +1,18 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+
+import { DataSource } from 'typeorm';
+import { addTransactionalDataSource } from 'typeorm-transactional';
+
+import { AuthModule } from './auth';
+import { CommonModule } from './common';
+import { BaseModule } from './base';
+
 import { AppController } from './app.controller';
 import { configuration } from './config';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CommonModule } from './common';
-import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
-import { addTransactionalDataSource } from 'typeorm-transactional';
-import { DataSource } from 'typeorm';
-import { BaseModule } from './base';
 
 @Module({
   imports: [
@@ -17,7 +20,6 @@ import { BaseModule } from './base';
       isGlobal: true, // Global 모듈로 설정
       load: [configuration],
     }),
-    CommonModule,
     TypeOrmModule.forRootAsync({
       useFactory: (config: ConfigService) => ({
         ...config.get<TypeOrmModuleOptions>('db'),
@@ -30,6 +32,7 @@ import { BaseModule } from './base';
       },
     }),
     AuthModule,
+    CommonModule,
     BaseModule,
   ],
   controllers: [AppController],
