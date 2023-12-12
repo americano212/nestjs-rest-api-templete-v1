@@ -27,7 +27,6 @@ import { RolesGuard } from './common/guards/roles.guard';
       inject: [ConfigService],
       async dataSourceFactory(option) {
         if (!option) throw new Error('Invalid options passed');
-
         return addTransactionalDataSource(new DataSource(option));
       },
     }),
