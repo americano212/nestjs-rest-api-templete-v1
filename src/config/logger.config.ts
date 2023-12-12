@@ -1,41 +1,39 @@
-import type { Request } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import type { Params } from 'nestjs-pino';
-import { multistream } from 'pino';
-import type { ReqId } from 'pino-http';
+import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
+import winstonDaily from 'winston-daily-rotate-file';
+import * as winston from 'winston';
 
-const passUrl = new Set(['/health']);
+const isProdction = process.env['NODE_ENV'] === 'production' ? true : false;
+const logDir = __dirname + '/../../logs';
 
-export const loggerOptions: Params = {
-  pinoHttp: [
-    {
-      // https://getpino.io/#/docs/api?id=timestamp-boolean-function
-      // Change time value in production log.
-      // timestamp: stdTimeFunctions.isoTime,
-      quietReqLogger: true,
-      genReqId: (req): ReqId => (<Request>req).header('X-Request-Id') ?? uuidv4(),
-      ...(process.env['NODE_ENV'] === 'production'
-        ? {}
-        : {
-            level: 'debug',
-            // https://github.com/pinojs/pino-pretty
-            transport: {
-              target: 'pino-pretty',
-              options: { sync: true, singleLine: true },
-            },
-          }),
-      autoLogging: {
-        ignore: (req) => passUrl.has((<Request>req).originalUrl),
-      },
-    },
-    multistream(
-      [
-        // https://getpino.io/#/docs/help?id=log-to-different-streams
-        { level: 'debug', stream: process.stdout },
-        { level: 'error', stream: process.stderr },
-        { level: 'fatal', stream: process.stderr },
-      ],
-      { dedupe: true },
-    ),
-  ],
+const dailyOptions = (level: string) => {
+  return {
+    level,
+    datePattern: 'YYYY-MM-DD',
+    dirname: logDir + `/${level}`,
+    filename: `%DATE%.${level}.log`,
+    zippedArchive: true,
+    maxSize: '20m',
+    maxFiles: '14d',
+  };
 };
+
+export const winstonLogger = WinstonModule.createLogger({
+  transports: [
+    new winston.transports.Console({
+      level: isProdction ? 'info' : 'silly',
+      format: isProdction
+        ? winston.format.simple()
+        : winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.ms(),
+            nestWinstonModuleUtilities.format.nestLike('MyApp', {
+              colors: true,
+              prettyPrint: true,
+            }),
+          ),
+    }),
+    new winstonDaily(dailyOptions('info')),
+    new winstonDaily(dailyOptions('warn')),
+    new winstonDaily(dailyOptions('error')),
+  ],
+});
