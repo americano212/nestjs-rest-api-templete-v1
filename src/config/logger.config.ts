@@ -2,7 +2,7 @@ import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-win
 import winstonDaily from 'winston-daily-rotate-file';
 import * as winston from 'winston';
 
-const isProdction = process.env['NODE_ENV'] === 'production' ? true : false;
+const isProduction = process.env['NODE_ENV'] === 'production';
 const logDir = __dirname + '/../../logs';
 
 const dailyOptions = (level: string) => {
@@ -20,8 +20,8 @@ const dailyOptions = (level: string) => {
 export const winstonLogger = WinstonModule.createLogger({
   transports: [
     new winston.transports.Console({
-      level: isProdction ? 'info' : 'silly',
-      format: isProdction
+      level: isProduction ? 'info' : 'silly',
+      format: isProduction
         ? winston.format.simple()
         : winston.format.combine(
             winston.format.timestamp(),
