@@ -2,11 +2,13 @@ import { Global, Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/
 
 import { LoggerContextMiddleware } from './middleware';
 import * as providers from './providers';
+import { JwtModule } from '@nestjs/jwt';
 
 const services = [Logger, ...Object.values(providers)];
 
 @Global()
 @Module({
+  imports: [JwtModule.register({})],
   providers: services,
   exports: services,
 })
