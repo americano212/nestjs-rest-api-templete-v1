@@ -22,7 +22,8 @@ export class RolesGuard implements CanActivate {
     const { cookies } = context.switchToHttp().getRequest();
     if (!cookies.access_token) return false;
 
-    const payload: Payload = await this.auth.jwtVerify(cookies.access_token);
+    const payload: Payload | null = this.auth.jwtVerify(cookies.access_token);
+    if (!payload) return false;
 
     return requiredRoles.some((role) => payload.roles?.includes(role));
   }

@@ -68,12 +68,11 @@ export class AuthService {
     );
   }
 
-  // TODO create TEST
-  public async jwtVerify(token: string): Promise<Payload> {
+  public jwtVerify(token: string): Payload | null {
     try {
-      return await this.jwt.verifyAsync(token, {
-        secret: this.config.get('jwt.accessSecret'),
-      });
+      const payload = <JwtPayload | null>this.jwt.decode(token);
+      if (!payload) return null;
+      return { user_id: payload.sub, username: payload.username, roles: payload.roles };
     } catch {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
