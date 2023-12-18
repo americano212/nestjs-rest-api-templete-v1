@@ -15,9 +15,12 @@ export class LoggerContextMiddleware implements NestMiddleware {
     const userAgent = req.get('user-agent');
     const payload = <JwtPayload>this.jwt.decode(cookies.access_token);
     const userId = payload ? payload.sub : 0;
+    const datetime = new Date();
     res.on('finish', () => {
       const { statusCode } = res;
-      this.logger.log(`USER-${userId} ${method} ${originalUrl} ${statusCode} ${ip} ${userAgent}`);
+      this.logger.log(
+        `${datetime} USER-${userId} ${method} ${originalUrl} ${statusCode} ${ip} ${userAgent}`,
+      );
     });
 
     next();
