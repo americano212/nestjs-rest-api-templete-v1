@@ -18,7 +18,6 @@ export class ExceptionsFilter extends BaseExceptionFilter {
     super.catch(exception, host);
 
     if (statusCode >= HttpStatus.INTERNAL_SERVER_ERROR) {
-      // TODO alert
       this.logger.error({ datetime: datetime, err: exception, args: { req, res } });
     } else {
       this.logger.warn({ datetime: datetime, err: exception, args });
