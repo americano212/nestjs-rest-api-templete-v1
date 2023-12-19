@@ -33,7 +33,7 @@ export const config = {
     },
   },
   slack: {
-    webhookUrl: process.env['SLACK_WEBHOOK_URL'],
+    webhookUrl: process.env['SLACK_WEBHOOK_URL'] || '',
   },
   oauth: {
     kakao: {
