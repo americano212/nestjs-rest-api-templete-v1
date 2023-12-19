@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
@@ -14,6 +14,7 @@ import { AppController } from './app.controller';
 import { configuration } from './config';
 import { RolesGuard } from './common/guards/roles.guard';
 import { ExceptionsFilter } from './common/filters';
+import { ErrorInterceptor } from './common/interceptors';
 
 @Module({
   imports: [
@@ -44,6 +45,10 @@ import { ExceptionsFilter } from './common/filters';
     {
       provide: APP_FILTER,
       useClass: ExceptionsFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ErrorInterceptor,
     },
   ],
 })
