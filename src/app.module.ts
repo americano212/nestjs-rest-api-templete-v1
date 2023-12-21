@@ -14,7 +14,7 @@ import { AppController } from './app.controller';
 import { configuration } from './config';
 import { RolesGuard } from './common/guards/roles.guard';
 import { ExceptionsFilter } from './common/filters';
-import { ErrorInterceptor } from './common/interceptors';
+import { ErrorsInterceptor } from './common/interceptors';
 
 @Module({
   imports: [
@@ -48,7 +48,7 @@ import { ErrorInterceptor } from './common/interceptors';
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: ErrorInterceptor,
+      useClass: ErrorsInterceptor,
     },
   ],
 })
