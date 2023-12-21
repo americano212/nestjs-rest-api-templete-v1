@@ -17,8 +17,6 @@ export class RoleService {
     private readonly rolesRepository: RolesRepository,
     private readonly userRolesRepository: UserRolesRepository,
   ) {}
-
-  // TODO update TEST about exception
   public async addRoleToUser(role_name: string, user: User): Promise<boolean> {
     try {
       const role = await this.rolesRepository.findRoleByName(role_name);

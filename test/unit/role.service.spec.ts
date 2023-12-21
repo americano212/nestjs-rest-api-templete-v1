@@ -80,5 +80,27 @@ describe('RoleService', () => {
         await roleService.addRoleToUser(role_name, user);
       }).rejects.toThrow(`The role ${role_name} is not valid role`);
     });
+    it(`should already include role in the user's role`, async () => {
+      const userAlreadyExistRole: User = {
+        user_id: 1,
+        username: faker.person.fullName(),
+        passwordHash: 'Hash!',
+        email: faker.internet.email(),
+        created_at: new Date(),
+        updated_at: new Date(),
+        roles: ['User'],
+      };
+      jest.spyOn(rolesRepository, 'findRoleByName').mockResolvedValue(role);
+      jest.spyOn(userRolesRepository, 'create').mockResolvedValue(new UserRole());
+
+      await expect(async () => {
+        await roleService.addRoleToUser(role_name, userAlreadyExistRole);
+      }).rejects.toThrow(HttpException);
+      await expect(async () => {
+        await roleService.addRoleToUser(role_name, userAlreadyExistRole);
+      }).rejects.toThrow(
+        `The role ${role_name} already exist role to user ${userAlreadyExistRole.user_id}`,
+      );
+    });
   });
 });
