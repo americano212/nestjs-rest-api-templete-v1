@@ -49,7 +49,6 @@ export class UserService {
     }
   }
 
-  // TODO create test
   public async createSNSUser(snsUser: SNSUser): Promise<User> {
     try {
       return await this.usersRepository.create({ ...snsUser, roles: [] });
@@ -83,7 +82,6 @@ export class UserService {
     }
   }
 
-  // TODO create test
   public async isExistEmail(email: string): Promise<boolean> {
     const user = await this.usersRepository.getByEmail(email);
     return user ? true : false;

@@ -5,7 +5,7 @@ import { QueryFailedError } from 'typeorm';
 
 import { User } from '#entities/user.entity';
 
-import { MysqlErrorCode, UserService, UsersRepository } from '../../src/shared/user';
+import { MysqlErrorCode, SNSUser, UserService, UsersRepository } from '../../src/shared/user';
 import { AddRoleDto, LocalRegisterDto } from '../../src/shared/user/dto';
 import { RoleService } from '../../src/shared/role/providers';
 import { UtilService } from '../../src/common';
@@ -172,6 +172,49 @@ describe('UserService', () => {
     });
   });
 
+  describe('createSNSUser', () => {
+    const username = faker.person.fullName();
+    const email = faker.internet.email();
+    const social_id = 'random.!@#string123';
+    const vendor = 'google';
+    const snsUser: SNSUser = {
+      username,
+      email,
+      social_id,
+      vendor,
+    };
+    const user: User = {
+      user_id: 1,
+      username,
+      email,
+      created_at: new Date(),
+      updated_at: new Date(),
+      roles: [],
+    };
+    it('should successfully create a sns user', async () => {
+      jest.spyOn(usersRepository, 'create').mockResolvedValue(user);
+
+      const result = await userService.createSNSUser(snsUser);
+      expect(result).toBe(user);
+    });
+    it('should throw an exception when attempting to create a user with an existing email', async () => {
+      const mockQueryFailedError = new QueryFailedError('SELECT', [], new Error('Duplicate entry'));
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      mockQueryFailedError.driverError = {
+        code: MysqlErrorCode.ALREADY_USER,
+      } as unknown as Error;
+      jest.spyOn(usersRepository, 'create').mockRejectedValue(mockQueryFailedError);
+
+      await expect(async () => {
+        await userService.createSNSUser(snsUser);
+      }).rejects.toThrow(HttpException);
+      await expect(async () => {
+        await userService.createSNSUser(snsUser);
+      }).rejects.toThrow("User's Email already exists");
+    });
+  });
+
   describe('addRole', () => {
     const user_id = 1;
     const username = faker.person.fullName();
@@ -229,6 +272,29 @@ describe('UserService', () => {
       await expect(async () => {
         await userService.addRole(addRoleDto);
       }).rejects.toThrow(`The role ${role_name_not_exist} is not valid role`);
+    });
+  });
+  describe('isExistEmail', () => {
+    const email = faker.internet.email();
+    const user: User = {
+      user_id: 1,
+      username: faker.person.fullName(),
+      email,
+      created_at: new Date(),
+      updated_at: new Date(),
+      roles: [],
+    };
+    it('should return true when email exist', async () => {
+      jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(user);
+
+      const result = await userService.isExistEmail(email);
+      expect(result).toBe(true);
+    });
+    it('should return false when email does not exist', async () => {
+      jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(null);
+
+      const result = await userService.isExistEmail(email);
+      expect(result).toBe(false);
     });
   });
 });
