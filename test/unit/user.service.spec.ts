@@ -67,7 +67,7 @@ describe('UserService', () => {
     expect(userService).toBeDefined();
   });
 
-  describe('create', () => {
+  describe('createUser', () => {
     const username = faker.person.fullName();
     const password = faker.internet.password();
     const email = faker.internet.email();
@@ -93,7 +93,7 @@ describe('UserService', () => {
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
 
-      const result = await userService.create(localRegisterDto);
+      const result = await userService.createUser(localRegisterDto);
 
       expect(result).toBe(true);
     });
@@ -117,7 +117,7 @@ describe('UserService', () => {
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
 
-      const result = await userService.create(localRegisterDto);
+      const result = await userService.createUser(localRegisterDto);
 
       expect(result).toBe(true);
     });
@@ -140,10 +140,10 @@ describe('UserService', () => {
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
 
       await expect(async () => {
-        await userService.create(localRegisterDto);
+        await userService.createUser(localRegisterDto);
       }).rejects.toThrow(HttpException);
       await expect(async () => {
-        await userService.create(localRegisterDto);
+        await userService.createUser(localRegisterDto);
       }).rejects.toThrow("User's Email already exists");
     });
     it('should throw an exception for an invalid role', async () => {
@@ -167,7 +167,7 @@ describe('UserService', () => {
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
 
       await expect(async () => {
-        await userService.create(localRegisterDto);
+        await userService.createUser(localRegisterDto);
       }).rejects.toThrow(`The role ${roles[0]} is not valid role`);
     });
   });
