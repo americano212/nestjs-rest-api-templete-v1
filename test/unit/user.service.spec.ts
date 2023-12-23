@@ -6,7 +6,7 @@ import { QueryFailedError } from 'typeorm';
 import { User } from '#entities/user.entity';
 
 import { MysqlErrorCode, SNSUser, UserService, UsersRepository } from '../../src/shared/user';
-import { AddRoleDto, LocalRegisterDto } from '../../src/shared/user/dto';
+import { AddRoleToUserDto, LocalRegisterDto } from '../../src/shared/user/dto';
 import { RoleService } from '../../src/shared/role/providers';
 import { UtilService } from '../../src/common';
 
@@ -67,7 +67,7 @@ describe('UserService', () => {
     expect(userService).toBeDefined();
   });
 
-  describe('createUser', () => {
+  describe('create', () => {
     const username = faker.person.fullName();
     const password = faker.internet.password();
     const email = faker.internet.email();
@@ -78,7 +78,6 @@ describe('UserService', () => {
         username,
         password,
         email,
-        roles,
       };
       const savedUser: User = {
         user_id: 1,
@@ -87,13 +86,12 @@ describe('UserService', () => {
         email: email,
         created_at: new Date(),
         updated_at: new Date(),
-        roles: roles,
       };
       jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
 
-      const result = await userService.createUser(localRegisterDto);
+      const result = await userService.create(localRegisterDto);
 
       expect(result).toBe(true);
     });
@@ -102,7 +100,6 @@ describe('UserService', () => {
         username,
         password,
         email,
-        roles: [],
       };
       const savedUser: User = {
         user_id: 1,
@@ -117,7 +114,7 @@ describe('UserService', () => {
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
 
-      const result = await userService.createUser(localRegisterDto);
+      const result = await userService.create(localRegisterDto);
 
       expect(result).toBe(true);
     });
@@ -127,7 +124,6 @@ describe('UserService', () => {
         username,
         password,
         email: existingEmail,
-        roles,
       };
       const mockQueryFailedError = new QueryFailedError('SELECT', [], new Error('Duplicate entry'));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -140,10 +136,10 @@ describe('UserService', () => {
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
 
       await expect(async () => {
-        await userService.createUser(localRegisterDto);
+        await userService.create(localRegisterDto);
       }).rejects.toThrow(HttpException);
       await expect(async () => {
-        await userService.createUser(localRegisterDto);
+        await userService.create(localRegisterDto);
       }).rejects.toThrow("User's Email already exists");
     });
     it('should throw an exception for an invalid role', async () => {
@@ -151,7 +147,6 @@ describe('UserService', () => {
         username,
         password,
         email,
-        roles,
       };
       const savedUser: User = {
         user_id: 1,
@@ -160,14 +155,13 @@ describe('UserService', () => {
         email: email,
         created_at: new Date(),
         updated_at: new Date(),
-        roles: roles,
       };
       jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
       jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
 
       await expect(async () => {
-        await userService.createUser(localRegisterDto);
+        await userService.create(localRegisterDto);
       }).rejects.toThrow(`The role ${roles[0]} is not valid role`);
     });
   });
@@ -231,7 +225,7 @@ describe('UserService', () => {
       roles: [],
     };
     it('successfully assign a role to a user', async () => {
-      const addRoleDto: AddRoleDto = {
+      const addRoleDto: AddRoleToUserDto = {
         user_id,
         role_name,
       };
@@ -243,7 +237,7 @@ describe('UserService', () => {
     });
     it('should throw an exception when user_id does NOT Exist', async () => {
       const user_id_not_exist = -1;
-      const addRoleDto: AddRoleDto = {
+      const addRoleDto: AddRoleToUserDto = {
         user_id: user_id_not_exist,
         role_name,
       };
@@ -259,7 +253,7 @@ describe('UserService', () => {
     });
     it('should throw an exception for an invalid role', async () => {
       const role_name_not_exist = 'RRole';
-      const addRoleDto: AddRoleDto = {
+      const addRoleDto: AddRoleToUserDto = {
         user_id,
         role_name: role_name_not_exist,
       };
