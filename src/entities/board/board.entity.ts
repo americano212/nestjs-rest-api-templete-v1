@@ -16,7 +16,11 @@ export class Board extends CoreEntity {
 
   @Column({ type: 'json', nullable: false })
   @IsString({ each: true })
-  public board_roles!: string[];
+  public board_read_roles!: string[];
+
+  @Column({ type: 'json', nullable: false })
+  @IsString({ each: true })
+  public board_write_roles!: string[];
 
   @OneToMany(() => Content, (content) => content.board)
   public contents?: Content[];
