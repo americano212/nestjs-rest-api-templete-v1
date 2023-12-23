@@ -9,7 +9,7 @@ export class Role {
   @IsInt()
   public role_id!: number;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', nullable: false, unique: true })
   @IsString()
   public role_name!: string;
 

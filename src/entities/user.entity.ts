@@ -34,5 +34,5 @@ export class User extends CoreEntity {
   public social_id?: string;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
-  roles!: string[];
+  public roles?: UserRole[];
 }

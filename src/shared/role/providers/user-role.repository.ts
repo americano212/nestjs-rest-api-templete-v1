@@ -16,4 +16,12 @@ export class UserRolesRepository {
     const user_role = await this.userRolesRepository.save(userRoleData);
     return user_role;
   }
+
+  public async findAllByUserId(user_id: number): Promise<UserRole[]> {
+    const result = await this.userRolesRepository.find({
+      relations: { user: true, role: true },
+      where: { user: { user_id: user_id } },
+    });
+    return result;
+  }
 }

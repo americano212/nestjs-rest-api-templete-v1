@@ -5,7 +5,7 @@ import { Transactional } from 'typeorm-transactional';
 import { UsersRepository } from './user.repository';
 import { RoleService } from '../role/providers';
 import { UtilService } from '../../common';
-import { LocalRegisterDto, AddRoleDto } from './dto';
+import { LocalRegisterDto, AddRoleToUserDto } from './dto';
 import { SNSUser, User } from './user.interface';
 
 export enum MysqlErrorCode {
@@ -21,7 +21,7 @@ export class UserService {
   ) {}
 
   @Transactional()
-  public async createUser(userData: LocalRegisterDto): Promise<boolean> {
+  public async create(userData: LocalRegisterDto): Promise<User> {
     const { password, ...userWithoutPassword } = userData;
     const passwordHash = await this.util.passwordEncoding(password);
     try {
@@ -29,13 +29,7 @@ export class UserService {
         passwordHash,
         ...userWithoutPassword,
       });
-      const roles = userWithoutPassword.roles;
-      for (let i = 0; i < roles?.length; i++) {
-        const role_name = roles[i];
-        const isSuccess = await this.role.addRoleToUser(role_name, user);
-        if (!isSuccess) throw new NotFoundException(`The role ${role_name} is not valid role`);
-      }
-      return true;
+      return user;
     } catch (error: unknown) {
       if (error instanceof QueryFailedError) {
         if (error?.driverError.code === MysqlErrorCode.ALREADY_USER)
@@ -51,7 +45,7 @@ export class UserService {
 
   public async createSNSUser(snsUser: SNSUser): Promise<User> {
     try {
-      return await this.usersRepository.create({ ...snsUser, roles: [] });
+      return await this.usersRepository.create(snsUser);
     } catch (error: unknown) {
       if (error instanceof QueryFailedError) {
         if (error?.driverError.code === MysqlErrorCode.ALREADY_USER)
@@ -61,7 +55,7 @@ export class UserService {
     }
   }
 
-  public async addRole(data: AddRoleDto): Promise<boolean> {
+  public async addRole(data: AddRoleToUserDto): Promise<boolean> {
     try {
       const { user_id, role_name } = data;
       const user = await this.usersRepository.getByUserId(user_id);

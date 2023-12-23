@@ -47,7 +47,6 @@ export class AuthController {
     const { access_token, refresh_token } = await this.auth.jwtSign(user);
     res.cookie('access_token', access_token, { httpOnly: true });
     res.cookie('refresh_token', refresh_token, { httpOnly: true });
-    console.log('google.co', user);
     res.redirect('/');
   }
 
@@ -61,7 +60,6 @@ export class AuthController {
     const { access_token, refresh_token } = await this.auth.jwtSign(user);
     res.cookie('access_token', access_token, { httpOnly: true });
     res.cookie('refresh_token', refresh_token, { httpOnly: true });
-    console.log('auth.co', user);
     res.redirect('/');
   }
 

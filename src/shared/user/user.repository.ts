@@ -12,29 +12,18 @@ export class UsersRepository {
 
   public async create(userData: CreateUserDto): Promise<User> {
     const user = await this.usersRepository.save(userData);
-    return user;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, ...userWithoutPasswordHash } = user;
+    return userWithoutPasswordHash;
   }
 
   public async getByUserId(user_id: number): Promise<User | null> {
-    const user = await this.usersRepository.findOneBy({ user_id });
+    const user = await this.usersRepository.findOne({
+      relations: { roles: true },
+      where: { user_id: user_id },
+    });
     if (!user) return null;
-    user.roles = await this.getAllRolesByUserId(user_id);
     return user;
-  }
-
-  private async getAllRolesByUserId(user_id: number): Promise<string[]> {
-    const result = await this.usersRepository
-      .createQueryBuilder('user')
-      .select(['role.role_name AS role_name'])
-      .leftJoin('user.roles', 'user_role')
-      .leftJoin('user_role.role', 'role')
-      .where('user.user_id = :user_id', { user_id })
-      .getRawMany();
-    const roles = [];
-    for (let i = 0; i < result.length; i++) {
-      roles.push(result[i].role_name);
-    }
-    return roles;
   }
 
   public async getByEmail(email: string): Promise<UserDto | null> {
@@ -84,7 +73,6 @@ export class UsersRepository {
   }
 
   public async setRefreshToken(user_id: number, token: string): Promise<boolean> {
-    console.log('user_id : ', user_id);
     const updateResult = await this.usersRepository.update(user_id, {
       refreshToken: token,
     });
