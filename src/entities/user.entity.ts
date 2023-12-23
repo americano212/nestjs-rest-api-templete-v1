@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CoreEntity } from './core.entity';
 import { IsInt, IsString } from 'class-validator';
 import { UserRole } from './user-role.entity';
+import { Content } from './board';
 
 @Entity('user')
 export class User extends CoreEntity {
@@ -35,4 +36,7 @@ export class User extends CoreEntity {
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   public roles?: UserRole[];
+
+  @OneToMany(() => Content, (content) => content.user)
+  public contents?: Content[];
 }
