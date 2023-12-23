@@ -1,6 +1,6 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 
-import { catchError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 import { SlackService } from '../providers';
 
 @Injectable()
@@ -10,7 +10,8 @@ export class ErrorsInterceptor implements NestInterceptor {
   intercept(_: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(
       catchError((err) => {
-        return this.slackService.sendSlackMessage(`🚨${err}🚨`);
+        this.slackService.sendSlackMessage(`🚨${err}🚨`);
+        return throwError(() => err);
       }),
     );
   }
