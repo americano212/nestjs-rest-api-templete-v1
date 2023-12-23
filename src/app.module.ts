@@ -15,6 +15,7 @@ import { configuration } from './config';
 import { RolesGuard } from './common/guards/roles.guard';
 import { ExceptionsFilter } from './common/filters';
 import { ErrorsInterceptor } from './common/interceptors';
+import { DomainModule } from './domain';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ErrorsInterceptor } from './common/interceptors';
     AuthModule,
     CommonModule,
     BaseModule,
+    DomainModule,
   ],
   controllers: [AppController],
   providers: [
