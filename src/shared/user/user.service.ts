@@ -4,13 +4,9 @@ import { Transactional } from 'typeorm-transactional';
 
 import { UsersRepository } from './user.repository';
 import { RoleService } from '../role/providers';
-import { UtilService } from '../../common';
+import { MysqlErrorCode, UtilService } from '../../common';
 import { LocalRegisterDto, AddRoleToUserDto } from './dto';
 import { SNSUser, User } from './user.interface';
-
-export enum MysqlErrorCode {
-  ALREADY_USER = 'ER_DUP_ENTRY',
-}
 
 @Injectable()
 export class UserService {
@@ -32,7 +28,7 @@ export class UserService {
       return user;
     } catch (error: unknown) {
       if (error instanceof QueryFailedError) {
-        if (error?.driverError.code === MysqlErrorCode.ALREADY_USER)
+        if (error?.driverError.code === MysqlErrorCode.ALREADY_EXIST)
           throw new HttpException(`User's Email already exists`, HttpStatus.BAD_REQUEST);
       }
       if (error instanceof NotFoundException) {
@@ -48,7 +44,7 @@ export class UserService {
       return await this.usersRepository.create(snsUser);
     } catch (error: unknown) {
       if (error instanceof QueryFailedError) {
-        if (error?.driverError.code === MysqlErrorCode.ALREADY_USER)
+        if (error?.driverError.code === MysqlErrorCode.ALREADY_EXIST)
           throw new HttpException(`User's Email already exists`, HttpStatus.BAD_REQUEST);
       }
       throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
