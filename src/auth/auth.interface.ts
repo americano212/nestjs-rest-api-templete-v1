@@ -5,12 +5,12 @@ export interface JwtSign {
 
 export interface Payload {
   user_id: number;
-  username?: string;
+  username: string;
   roles?: string[];
 }
 
 export interface JwtPayload {
   sub: number;
-  username?: string;
+  username: string;
   roles?: string[];
 }

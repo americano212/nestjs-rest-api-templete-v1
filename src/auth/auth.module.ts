@@ -3,10 +3,15 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { AuthService } from './auth.service';
 import { UserModule } from '../shared/user';
-import { LocalStrategy, KakaoStrategy, NaverStrategy } from './strategies';
+import {
+  LocalStrategy,
+  KakaoStrategy,
+  NaverStrategy,
+  GoogleStrategy,
+  GithubStrategy,
+  JwtStrategy,
+} from './strategies';
 import { AuthSerializer } from './auth.serializer';
-import { GoogleStrategy } from './strategies/google.strategy';
-import { GithubStrategy } from './strategies/github.strategy';
 
 @Global()
 @Module({
@@ -18,6 +23,7 @@ import { GithubStrategy } from './strategies/github.strategy';
     GithubStrategy,
     KakaoStrategy,
     NaverStrategy,
+    JwtStrategy,
     AuthSerializer,
   ],
   exports: [AuthService],
