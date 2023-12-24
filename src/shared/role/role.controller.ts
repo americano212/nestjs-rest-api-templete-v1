@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { Role, Roles } from '../../../src/common';
 import { AddRoleDto } from './dto';
@@ -10,6 +10,7 @@ import { RoleService } from './providers';
 export class RoleController {
   constructor(private readonly role: RoleService) {}
 
+  @ApiBearerAuth()
   @Roles(Role.Test)
   @Get('/test')
   roleCheck(): string {
