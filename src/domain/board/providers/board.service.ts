@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBoardDto } from '../dto/create-board.dto';
 import { BoardsRepository } from './board.repository';
 import { QueryFailedError } from 'typeorm';
@@ -26,9 +26,16 @@ export class BoardService {
   }
 
   public async findByBoardName(board_name: string) {
-    // TODO check valid board name
-    const board = await this.boardsRepository.findByBoardName(board_name);
-    if (!board) throw Error();
-    return board;
+    try {
+      const board = await this.boardsRepository.findByBoardName(board_name);
+      if (!board) throw new NotFoundException(`The role ${board_name} is not valid board`);
+      return board;
+    } catch (error: unknown) {
+      if (error instanceof NotFoundException) {
+        const message = error?.message;
+        throw new HttpException(message, HttpStatus.NOT_FOUND);
+      }
+      throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
+    }
   }
 }
