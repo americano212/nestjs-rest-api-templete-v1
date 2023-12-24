@@ -4,6 +4,7 @@ import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators';
 import { Role } from '../enums';
 import { AuthService, Payload } from '../../../src/auth';
+import { Request } from 'express';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -19,10 +20,11 @@ export class RolesGuard implements CanActivate {
     ]);
     if (!requiredRoles) return true;
 
-    const { cookies } = context.switchToHttp().getRequest();
-    if (!cookies.access_token) return false;
+    const { headers } = context.switchToHttp().getRequest<Request>();
+    if (!headers.authorization) return false;
 
-    const payload: Payload | null = this.auth.jwtVerify(cookies.access_token);
+    const jwtToken = headers.authorization.split('Bearer ')[1];
+    const payload: Payload | null = this.auth.jwtVerify(jwtToken);
     if (!payload) return false;
 
     return requiredRoles.some((role) => payload.roles?.includes(role));

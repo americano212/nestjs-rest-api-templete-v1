@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import {
   AuthService,
   GoogleLoginGuard,
+  JwtSign,
   KakaoLoginGuard,
   LocalLoginGuard,
   NaverLoginGuard,
@@ -22,11 +23,8 @@ export class AuthController {
   @ApiBody({ type: LocalLoginDto })
   @Post('login')
   @UseGuards(LocalLoginGuard)
-  public async localLogin(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
-    const { access_token, refresh_token } = await this.auth.jwtSign(user);
-    res.cookie('access_token', access_token, { httpOnly: true });
-    res.cookie('refresh_token', refresh_token, { httpOnly: true });
-    res.send({ access_token, refresh_token });
+  public async localLogin(@ReqUser() user: Payload): Promise<JwtSign> {
+    return await this.auth.jwtSign(user);
   }
 
   @Get('logout')
@@ -43,11 +41,8 @@ export class AuthController {
 
   @Get('login/google/callback')
   @UseGuards(GoogleLoginGuard)
-  public async googleLoginCallback(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
-    const { access_token, refresh_token } = await this.auth.jwtSign(user);
-    res.cookie('access_token', access_token, { httpOnly: true });
-    res.cookie('refresh_token', refresh_token, { httpOnly: true });
-    res.redirect('/');
+  public async googleLoginCallback(@ReqUser() user: Payload): Promise<JwtSign> {
+    return await this.auth.jwtSign(user);
   }
 
   @Get('login/github')
@@ -56,11 +51,8 @@ export class AuthController {
 
   @Get('login/github/callback')
   @UseGuards(GithubLoginGuard)
-  public async githubLoginCallback(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
-    const { access_token, refresh_token } = await this.auth.jwtSign(user);
-    res.cookie('access_token', access_token, { httpOnly: true });
-    res.cookie('refresh_token', refresh_token, { httpOnly: true });
-    res.redirect('/');
+  public async githubLoginCallback(@ReqUser() user: Payload): Promise<JwtSign> {
+    return await this.auth.jwtSign(user);
   }
 
   @Get('login/kakao')
@@ -69,11 +61,8 @@ export class AuthController {
 
   @Get('login/kakao/callback')
   @UseGuards(KakaoLoginGuard)
-  public async kakaoLoginCallBack(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
-    const { access_token, refresh_token } = await this.auth.jwtSign(user);
-    res.cookie('access_token', access_token, { httpOnly: true });
-    res.cookie('refresh_token', refresh_token, { httpOnly: true });
-    res.redirect('/');
+  public async kakaoLoginCallBack(@ReqUser() user: Payload): Promise<JwtSign> {
+    return await this.auth.jwtSign(user);
   }
 
   @Get('login/naver')
@@ -82,10 +71,7 @@ export class AuthController {
 
   @Get('login/naver/callback')
   @UseGuards(NaverLoginGuard)
-  public async naverLoginCallBack(@ReqUser() user: Payload, @Res() res: Response): Promise<void> {
-    const { access_token, refresh_token } = await this.auth.jwtSign(user);
-    res.cookie('access_token', access_token, { httpOnly: true });
-    res.cookie('refresh_token', refresh_token, { httpOnly: true });
-    res.redirect('/');
+  public async naverLoginCallBack(@ReqUser() user: Payload): Promise<JwtSign> {
+    return await this.auth.jwtSign(user);
   }
 }
