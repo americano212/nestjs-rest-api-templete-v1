@@ -10,8 +10,7 @@ export class BoardsRepository {
 
   public async create(createBoardData: CreateBoardDto): Promise<Board | null> {
     const board = await this.boardsRepository.save(createBoardData);
-    if (!board) return null;
-    return board;
+    return board ? board : null;
   }
 
   public async findByBoardName(board_name: string): Promise<Board | null> {

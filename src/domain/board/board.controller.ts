@@ -6,7 +6,8 @@ import { CreateBoardDto, CreateContentDto } from './dto';
 import { ContentService } from './providers/content.service';
 import { JwtAuthGuard, Payload } from 'src/auth';
 import { ReqUser } from 'src/common';
-import { PageOptionsDto } from './dto/pagination';
+import { PageDto, PageOptionsDto } from './dto/pagination';
+import { Content } from './board.interface';
 
 @ApiTags('Board')
 @Controller('board')
@@ -48,10 +49,10 @@ export class BoardController {
   @ApiQuery({ name: 'take', required: false, description: '10' })
   @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
   @Get('/:board_name')
-  public async findContentByBoardName(
+  public async findContentsByBoardName(
     @Param('board_name') board_name: string,
     @Query() pageOptionsDto: PageOptionsDto,
-  ) {
+  ): Promise<PageDto<Content>> {
     const result = await this.content.findByBoardName(board_name, pageOptionsDto);
     return result;
   }

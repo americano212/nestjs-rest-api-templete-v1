@@ -3,6 +3,7 @@ import { CreateBoardDto } from '../dto/create-board.dto';
 import { BoardsRepository } from './board.repository';
 import { QueryFailedError } from 'typeorm';
 import { MysqlErrorCode } from 'src/common';
+import { Board } from '#entities/board';
 
 @Injectable()
 export class BoardService {
@@ -25,10 +26,10 @@ export class BoardService {
     }
   }
 
-  public async findByBoardName(board_name: string) {
+  public async findByBoardName(board_name: string): Promise<Board> {
     try {
       const board = await this.boardsRepository.findByBoardName(board_name);
-      if (!board) throw new NotFoundException(`The role ${board_name} is not valid board`);
+      if (!board) throw new NotFoundException(`The board name ${board_name} is not valid board`);
       return board;
     } catch (error: unknown) {
       if (error instanceof NotFoundException) {
