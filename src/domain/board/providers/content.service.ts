@@ -26,6 +26,7 @@ export class ContentService {
     return true;
   }
 
+  // TODO exception catch
   public async findByBoardName(board_name: string, page: number) {
     const result = await this.contentsRepository.findByBoardName(board_name, page);
     if (result.meta.last_page < result.meta.page) throw Error();

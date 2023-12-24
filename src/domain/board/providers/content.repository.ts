@@ -15,7 +15,7 @@ export class ContentsRepository {
   }
 
   public async findByBoardName(board_name: string, page: number) {
-    const take = 1;
+    const take = 10;
     const [contents, total] = await this.contentsRepository.findAndCount({
       take,
       skip: page <= 0 ? (page = 0) : (page - 1) * take,
