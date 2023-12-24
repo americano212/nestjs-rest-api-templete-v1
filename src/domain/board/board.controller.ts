@@ -6,7 +6,6 @@ import { CreateBoardDto, CreateContentDto } from './dto';
 import { ContentService } from './providers/content.service';
 import { JwtAuthGuard, Payload } from 'src/auth';
 import { ReqUser } from 'src/common';
-import { Content } from './board.interface';
 
 @ApiTags('Board')
 @Controller('board')
@@ -34,12 +33,13 @@ export class BoardController {
     @Ip() ip: string,
     @ReqUser() user: Payload,
   ): Promise<boolean> {
-    const contentData: Content = {
+    const contentData: CreateContentDto = {
       ...createContentData,
       ip,
       author: user.username,
     };
-    const isSuccess = await this.content.create(board_name, contentData);
+    const user_id = user.user_id;
+    const isSuccess = await this.content.create(user_id, board_name, contentData);
     return isSuccess;
   }
 

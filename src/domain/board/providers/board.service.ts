@@ -24,4 +24,11 @@ export class BoardService {
       throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
     }
   }
+
+  public async findByBoardName(board_name: string) {
+    // TODO check valid board name
+    const board = await this.boardsRepository.findByBoardName(board_name);
+    if (!board) throw Error();
+    return board;
+  }
 }

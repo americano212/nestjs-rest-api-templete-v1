@@ -13,4 +13,10 @@ export class BoardsRepository {
     if (!board) return null;
     return board;
   }
+
+  public async findByBoardName(board_name: string): Promise<Board | null> {
+    const board = await this.boardsRepository.findOneBy({ board_name: board_name });
+    if (!board) return null;
+    return board;
+  }
 }

@@ -1,13 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { ContentsRepository } from './content.repository';
-import { Content } from '../board.interface';
+import { BoardService } from './board.service';
+
+import { User as UserEntity } from '#entities/user.entity';
+import { CreateContentDto } from '../dto';
 
 @Injectable()
 export class ContentService {
-  constructor(private readonly contentsRepository: ContentsRepository) {}
+  constructor(
+    private readonly board: BoardService,
+    private readonly contentsRepository: ContentsRepository,
+  ) {}
 
-  public async create(board_name: string, contentData: Content) {
-    console.log(board_name, contentData);
+  // TODO exception catch
+  public async create(user_id: number, board_name: string, contentData: CreateContentDto) {
+    const board = await this.board.findByBoardName(board_name);
+    const user = new UserEntity();
+    user.user_id = user_id;
+    const result = await this.contentsRepository.create({
+      ...contentData,
+      user,
+      board,
+    });
+    console.log(result);
     return true;
   }
 
