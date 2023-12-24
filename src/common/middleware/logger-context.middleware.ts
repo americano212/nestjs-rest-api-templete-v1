@@ -11,9 +11,11 @@ export class LoggerContextMiddleware implements NestMiddleware {
   ) {}
 
   use(req: Request, res: Response, next: NextFunction) {
-    const { ip, method, originalUrl, cookies } = req;
+    const { ip, method, originalUrl, headers } = req;
     const userAgent = req.get('user-agent');
-    const payload = <JwtPayload>this.jwt.decode(cookies.access_token);
+    const payload = headers.authorization
+      ? <JwtPayload>this.jwt.decode(headers.authorization)
+      : null;
     const userId = payload ? payload.sub : 0;
     const datetime = new Date();
     res.on('finish', () => {
