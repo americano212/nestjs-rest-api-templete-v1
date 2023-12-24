@@ -4,6 +4,7 @@ import { BoardService } from './board.service';
 
 import { User as UserEntity } from '#entities/user.entity';
 import { CreateContentDto } from '../dto';
+import { PageOptionsDto } from '../dto/pagination';
 
 @Injectable()
 export class ContentService {
@@ -27,9 +28,9 @@ export class ContentService {
   }
 
   // TODO exception catch
-  public async findByBoardName(board_name: string, page: number) {
-    const result = await this.contentsRepository.findByBoardName(board_name, page);
-    if (result.meta.last_page < result.meta.page) throw Error();
+  public async findByBoardName(board_name: string, pageOptionsDto: PageOptionsDto) {
+    const result = await this.contentsRepository.findByBoardName(board_name, pageOptionsDto);
+    if (result.pageMetaDto.last_page < result.pageMetaDto.page) throw Error();
     return result;
   }
 }
