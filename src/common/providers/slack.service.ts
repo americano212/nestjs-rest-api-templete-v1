@@ -14,6 +14,7 @@ export class SlackService {
   ): Promise<boolean> {
     const url = this.config.get('slack.webhookUrl');
     const webhook = new IncomingWebhook(url);
+    // TODO make interface
     const result = await webhook.send({
       text: `${message}`,
       channel: channel || 'webhook-test',

@@ -20,19 +20,15 @@ export class AuthService {
     if (!user.passwordHash) return null;
     const isMatch = await this.util.passwordCompare(password, user.passwordHash);
     if (!isMatch) return null;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordHash, ...userWithoutPasswordHash } = user;
-    return userWithoutPasswordHash;
+    delete user.passwordHash;
+    return user;
   }
 
   public async validateSNSUser(socialUser: SNSUser): Promise<User> {
     const user = await this.usersRepository.getByEmail(socialUser.email);
-    if (!user) throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
+    if (!user) throw Error();
     if (socialUser.vendor !== user?.vendor || socialUser.social_id !== user?.social_id)
-      throw new HttpException(
-        `User's Email already exists in ${user.vendor}`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(`Email already exists in ${user.vendor}`, HttpStatus.BAD_REQUEST);
     return user;
   }
 
