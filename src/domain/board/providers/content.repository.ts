@@ -39,7 +39,6 @@ export class ContentsRepository {
       relations: { board: true },
       where: { board: { board_name: board_name }, content_id: content_id },
     });
-    console.log('content.repo', content);
     return content;
   }
 }
