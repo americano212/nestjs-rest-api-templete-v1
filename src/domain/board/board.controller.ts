@@ -23,11 +23,23 @@ export class BoardController {
     return isSuccess;
   }
 
+  @ApiQuery({ name: 'page', required: false, description: '1' })
+  @ApiQuery({ name: 'take', required: false, description: '10' })
+  @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
+  @Get('/:board_name')
+  public async findContentsByBoardName(
+    @Param('board_name') board_name: string,
+    @Query() pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<Content>> {
+    const result = await this.content.findByBoardName(board_name, pageOptionsDto);
+    return result;
+  }
+
   // TODO Add Role Guard
   @ApiBearerAuth()
   @ApiBody({ type: CreateContentDto })
   @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
-  @Post('/:board_name')
+  @Post('/:board_name/content')
   @UseGuards(JwtAuthGuard)
   public async createContent(
     @Param('board_name') board_name: string,
@@ -45,15 +57,15 @@ export class BoardController {
     return isSuccess;
   }
 
-  @ApiQuery({ name: 'page', required: false, description: '1' })
-  @ApiQuery({ name: 'take', required: false, description: '10' })
+  // TODO Add Role Guard
   @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
-  @Get('/:board_name')
-  public async findContentsByBoardName(
+  @ApiParam({ name: 'content_id', required: true, description: '1' })
+  @Get('/:board_name/content/:content_id')
+  public async findOneContent(
     @Param('board_name') board_name: string,
-    @Query() pageOptionsDto: PageOptionsDto,
-  ): Promise<PageDto<Content>> {
-    const result = await this.content.findByBoardName(board_name, pageOptionsDto);
-    return result;
+    @Param('content_id') content_id: number,
+  ): Promise<Content> {
+    const content = await this.content.findOneContent(board_name, content_id);
+    return content;
   }
 }

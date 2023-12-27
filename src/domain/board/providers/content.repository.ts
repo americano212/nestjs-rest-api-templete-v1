@@ -33,4 +33,13 @@ export class ContentsRepository {
 
     return { data: contents, meta: pageMetaDto };
   }
+
+  public async findOne(board_name: string, content_id: number) {
+    const content = await this.contentsRepository.findOne({
+      relations: { board: true },
+      where: { board: { board_name: board_name }, content_id: content_id },
+    });
+    console.log('content.repo', content);
+    return content;
+  }
 }

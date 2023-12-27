@@ -51,4 +51,14 @@ export class ContentService {
       throw new HttpException('UNKNOWN ERROR', HttpStatus.BAD_REQUEST);
     }
   }
+
+  // TODO apply Exception
+  public async findOneContent(board_name: string, content_id: number): Promise<Content> {
+    const content = await this.contentsRepository.findOne(board_name, content_id);
+    if (!content)
+      throw new NotFoundException(
+        `The content '${content_id}' invalid content OR The board '${board_name}' invalid board_name`,
+      );
+    return content;
+  }
 }
