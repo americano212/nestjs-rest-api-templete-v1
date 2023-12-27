@@ -12,6 +12,7 @@ export class ExceptionsFilter {
 
   public catch(exception: unknown, host: ArgumentsHost): void {
     let args: unknown;
+    let message: string = 'UNKNOWN ERROR';
 
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
@@ -19,10 +20,8 @@ export class ExceptionsFilter {
     const statusCode = this.getHttpStatus(exception);
     const datetime = new Date();
 
-    const message: string =
-      exception instanceof HttpException || exception instanceof QueryFailedError
-        ? exception.message
-        : 'UNKNOWN ERROR';
+    message = exception instanceof HttpException ? exception.message : message;
+    message = exception instanceof QueryFailedError ? 'Already Exist' : message;
 
     const errorResponse = {
       code: statusCode,
@@ -46,7 +45,7 @@ export class ExceptionsFilter {
       exception instanceof QueryFailedError &&
       exception.driverError.code === MysqlErrorCode.ALREADY_EXIST
     ) {
-      return HttpStatus.BAD_REQUEST;
+      return HttpStatus.CONFLICT;
     } else if (exception instanceof HttpException) return exception.getStatus();
     else return HttpStatus.INTERNAL_SERVER_ERROR;
   }
