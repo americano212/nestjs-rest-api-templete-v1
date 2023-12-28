@@ -5,13 +5,14 @@ import { BoardService } from './providers';
 import { CreateBoardDto, CreateContentDto } from './dto';
 import { ContentService } from './providers/content.service';
 import { JwtAuthGuard, Payload } from 'src/auth';
-import { ReqUser } from 'src/common';
+import { ReqUser, Role, Roles } from 'src/common';
 import { PageDto, PageOptionsDto } from './dto/pagination';
 import { Content } from './board.interface';
 import { GuardType } from './enums';
 import { BoardRole } from './decorator';
 import { BoardGuard } from './guards';
 
+@ApiBearerAuth()
 @ApiTags('Board')
 @UseGuards(BoardGuard)
 @Controller('board')
@@ -22,16 +23,16 @@ export class BoardController {
   ) {}
 
   @ApiBody({ type: CreateBoardDto })
+  @Roles(Role.Admin)
   @Post()
   public async createBoard(@Body() boardData: CreateBoardDto): Promise<boolean> {
     const isSuccess = await this.board.create(boardData);
     return isSuccess;
   }
 
-  // TODO Add Role Guard
-  @ApiBearerAuth()
   @ApiBody({ type: CreateContentDto })
   @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
+  @BoardRole(GuardType.WRITE)
   @Post('/:board_name/content')
   @UseGuards(JwtAuthGuard)
   public async createContent(
@@ -50,10 +51,10 @@ export class BoardController {
     return isSuccess;
   }
 
-  // TODO Add Role Guard
   @ApiQuery({ name: 'page', required: false, description: '1' })
   @ApiQuery({ name: 'take', required: false, description: '10' })
   @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
+  @BoardRole(GuardType.READ)
   @Get('/:board_name')
   public async findAllContents(
     @Param('board_name') boardName: string,
@@ -63,7 +64,6 @@ export class BoardController {
     return result;
   }
 
-  @ApiBearerAuth()
   @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
   @ApiParam({ name: 'content_id', required: true, description: '1' })
   @BoardRole(GuardType.READ)
