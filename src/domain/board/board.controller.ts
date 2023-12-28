@@ -8,9 +8,12 @@ import { JwtAuthGuard, Payload } from 'src/auth';
 import { ReqUser } from 'src/common';
 import { PageDto, PageOptionsDto } from './dto/pagination';
 import { Content } from './board.interface';
-import { BoardReadGuard } from './guards';
+import { GuardType } from './enums';
+import { BoardRole } from './decorator';
+import { BoardGuard } from './guards';
 
 @ApiTags('Board')
+@UseGuards(BoardGuard)
 @Controller('board')
 export class BoardController {
   constructor(
@@ -61,9 +64,9 @@ export class BoardController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(BoardReadGuard)
   @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
   @ApiParam({ name: 'content_id', required: true, description: '1' })
+  @BoardRole(GuardType.READ)
   @Get('/:board_name/content/:content_id')
   public async findOneContent(
     @Param('board_name') boardName: string,
