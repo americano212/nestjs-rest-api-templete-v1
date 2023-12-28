@@ -1,2 +1,2 @@
 export * from './create-user-role.dto';
-export * from './add-role.dto';
+export * from './create-role.dto';

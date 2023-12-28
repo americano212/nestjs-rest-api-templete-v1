@@ -4,6 +4,7 @@ import { User } from '#entities/user.entity';
 
 import { RolesRepository } from './role.repository';
 import { UserRolesRepository } from './user-role.repository';
+import { CreateRoleDto } from '../dto';
 
 @Injectable()
 export class RoleService {
@@ -12,8 +13,8 @@ export class RoleService {
     private readonly userRolesRepository: UserRolesRepository,
   ) {}
 
-  public async create(roleName: string): Promise<boolean> {
-    const role = await this.rolesRepository.create(roleName);
+  public async create(roleData: CreateRoleDto): Promise<boolean> {
+    const role = await this.rolesRepository.create(roleData.role_name);
     return role ? true : false;
   }
 
