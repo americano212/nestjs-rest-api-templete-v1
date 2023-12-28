@@ -1,12 +1,10 @@
 import { Body, Controller, Get, Ip, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
-import { BoardService } from './providers';
-import { CreateBoardDto, CreateContentDto } from './dto';
-import { ContentService } from './providers/content.service';
+import { BoardService, ContentService } from './providers';
+import { CreateBoardDto, CreateContentDto, PageDto, PageOptionsDto } from './dto';
 import { JwtAuthGuard, Payload } from 'src/auth';
 import { ReqUser, Role, Roles } from 'src/common';
-import { PageDto, PageOptionsDto } from './dto/pagination';
 import { Content } from './board.interface';
 import { GuardType } from './enums';
 import { BoardRole } from './decorator';
