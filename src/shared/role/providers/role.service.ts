@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { User } from '#entities/user.entity';
 
@@ -17,26 +12,22 @@ export class RoleService {
     private readonly userRolesRepository: UserRolesRepository,
   ) {}
 
-  public async create(role_name: string): Promise<boolean> {
-    const role = await this.rolesRepository.create(role_name);
-    if (!role) throw new ConflictException(`The role '${role_name}' already exist`);
-    return true;
+  public async create(roleName: string): Promise<boolean> {
+    const role = await this.rolesRepository.create(roleName);
+    return role ? true : false;
   }
 
-  public async addRoleToUser(role_name: string, user: User): Promise<boolean> {
-    const role = await this.rolesRepository.findRoleByName(role_name);
-    if (!role) throw new NotFoundException(`The role ${role_name} is not valid role`);
-    const user_roles: string[] = [];
+  public async addRoleToUser(roleName: string, user: User): Promise<boolean> {
+    const role = await this.rolesRepository.findRoleByName(roleName);
+    if (!role) throw new NotFoundException(`The role '${roleName}' invalid role`);
+    const userRoles: string[] = [];
     user.roles?.forEach((user_role) => {
-      user_roles.push(user_role.role_name);
+      userRoles.push(user_role.role_name);
     });
-    const isExistRoleToUser = user_roles.includes(role_name);
+    const isExistRoleToUser = userRoles.includes(roleName);
     if (isExistRoleToUser)
-      throw new BadRequestException(
-        `The role ${role_name} already exist role to user ${user.user_id}`,
-      );
-    const user_role = await this.userRolesRepository.create({ user, role, role_name });
-    if (!user_role) throw new Error();
-    return true;
+      throw new BadRequestException(`'${roleName}' already exist role to user '${user.user_id}'`);
+    const userRole = await this.userRolesRepository.create({ user, role, role_name: roleName });
+    return userRole ? true : false;
   }
 }

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { UserRole } from '#entities/user-role.entity';
+
 import { CreateUserRoleDto } from '../dto';
 
 @Injectable()
@@ -12,16 +13,16 @@ export class UserRolesRepository {
     private userRolesRepository: Repository<UserRole>,
   ) {}
 
-  public async create(userRoleData: CreateUserRoleDto): Promise<UserRole | null> {
-    const user_role = await this.userRolesRepository.save(userRoleData);
-    return user_role;
+  public async create(userRoleData: CreateUserRoleDto): Promise<UserRole> {
+    const userRole = await this.userRolesRepository.save(userRoleData);
+    return userRole;
   }
 
-  public async findAllByUserId(user_id: number): Promise<UserRole[]> {
-    const result = await this.userRolesRepository.find({
+  public async findAllByUserId(userId: number): Promise<UserRole[]> {
+    const userRoles = await this.userRolesRepository.find({
       relations: { user: true, role: true },
-      where: { user: { user_id: user_id } },
+      where: { user: { user_id: userId } },
     });
-    return result;
+    return userRoles;
   }
 }

@@ -20,24 +20,24 @@ export class ContentsRepository {
   }
 
   public async findByBoardName(
-    board_name: string,
+    boardName: string,
     pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<Content>> {
     const [contents, total] = await this.contentsRepository.findAndCount({
       take: pageOptionsDto.take,
       skip: pageOptionsDto.skip,
       relations: { board: true },
-      where: { board: { board_name: board_name } },
+      where: { board: { board_name: boardName } },
     });
     const pageMetaDto = new PageMetaDto({ pageOptionsDto, total });
 
     return { data: contents, meta: pageMetaDto };
   }
 
-  public async findOne(board_name: string, content_id: number) {
+  public async findOne(boardName: string, contentId: number): Promise<Content | null> {
     const content = await this.contentsRepository.findOne({
       relations: { board: true },
-      where: { board: { board_name: board_name }, content_id: content_id },
+      where: { board: { board_name: boardName }, content_id: contentId },
     });
     return content;
   }

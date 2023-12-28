@@ -19,22 +19,27 @@ export class UserService {
   public async create(userData: LocalRegisterDto): Promise<User> {
     const { password, ...userWithoutPassword } = userData;
     const passwordHash = await this.util.passwordEncoding(password);
-    return await this.usersRepository.create({
+    const user = await this.usersRepository.create({
       passwordHash,
       ...userWithoutPassword,
     });
+    return user;
   }
 
   public async createSNSUser(snsUser: SNSUser): Promise<User> {
-    return await this.usersRepository.create(snsUser);
+    const user = await this.usersRepository.create(snsUser);
+    return user;
   }
 
-  public async addRole(data: AddRoleToUserDto): Promise<boolean> {
-    const { user_id, role_name } = data;
+  public async addRole(addRoleData: AddRoleToUserDto): Promise<boolean> {
+    const { user_id, role_name } = addRoleData;
+
     const user = await this.usersRepository.getByUserId(user_id);
-    if (!user) throw new NotFoundException(`User ID ${user_id} does NOT Exist`);
+    if (!user) throw new NotFoundException(`User ID ${user_id} NOT Found`);
+
     const isSuccess = await this.role.addRoleToUser(role_name, user);
-    if (!isSuccess) throw new NotFoundException(`The role ${role_name} is not valid role`);
+    if (!isSuccess) throw new NotFoundException(`The role '${role_name}' invalid role`);
+
     return isSuccess;
   }
 

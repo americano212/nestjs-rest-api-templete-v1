@@ -24,10 +24,10 @@ export class AuthService {
     return user;
   }
 
-  public async validateSNSUser(socialUser: SNSUser): Promise<User> {
-    const user = await this.usersRepository.getByEmail(socialUser.email);
+  public async validateSNSUser(snsUser: SNSUser): Promise<User> {
+    const user = await this.usersRepository.getByEmail(snsUser.email);
     if (!user) throw Error();
-    if (socialUser.vendor !== user?.vendor || socialUser.social_id !== user?.social_id)
+    if (snsUser.vendor !== user?.vendor || snsUser.social_id !== user?.social_id)
       throw new HttpException(`Email already exists in ${user.vendor}`, HttpStatus.BAD_REQUEST);
     return user;
   }
@@ -41,10 +41,7 @@ export class AuthService {
     const access_token = await this.generateAccessToken(payload);
     const refresh_token = await this.generateRefreshToken(payload.sub);
     await this.usersRepository.setRefreshToken(data.user_id, refresh_token);
-    return {
-      access_token,
-      refresh_token,
-    };
+    return { access_token, refresh_token };
   }
 
   private async generateAccessToken(payload: JwtPayload): Promise<string> {

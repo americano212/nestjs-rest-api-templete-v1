@@ -16,23 +16,12 @@ export class BoardController {
     private readonly board: BoardService,
     private readonly content: ContentService,
   ) {}
+
   @ApiBody({ type: CreateBoardDto })
   @Post()
-  public async createBoard(@Body() createBoardData: CreateBoardDto): Promise<boolean> {
-    const isSuccess = await this.board.create(createBoardData);
+  public async createBoard(@Body() boardData: CreateBoardDto): Promise<boolean> {
+    const isSuccess = await this.board.create(boardData);
     return isSuccess;
-  }
-
-  @ApiQuery({ name: 'page', required: false, description: '1' })
-  @ApiQuery({ name: 'take', required: false, description: '10' })
-  @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
-  @Get('/:board_name')
-  public async findContentsByBoardName(
-    @Param('board_name') board_name: string,
-    @Query() pageOptionsDto: PageOptionsDto,
-  ): Promise<PageDto<Content>> {
-    const result = await this.content.findByBoardName(board_name, pageOptionsDto);
-    return result;
   }
 
   // TODO Add Role Guard
@@ -42,7 +31,7 @@ export class BoardController {
   @Post('/:board_name/content')
   @UseGuards(JwtAuthGuard)
   public async createContent(
-    @Param('board_name') board_name: string,
+    @Param('board_name') boardName: string,
     @Body() createContentData: CreateContentDto,
     @Ip() ip: string,
     @ReqUser() user: Payload,
@@ -52,9 +41,21 @@ export class BoardController {
       ip,
       author: user.username,
     };
-    const user_id = user.user_id;
-    const isSuccess = await this.content.create(user_id, board_name, contentData);
+    const userId = user.user_id;
+    const isSuccess = await this.content.create(userId, boardName, contentData);
     return isSuccess;
+  }
+
+  @ApiQuery({ name: 'page', required: false, description: '1' })
+  @ApiQuery({ name: 'take', required: false, description: '10' })
+  @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
+  @Get('/:board_name')
+  public async findAllContents(
+    @Param('board_name') boardName: string,
+    @Query() pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<Content>> {
+    const result = await this.content.findByBoardName(boardName, pageOptionsDto);
+    return result;
   }
 
   // TODO Add Role Guard
@@ -62,10 +63,10 @@ export class BoardController {
   @ApiParam({ name: 'content_id', required: true, description: '1' })
   @Get('/:board_name/content/:content_id')
   public async findOneContent(
-    @Param('board_name') board_name: string,
-    @Param('content_id') content_id: number,
+    @Param('board_name') boardName: string,
+    @Param('content_id') contentId: number,
   ): Promise<Content> {
-    const content = await this.content.findOneContent(board_name, content_id);
+    const content = await this.content.findOneContent(boardName, contentId);
     return content;
   }
 }

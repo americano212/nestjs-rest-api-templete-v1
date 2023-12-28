@@ -1,32 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
-import { User } from '#entities/user.entity';
+import { User as UserEntity } from '#entities/user.entity';
 
-import { CreateUserDto, UserDto } from './dto';
+import { CreateUserDto } from './dto';
+import { User } from './user.interface';
 
 @Injectable()
 export class UsersRepository {
-  constructor(@InjectRepository(User) private usersRepository: Repository<User>) {}
+  constructor(@InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>) {}
 
-  public async create(userData: CreateUserDto): Promise<User> {
+  public async create(userData: CreateUserDto): Promise<UserEntity> {
     const user = await this.usersRepository.save(userData);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordHash, ...userWithoutPasswordHash } = user;
-    return userWithoutPasswordHash;
-  }
-
-  public async getByUserId(user_id: number): Promise<User | null> {
-    const user = await this.usersRepository.findOne({
-      relations: { roles: true },
-      where: { user_id: user_id },
-    });
-    if (!user) return null;
+    delete user.passwordHash;
     return user;
   }
 
-  public async getByEmail(email: string): Promise<UserDto | null> {
+  public async getByUserId(userId: number): Promise<UserEntity | null> {
+    const user = await this.usersRepository.findOne({
+      relations: { roles: true },
+      where: { user_id: userId },
+    });
+    return user ? user : null;
+  }
+
+  public async getByEmail(email: string): Promise<User | null> {
     const result = await this.usersRepository
       .createQueryBuilder('user')
       .select([
@@ -43,7 +42,7 @@ export class UsersRepository {
       .where('user.email = :email', { email })
       .getRawMany();
     if (!result.length) return null;
-    const user: UserDto = {
+    const user: User = {
       user_id: result[0].user_id,
       username: result[0].username,
       passwordHash: result[0].passwordHash,
@@ -61,22 +60,19 @@ export class UsersRepository {
   }
 
   public async isExistUsername(username: string): Promise<boolean> {
-    const findOptions: FindManyOptions = { where: { username: username } };
-    const isExist = await this.usersRepository.exist(findOptions);
+    const isExist = await this.usersRepository.exist({ where: { username: username } });
     return isExist;
   }
 
   public async isExistEmail(email: string): Promise<boolean> {
-    const findOptions: FindManyOptions = { where: { email: email } };
-    const isExist = await this.usersRepository.exist(findOptions);
+    const isExist = await this.usersRepository.exist({ where: { email: email } });
     return isExist;
   }
 
-  public async setRefreshToken(user_id: number, token: string): Promise<boolean> {
-    const updateResult = await this.usersRepository.update(user_id, {
+  public async setRefreshToken(userId: number, token: string): Promise<boolean> {
+    const updateResult = await this.usersRepository.update(userId, {
       refreshToken: token,
     });
-    if (updateResult.affected === 0) return false;
-    return true;
+    return updateResult.affected === 1 ? true : false;
   }
 }
