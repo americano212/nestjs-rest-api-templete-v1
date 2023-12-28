@@ -39,4 +39,9 @@ export class User extends CoreEntity {
 
   @OneToMany(() => Content, (content) => content.user)
   public contents?: Content[];
+
+  constructor(userId?: number) {
+    super();
+    if (userId) this.user_id = userId;
+  }
 }

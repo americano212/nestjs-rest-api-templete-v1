@@ -30,7 +30,6 @@ export class Content extends CoreEntity {
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
-  // TODO : Check soft-delete work by cascade
   @ManyToOne(() => Board, (board) => board.contents, { cascade: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'board_id' })
   board!: Board;

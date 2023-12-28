@@ -21,8 +21,7 @@ export class ContentService {
     contentData: CreateContentDto,
   ): Promise<boolean> {
     const board = await this.board.findByBoardName(boardName);
-    const user = new UserEntity(); // TODO constructor
-    user.user_id = userId;
+    const user = new UserEntity(userId);
     const result = await this.contentsRepository.create({ ...contentData, user, board });
     return result ? true : false;
   }
