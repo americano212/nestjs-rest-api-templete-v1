@@ -8,6 +8,7 @@ import { JwtAuthGuard, Payload } from 'src/auth';
 import { ReqUser } from 'src/common';
 import { PageDto, PageOptionsDto } from './dto/pagination';
 import { Content } from './board.interface';
+import { BoardReadGuard } from './guards';
 
 @ApiTags('Board')
 @Controller('board')
@@ -46,6 +47,7 @@ export class BoardController {
     return isSuccess;
   }
 
+  // TODO Add Role Guard
   @ApiQuery({ name: 'page', required: false, description: '1' })
   @ApiQuery({ name: 'take', required: false, description: '10' })
   @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
@@ -58,7 +60,8 @@ export class BoardController {
     return result;
   }
 
-  // TODO Add Role Guard
+  @ApiBearerAuth()
+  @UseGuards(BoardReadGuard)
   @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
   @ApiParam({ name: 'content_id', required: true, description: '1' })
   @Get('/:board_name/content/:content_id')

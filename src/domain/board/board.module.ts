@@ -5,8 +5,9 @@ import { Board, Content } from '#entities/board';
 
 import { BoardController } from './board.controller';
 import * as providers from './providers';
+import * as guards from './guards';
 
-const services = Object.values(providers);
+const services = [...Object.values(providers), ...Object.values(guards)];
 
 @Module({
   imports: [TypeOrmModule.forFeature([Board, Content])],
