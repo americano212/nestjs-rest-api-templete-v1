@@ -21,7 +21,7 @@ export class BoardController {
   ) {}
 
   @ApiBody({ type: CreateBoardDto })
-  @Roles(Role.Admin)
+  @Roles(Role.SuperAdmin)
   @Post()
   public async createBoard(@Body() boardData: CreateBoardDto): Promise<boolean> {
     const isSuccess = await this.board.create(boardData);

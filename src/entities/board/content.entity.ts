@@ -26,11 +26,11 @@ export class Content extends CoreEntity {
   @IsString()
   public ip?: string;
 
-  @ManyToOne(() => User, (user) => user.contents, { cascade: false })
+  @ManyToOne(() => User, (user) => user.contents, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'user_id' })
-  user!: User;
+  user!: User | null;
 
-  @ManyToOne(() => Board, (board) => board.contents, { cascade: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Board, (board) => board.contents, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'board_id' })
-  board!: Board;
+  board!: Board | null;
 }
