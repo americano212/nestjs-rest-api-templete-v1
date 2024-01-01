@@ -59,8 +59,6 @@ describe('RoleService', () => {
       role_id: 1,
       role_name,
       users: [new UserRole()],
-      created_at: new Date(),
-      updated_at: new Date(),
     };
     it('should assign a role to the user', async () => {
       jest.spyOn(rolesRepository, 'findRoleByName').mockResolvedValue(role);
@@ -78,9 +76,12 @@ describe('RoleService', () => {
       }).rejects.toThrow(HttpException);
       await expect(async () => {
         await roleService.addRoleToUser(role_name, user);
-      }).rejects.toThrow(`The role ${role_name} is not valid role`);
+      }).rejects.toThrow(`The role '${role_name}' invalid role`);
     });
     it(`should already include role in the user's role`, async () => {
+      const userRole = new UserRole();
+      const role_name_already_exist = 'TestRole';
+      userRole.role_name = role_name_already_exist;
       const userAlreadyExistRole: User = {
         user_id: 1,
         username: faker.person.fullName(),
@@ -88,18 +89,15 @@ describe('RoleService', () => {
         email: faker.internet.email(),
         created_at: new Date(),
         updated_at: new Date(),
-        roles: ['User'],
+        roles: [userRole],
       };
       jest.spyOn(rolesRepository, 'findRoleByName').mockResolvedValue(role);
-      jest.spyOn(userRolesRepository, 'create').mockResolvedValue(new UserRole());
+      jest.spyOn(userRolesRepository, 'create').mockResolvedValue(userRole);
 
       await expect(async () => {
-        await roleService.addRoleToUser(role_name, userAlreadyExistRole);
-      }).rejects.toThrow(HttpException);
-      await expect(async () => {
-        await roleService.addRoleToUser(role_name, userAlreadyExistRole);
+        await roleService.addRoleToUser(role_name_already_exist, userAlreadyExistRole);
       }).rejects.toThrow(
-        `The role ${role_name} already exist role to user ${userAlreadyExistRole.user_id}`,
+        `'${role_name_already_exist}' already exist role to user '${userAlreadyExistRole.user_id}'`,
       );
     });
   });

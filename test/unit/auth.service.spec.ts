@@ -173,7 +173,7 @@ describe('AuthService', () => {
       }).rejects.toThrow(HttpException);
       await expect(async () => {
         await authService.validateSNSUser(socialUser);
-      }).rejects.toThrow(`User's Email already exists in ${user.vendor}`);
+      }).rejects.toThrow(`Email already exists in ${user.vendor}`);
     });
   });
 });

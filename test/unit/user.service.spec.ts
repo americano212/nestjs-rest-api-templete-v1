@@ -5,10 +5,10 @@ import { QueryFailedError } from 'typeorm';
 
 import { User } from '#entities/user.entity';
 
-import { MysqlErrorCode, SNSUser, UserService, UsersRepository } from '../../src/shared/user';
+import { SNSUser, UserService, UsersRepository } from '../../src/shared/user';
 import { AddRoleToUserDto, LocalRegisterDto } from '../../src/shared/user/dto';
 import { RoleService } from '../../src/shared/role/providers';
-import { UtilService } from '../../src/common';
+import { MysqlErrorCode, UtilService } from '../../src/common';
 
 const mockRepository = {
   create: jest.fn(),
@@ -71,7 +71,6 @@ describe('UserService', () => {
     const username = faker.person.fullName();
     const password = faker.internet.password();
     const email = faker.internet.email();
-    const roles = ['User', 'TestRole'];
     const passwordHash = 'Hash!';
     it('should create a user and assign roles', async () => {
       const localRegisterDto: LocalRegisterDto = {
@@ -93,7 +92,7 @@ describe('UserService', () => {
 
       const result = await userService.create(localRegisterDto);
 
-      expect(result).toBe(true);
+      expect(result).toBe(savedUser);
     });
     it('should create a user and empty role', async () => {
       const localRegisterDto: LocalRegisterDto = {
@@ -116,7 +115,7 @@ describe('UserService', () => {
 
       const result = await userService.create(localRegisterDto);
 
-      expect(result).toBe(true);
+      expect(result).toBe(savedUser);
     });
     it('should throw an exception when attempting to create a user with an existing email', async () => {
       const existingEmail = email;
@@ -129,7 +128,7 @@ describe('UserService', () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       mockQueryFailedError.driverError = {
-        code: MysqlErrorCode.ALREADY_USER,
+        code: MysqlErrorCode.ALREADY_EXIST,
       } as unknown as Error;
       jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
       jest.spyOn(usersRepository, 'create').mockRejectedValue(mockQueryFailedError);
@@ -137,32 +136,7 @@ describe('UserService', () => {
 
       await expect(async () => {
         await userService.create(localRegisterDto);
-      }).rejects.toThrow(HttpException);
-      await expect(async () => {
-        await userService.create(localRegisterDto);
-      }).rejects.toThrow("User's Email already exists");
-    });
-    it('should throw an exception for an invalid role', async () => {
-      const localRegisterDto: LocalRegisterDto = {
-        username,
-        password,
-        email,
-      };
-      const savedUser: User = {
-        user_id: 1,
-        username: username,
-        passwordHash: passwordHash,
-        email: email,
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
-      jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
-      jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
-      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
-
-      await expect(async () => {
-        await userService.create(localRegisterDto);
-      }).rejects.toThrow(`The role ${roles[0]} is not valid role`);
+      }).rejects.toThrow(QueryFailedError);
     });
   });
 
@@ -196,16 +170,13 @@ describe('UserService', () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       mockQueryFailedError.driverError = {
-        code: MysqlErrorCode.ALREADY_USER,
+        code: MysqlErrorCode.ALREADY_EXIST,
       } as unknown as Error;
       jest.spyOn(usersRepository, 'create').mockRejectedValue(mockQueryFailedError);
 
       await expect(async () => {
         await userService.createSNSUser(snsUser);
-      }).rejects.toThrow(HttpException);
-      await expect(async () => {
-        await userService.createSNSUser(snsUser);
-      }).rejects.toThrow("User's Email already exists");
+      }).rejects.toThrow(QueryFailedError);
     });
   });
 
@@ -249,7 +220,7 @@ describe('UserService', () => {
       }).rejects.toThrow(HttpException);
       await expect(async () => {
         await userService.addRole(addRoleDto);
-      }).rejects.toThrow(`User ID ${user_id_not_exist} does NOT Exist`);
+      }).rejects.toThrow(`User ID ${user_id_not_exist} NOT Found`);
     });
     it('should throw an exception for an invalid role', async () => {
       const role_name_not_exist = 'RRole';
@@ -265,7 +236,7 @@ describe('UserService', () => {
       }).rejects.toThrow(HttpException);
       await expect(async () => {
         await userService.addRole(addRoleDto);
-      }).rejects.toThrow(`The role ${role_name_not_exist} is not valid role`);
+      }).rejects.toThrow(`The role '${role_name_not_exist}' invalid role`);
     });
   });
   describe('isExistEmail', () => {
