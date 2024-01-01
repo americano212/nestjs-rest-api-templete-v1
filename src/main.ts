@@ -27,7 +27,7 @@ async function bootstrap(): Promise<string> {
   if (!isProduction) {
     const documentConfig = new APIDocument().initializeOptions();
     const document = SwaggerModule.createDocument(app, documentConfig);
-    SwaggerModule.setup('/', app, document); // http://localhost/api
+    SwaggerModule.setup('/docs', app, document); // http://localhost/docs
   }
 
   app.enableShutdownHooks();
