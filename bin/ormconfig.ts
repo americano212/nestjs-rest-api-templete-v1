@@ -9,8 +9,8 @@ const ormconfig = async (): Promise<DataSource> => {
 
   return new DataSource({
     ...config.db,
-    entities: [`${__dirname}/../src/entity/**/*.{js,ts}`],
-    migrations: [`${__dirname}/../src/seeds/**/*.{js,ts}`],
+    entities: [`src/**/*.entity{.ts,.js}`],
+    migrations: [`src/seeds/**/*.{js,ts}`],
   });
 };
 
