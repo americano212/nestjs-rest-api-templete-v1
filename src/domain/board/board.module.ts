@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Board, Content } from '#entities/board';
 
-import { BoardController } from './board.controller';
+import * as controllers from './controllers';
 import * as providers from './providers';
 import * as guards from './guards';
 
@@ -11,7 +11,7 @@ const services = [...Object.values(providers), ...Object.values(guards)];
 
 @Module({
   imports: [TypeOrmModule.forFeature([Board, Content])],
-  controllers: [BoardController],
+  controllers: Object.values(controllers),
   providers: services,
   exports: services,
 })

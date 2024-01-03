@@ -2,15 +2,15 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
 export class CreateBoardDto {
-  @ApiProperty({ example: 'Test Board' })
+  @ApiProperty({ example: 'Admin Board' })
   @IsString()
   public board_name!: string;
 
-  @ApiProperty({ example: ['TestRole', 'User'] })
+  @ApiProperty({ example: ['SuperAdmin'] })
   @IsString()
   public board_read_roles!: string[];
 
-  @ApiProperty({ example: ['TestRole'] })
+  @ApiProperty({ example: ['SuperAdmin'] })
   @IsString()
   public board_write_roles!: string[];
 }

@@ -1,37 +1,26 @@
 import { Body, Controller, Get, Ip, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
-import { BoardService, ContentService } from './providers';
-import { CreateBoardDto, CreateContentDto, PageDto, PageOptionsDto } from './dto';
+import { ContentService } from '../providers';
+import { CreateContentDto, PageDto, PageOptionsDto } from '../dto';
 import { JwtAuthGuard, Payload } from 'src/auth';
-import { ReqUser, Role, Roles } from 'src/common';
-import { Content } from './board.interface';
-import { GuardType } from './enums';
-import { BoardRole } from './decorator';
-import { BoardGuard } from './guards';
+import { ReqUser } from 'src/common';
+import { Content } from '../board.interface';
+import { GuardType } from '../enums';
+import { BoardRole } from '../decorator';
+import { BoardGuard } from '../guards';
 
 @ApiBearerAuth()
-@ApiTags('Board')
+@ApiTags('Content')
 @UseGuards(BoardGuard)
-@Controller('board')
-export class BoardController {
-  constructor(
-    private readonly board: BoardService,
-    private readonly content: ContentService,
-  ) {}
-
-  @ApiBody({ type: CreateBoardDto })
-  @Roles(Role.SuperAdmin)
-  @Post()
-  public async createBoard(@Body() boardData: CreateBoardDto): Promise<boolean> {
-    const isSuccess = await this.board.create(boardData);
-    return isSuccess;
-  }
+@Controller('/board/:board_name/content')
+export class ContentController {
+  constructor(private readonly content: ContentService) {}
 
   @ApiBody({ type: CreateContentDto })
-  @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
+  @ApiParam({ name: 'board_name', required: true, description: 'Admin Board' })
   @BoardRole(GuardType.WRITE)
-  @Post('/:board_name/content')
+  @Post()
   @UseGuards(JwtAuthGuard)
   public async createContent(
     @Param('board_name') boardName: string,
@@ -51,9 +40,9 @@ export class BoardController {
 
   @ApiQuery({ name: 'page', required: false, description: '1' })
   @ApiQuery({ name: 'take', required: false, description: '10' })
-  @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
+  @ApiParam({ name: 'board_name', required: true, description: 'Admin Board' })
   @BoardRole(GuardType.READ)
-  @Get('/:board_name')
+  @Get('')
   public async findAllContents(
     @Param('board_name') boardName: string,
     @Query() pageOptionsDto: PageOptionsDto,
@@ -62,10 +51,10 @@ export class BoardController {
     return result;
   }
 
-  @ApiParam({ name: 'board_name', required: true, description: 'Test Board' })
+  @ApiParam({ name: 'board_name', required: true, description: 'Admin Board' })
   @ApiParam({ name: 'content_id', required: true, description: '1' })
   @BoardRole(GuardType.READ)
-  @Get('/:board_name/content/:content_id')
+  @Get('/:content_id')
   public async findOneContent(
     @Param('board_name') boardName: string,
     @Param('content_id') contentId: number,
