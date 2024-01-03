@@ -5,7 +5,7 @@ import { BoardService } from '../providers';
 import { AuthService, Payload } from 'src/auth';
 import { BoardGuardType } from '../enums';
 import { Reflector } from '@nestjs/core';
-import { TYPE_KEY } from '../decorator';
+import { BOARD_GUARD_KEY } from '../decorator';
 
 @Injectable()
 export class BoardGuard implements CanActivate {
@@ -16,7 +16,7 @@ export class BoardGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const guardType = this.reflector.get<BoardGuardType>(TYPE_KEY, context.getHandler());
+    const guardType = this.reflector.get<BoardGuardType>(BOARD_GUARD_KEY, context.getHandler());
 
     const { params, headers } = context.switchToHttp().getRequest<Request>();
 
