@@ -15,7 +15,7 @@ import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swa
 import { ContentService } from '../providers';
 import { CreateContentDto, PageDto, PageOptionsDto, UpdateContentDto } from '../dto';
 import { JwtAuthGuard, Payload } from 'src/auth';
-import { ReqUser } from 'src/common';
+import { ReqUser, Role, Roles } from 'src/common';
 import { Content } from '../board.interface';
 import { BoardGuardType, OwnerGuardType } from '../enums';
 import { BoardRole, Owner } from '../decorator';
@@ -105,6 +105,15 @@ export class ContentController {
     @Param('content_id') contentId: number,
   ): Promise<boolean> {
     const isSuccess = await this.content.delete(boardName, contentId);
+    return isSuccess;
+  }
+
+  @ApiParam({ name: 'board_name', required: true, description: 'Admin Board' })
+  @ApiParam({ name: 'content_id', required: true, description: '1' })
+  @Roles(Role.SuperAdmin)
+  @Post('/restore/:content_id')
+  public async restore(@Param('content_id') contentId: number) {
+    const isSuccess = await this.content.restore(contentId);
     return isSuccess;
   }
 }

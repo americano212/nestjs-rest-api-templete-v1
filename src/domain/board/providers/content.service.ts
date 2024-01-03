@@ -61,4 +61,9 @@ export class ContentService {
     const isSuccess = await this.contentsRepository.delete(contentId);
     return isSuccess;
   }
+
+  public async restore(contentId: number): Promise<boolean> {
+    const isSuccess = await this.contentsRepository.restore(contentId);
+    return isSuccess;
+  }
 }
