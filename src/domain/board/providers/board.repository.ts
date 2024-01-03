@@ -21,8 +21,13 @@ export class BoardsRepository {
     return board ? board : null;
   }
 
-  public async update(board_id: number, boardData: UpdateBoardDto): Promise<boolean> {
-    const result = await this.boardsRepository.update({ board_id: board_id }, boardData);
+  public async update(boardId: number, boardData: UpdateBoardDto): Promise<boolean> {
+    const result = await this.boardsRepository.update({ board_id: boardId }, boardData);
+    return result.affected ? true : false;
+  }
+
+  public async delete(boardId: number): Promise<boolean> {
+    const result = await this.boardsRepository.softDelete({ board_id: boardId });
     return result.affected ? true : false;
   }
 }
