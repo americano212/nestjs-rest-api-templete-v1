@@ -46,4 +46,9 @@ export class ContentsRepository {
     const result = await this.contentsRepository.update({ content_id: contentId }, contentData);
     return result.affected ? true : false;
   }
+
+  public async delete(contentId: number): Promise<boolean> {
+    const result = await this.contentsRepository.softDelete({ content_id: contentId });
+    return result.affected ? true : false;
+  }
 }

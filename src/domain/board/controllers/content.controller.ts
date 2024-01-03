@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Ip, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Ip,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { ContentService } from '../providers';
@@ -75,17 +86,25 @@ export class ContentController {
     @Param('content_id') contentId: number,
     @Body() updateContentData: UpdateContentDto,
     @Ip() ip: string,
-    @ReqUser() user: Payload,
   ): Promise<boolean> {
     const contentData: UpdateContentDto = {
       ...updateContentData,
       ip,
-      author: user.username,
     };
-    const userId = user.user_id;
-    const isSuccess = await this.content.update(userId, boardName, contentId, contentData);
+    const isSuccess = await this.content.update(boardName, contentId, contentData);
     return isSuccess;
   }
 
-  // public async delete() {}
+  @ApiParam({ name: 'board_name', required: true, description: 'Admin Board' })
+  @ApiParam({ name: 'content_id', required: true, description: '1' })
+  @BoardRole(BoardGuardType.WRITE)
+  @Owner(OwnerGuardType.CONTENT_OWNER)
+  @Delete('/:content_id')
+  public async delete(
+    @Param('board_name') boardName: string,
+    @Param('content_id') contentId: number,
+  ): Promise<boolean> {
+    const isSuccess = await this.content.delete(boardName, contentId);
+    return isSuccess;
+  }
 }

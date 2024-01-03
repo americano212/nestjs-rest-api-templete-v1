@@ -16,7 +16,12 @@ export class CreateContentDto {
 
   public ip?: string;
 
-  public user?: User;
+  public user: User | null;
 
-  public board?: Board;
+  public board: Board | null;
+
+  constructor() {
+    this.user = null;
+    this.board = null;
+  }
 }

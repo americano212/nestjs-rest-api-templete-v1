@@ -43,13 +43,11 @@ export class ContentService {
   }
 
   public async update(
-    userId: number,
     boardName: string,
     contentId: number,
     contentData: UpdateContentDto,
   ): Promise<boolean> {
-    const board = await this.board.findByBoardName(boardName);
-    const user = new UserEntity(userId);
+    const { user, board } = await this.findOne(boardName, contentId);
     const isSuccess = await this.contentsRepository.update(contentId, {
       ...contentData,
       user,
@@ -58,5 +56,9 @@ export class ContentService {
     return isSuccess;
   }
 
-  public async delete() {}
+  public async delete(boardName: string, contentId: number): Promise<boolean> {
+    const {} = await this.findOne(boardName, contentId);
+    const isSuccess = await this.contentsRepository.delete(contentId);
+    return isSuccess;
+  }
 }
