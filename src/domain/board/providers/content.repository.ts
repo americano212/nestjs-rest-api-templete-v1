@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Content as ContentEntity } from '#entities/board';
 
-import { CreateContentDto } from '../dto';
+import { CreateContentDto, UpdateContentDto } from '../dto';
 import { PageDto, PageMetaDto, PageOptionsDto } from '../dto/pagination';
 import { Content } from '../board.interface';
 
@@ -19,7 +19,7 @@ export class ContentsRepository {
     return content ? content : null;
   }
 
-  public async findByBoardName(
+  public async findAllByBoardName(
     boardName: string,
     pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<Content>> {
@@ -40,5 +40,10 @@ export class ContentsRepository {
       where: { board: { board_name: boardName }, content_id: contentId },
     });
     return content;
+  }
+
+  public async update(contentId: number, contentData: UpdateContentDto): Promise<boolean> {
+    const result = await this.contentsRepository.update({ content_id: contentId }, contentData);
+    return result.affected ? true : false;
   }
 }

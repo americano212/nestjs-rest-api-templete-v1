@@ -1,1 +1,1 @@
-export * from './board-read.guard';
+export * from './board.guard';

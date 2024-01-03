@@ -1,12 +1,12 @@
-import { Body, Controller, Get, Ip, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Ip, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { ContentService } from '../providers';
-import { CreateContentDto, PageDto, PageOptionsDto } from '../dto';
+import { CreateContentDto, PageDto, PageOptionsDto, UpdateContentDto } from '../dto';
 import { JwtAuthGuard, Payload } from 'src/auth';
 import { ReqUser } from 'src/common';
 import { Content } from '../board.interface';
-import { GuardType } from '../enums';
+import { BoardGuardType } from '../enums';
 import { BoardRole } from '../decorator';
 import { BoardGuard } from '../guards';
 
@@ -19,10 +19,10 @@ export class ContentController {
 
   @ApiBody({ type: CreateContentDto })
   @ApiParam({ name: 'board_name', required: true, description: 'Admin Board' })
-  @BoardRole(GuardType.WRITE)
+  @BoardRole(BoardGuardType.WRITE)
   @Post()
   @UseGuards(JwtAuthGuard)
-  public async createContent(
+  public async create(
     @Param('board_name') boardName: string,
     @Body() createContentData: CreateContentDto,
     @Ip() ip: string,
@@ -41,25 +41,50 @@ export class ContentController {
   @ApiQuery({ name: 'page', required: false, description: '1' })
   @ApiQuery({ name: 'take', required: false, description: '10' })
   @ApiParam({ name: 'board_name', required: true, description: 'Admin Board' })
-  @BoardRole(GuardType.READ)
-  @Get('')
-  public async findAllContents(
+  @BoardRole(BoardGuardType.READ)
+  @Get()
+  public async findAll(
     @Param('board_name') boardName: string,
     @Query() pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<Content>> {
-    const result = await this.content.findByBoardName(boardName, pageOptionsDto);
+    const result = await this.content.findAll(boardName, pageOptionsDto);
     return result;
   }
 
   @ApiParam({ name: 'board_name', required: true, description: 'Admin Board' })
   @ApiParam({ name: 'content_id', required: true, description: '1' })
-  @BoardRole(GuardType.READ)
+  @BoardRole(BoardGuardType.READ)
   @Get('/:content_id')
-  public async findOneContent(
+  public async findOne(
     @Param('board_name') boardName: string,
     @Param('content_id') contentId: number,
   ): Promise<Content> {
-    const content = await this.content.findOneContent(boardName, contentId);
+    const content = await this.content.findOne(boardName, contentId);
     return content;
   }
+
+  // TODO Check owner
+  @ApiParam({ name: 'board_name', required: true, description: 'Admin Board' })
+  @ApiParam({ name: 'content_id', required: true, description: '1' })
+  @BoardRole(BoardGuardType.WRITE)
+  @Put('/:content_id')
+  @UseGuards(JwtAuthGuard)
+  public async update(
+    @Param('board_name') boardName: string,
+    @Param('content_id') contentId: number,
+    @Body() updateContentData: UpdateContentDto,
+    @Ip() ip: string,
+    @ReqUser() user: Payload,
+  ): Promise<boolean> {
+    const contentData: UpdateContentDto = {
+      ...updateContentData,
+      ip,
+      author: user.username,
+    };
+    const userId = user.user_id;
+    const isSuccess = await this.content.update(userId, boardName, contentId, contentData);
+    return isSuccess;
+  }
+
+  // public async delete() {}
 }

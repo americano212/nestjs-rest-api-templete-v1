@@ -4,7 +4,7 @@ import { User as UserEntity } from '#entities/user.entity';
 
 import { ContentsRepository } from './content.repository';
 import { BoardService } from './board.service';
-import { CreateContentDto } from '../dto';
+import { CreateContentDto, UpdateContentDto } from '../dto';
 import { PageDto, PageOptionsDto } from '../dto/pagination';
 import { Content } from '../board.interface';
 
@@ -26,18 +26,34 @@ export class ContentService {
     return result ? true : false;
   }
 
-  public async findByBoardName(
+  public async findAll(
     boardName: string,
     pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<Content>> {
-    const result = await this.contentsRepository.findByBoardName(boardName, pageOptionsDto);
+    const result = await this.contentsRepository.findAllByBoardName(boardName, pageOptionsDto);
     if (result.meta.last_page < result.meta.page) throw new NotFoundException(`Invalid page`);
     return result;
   }
 
-  public async findOneContent(boardName: string, contentId: number): Promise<Content> {
+  public async findOne(boardName: string, contentId: number): Promise<Content> {
     const content = await this.contentsRepository.findOne(boardName, contentId);
     if (!content) throw new NotFoundException(`Invalid content_id OR board_name`);
     return content;
+  }
+
+  public async update(
+    userId: number,
+    boardName: string,
+    contentId: number,
+    contentData: UpdateContentDto,
+  ): Promise<boolean> {
+    const board = await this.board.findByBoardName(boardName);
+    const user = new UserEntity(userId);
+    const isSuccess = await this.contentsRepository.update(contentId, {
+      ...contentData,
+      user,
+      board,
+    });
+    return isSuccess;
   }
 }
