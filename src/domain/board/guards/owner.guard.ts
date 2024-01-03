@@ -17,6 +17,7 @@ export class OwnerGuard implements CanActivate {
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const guardType = this.reflector.get<OwnerGuardType>(OWNER_GUARD_KEY, context.getHandler());
+    if (!guardType) return true;
 
     const { params, headers } = context.switchToHttp().getRequest<Request>();
 
