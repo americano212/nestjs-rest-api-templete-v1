@@ -1,8 +1,8 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 import { BoardService } from '../providers';
-import { CreateBoardDto } from '../dto';
+import { CreateBoardDto, UpdateBoardDto } from '../dto';
 import { BoardGuard } from '../guards';
 import { Role, Roles } from 'src/common';
 
@@ -16,8 +16,15 @@ export class BoardController {
   @ApiBody({ type: CreateBoardDto })
   @Roles(Role.SuperAdmin)
   @Post()
-  public async createBoard(@Body() boardData: CreateBoardDto): Promise<boolean> {
+  public async create(@Body() boardData: CreateBoardDto): Promise<boolean> {
     const isSuccess = await this.board.create(boardData);
+    return isSuccess;
+  }
+
+  @ApiBody({ type: UpdateBoardDto })
+  @Put()
+  public async update(@Body() boardData: UpdateBoardDto) {
+    const isSuccess = await this.board.update(boardData);
     return isSuccess;
   }
 }
