@@ -32,4 +32,9 @@ export class BoardService {
     const isSuccess = await this.boardsRepository.delete(board_id);
     return isSuccess;
   }
+
+  public async restore(boardId: number): Promise<boolean> {
+    const isSuccess = await this.boardsRepository.restore(boardId);
+    return isSuccess;
+  }
 }

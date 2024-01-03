@@ -44,4 +44,12 @@ export class BoardController {
     const isSuccess = await this.board.delete(boardName);
     return isSuccess;
   }
+
+  @ApiParam({ name: 'board_id', required: true, description: '1' })
+  @Roles(Role.SuperAdmin)
+  @Post('/restore/:board_id')
+  public async restore(@Param('board_id') boardId: number): Promise<boolean> {
+    const isSuccess = await this.board.restore(boardId);
+    return isSuccess;
+  }
 }

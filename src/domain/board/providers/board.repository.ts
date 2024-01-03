@@ -30,4 +30,9 @@ export class BoardsRepository {
     const result = await this.boardsRepository.softDelete({ board_id: boardId });
     return result.affected ? true : false;
   }
+
+  public async restore(boardId: number): Promise<boolean> {
+    const result = await this.boardsRepository.restore({ board_id: boardId });
+    return result.affected ? true : false;
+  }
 }
