@@ -6,12 +6,13 @@ import { CreateContentDto, PageDto, PageOptionsDto, UpdateContentDto } from '../
 import { JwtAuthGuard, Payload } from 'src/auth';
 import { ReqUser } from 'src/common';
 import { Content } from '../board.interface';
-import { BoardGuardType } from '../enums';
-import { BoardRole } from '../decorator';
-import { BoardGuard } from '../guards';
+import { BoardGuardType, OwnerGuardType } from '../enums';
+import { BoardRole, Owner } from '../decorator';
+import { BoardGuard, OwnerGuard } from '../guards';
 
 @ApiBearerAuth()
 @ApiTags('Content')
+@UseGuards(OwnerGuard)
 @UseGuards(BoardGuard)
 @Controller('/board/:board_name/content')
 export class ContentController {
@@ -63,10 +64,10 @@ export class ContentController {
     return content;
   }
 
-  // TODO Check owner
   @ApiParam({ name: 'board_name', required: true, description: 'Admin Board' })
   @ApiParam({ name: 'content_id', required: true, description: '1' })
   @BoardRole(BoardGuardType.WRITE)
+  @Owner(OwnerGuardType.CONTENT_OWNER)
   @Put('/:content_id')
   @UseGuards(JwtAuthGuard)
   public async update(

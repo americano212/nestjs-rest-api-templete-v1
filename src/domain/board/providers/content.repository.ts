@@ -34,9 +34,9 @@ export class ContentsRepository {
     return { data: contents, meta: pageMetaDto };
   }
 
-  public async findOne(boardName: string, contentId: number): Promise<Content | null> {
+  public async findOne(boardName: string, contentId: number): Promise<ContentEntity | null> {
     const content = await this.contentsRepository.findOne({
-      relations: { board: true },
+      relations: { board: true, user: true },
       where: { board: { board_name: boardName }, content_id: contentId },
     });
     return content;

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { User as UserEntity } from '#entities/user.entity';
+import { Content as ContentEntity } from '#entities/board';
 
 import { ContentsRepository } from './content.repository';
 import { BoardService } from './board.service';
@@ -35,7 +36,7 @@ export class ContentService {
     return result;
   }
 
-  public async findOne(boardName: string, contentId: number): Promise<Content> {
+  public async findOne(boardName: string, contentId: number): Promise<ContentEntity> {
     const content = await this.contentsRepository.findOne(boardName, contentId);
     if (!content) throw new NotFoundException(`Invalid content_id OR board_name`);
     return content;
@@ -56,4 +57,6 @@ export class ContentService {
     });
     return isSuccess;
   }
+
+  public async delete() {}
 }
