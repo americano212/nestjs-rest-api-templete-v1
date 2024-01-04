@@ -13,7 +13,7 @@ import {
 import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { ContentService } from '../providers';
-import { CreateContentDto, PageDto, PageOptionsDto, UpdateContentDto } from '../dto';
+import { ContentDto, CreateContentDto, PageDto, PageOptionsDto, UpdateContentDto } from '../dto';
 import { JwtAuthGuard, Payload } from 'src/auth';
 import { ReqUser, Role, Roles } from 'src/common';
 import { Content } from '../board.interface';
@@ -40,7 +40,7 @@ export class ContentController {
     @Ip() ip: string,
     @ReqUser() user: Payload,
   ): Promise<boolean> {
-    const contentData: CreateContentDto = {
+    const contentData: ContentDto = {
       ...createContentData,
       ip,
       author: user.username,
@@ -87,7 +87,7 @@ export class ContentController {
     @Body() updateContentData: UpdateContentDto,
     @Ip() ip: string,
   ): Promise<boolean> {
-    const contentData: UpdateContentDto = {
+    const contentData: ContentDto = {
       ...updateContentData,
       ip,
     };

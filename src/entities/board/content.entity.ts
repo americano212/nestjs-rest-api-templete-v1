@@ -20,11 +20,11 @@ export class Content extends CoreEntity {
 
   @Column({ type: 'varchar', nullable: true })
   @IsString()
-  public author?: string;
+  public author?: string | null;
 
   @Column({ type: 'varchar', nullable: true })
   @IsString()
-  public ip?: string;
+  public ip?: string | null;
 
   @ManyToOne(() => User, (user) => user.contents, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'user_id' })

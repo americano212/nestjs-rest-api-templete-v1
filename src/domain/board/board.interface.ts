@@ -9,6 +9,6 @@ export interface Content {
   content_id: number;
   title: string;
   content: string;
-  author?: string;
-  ip?: string;
+  author?: string | null;
+  ip?: string | null;
 }

@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Content as ContentEntity } from '#entities/board';
 
-import { CreateContentDto, UpdateContentDto } from '../dto';
+import { ContentDto } from '../dto';
 import { PageDto, PageMetaDto, PageOptionsDto } from '../dto/pagination';
 import { Content } from '../board.interface';
 
@@ -14,7 +14,7 @@ export class ContentsRepository {
     @InjectRepository(ContentEntity) private contentsRepository: Repository<ContentEntity>,
   ) {}
 
-  public async create(contentData: CreateContentDto): Promise<ContentEntity | null> {
+  public async create(contentData: ContentDto): Promise<ContentEntity | null> {
     const content = await this.contentsRepository.save(contentData);
     return content ? content : null;
   }
@@ -42,7 +42,7 @@ export class ContentsRepository {
     return content;
   }
 
-  public async update(contentId: number, contentData: UpdateContentDto): Promise<boolean> {
+  public async update(contentId: number, contentData: ContentDto): Promise<boolean> {
     const result = await this.contentsRepository.update({ content_id: contentId }, contentData);
     return result.affected ? true : false;
   }

@@ -5,7 +5,7 @@ import { Content as ContentEntity } from '#entities/board';
 
 import { ContentsRepository } from './content.repository';
 import { BoardService } from './board.service';
-import { CreateContentDto, UpdateContentDto } from '../dto';
+import { ContentDto } from '../dto';
 import { PageDto, PageOptionsDto } from '../dto/pagination';
 import { Content } from '../board.interface';
 
@@ -19,11 +19,12 @@ export class ContentService {
   public async create(
     userId: number,
     boardName: string,
-    contentData: CreateContentDto,
+    contentData: ContentDto,
   ): Promise<boolean> {
     const board = await this.board.findByBoardName(boardName);
     const user = new UserEntity(userId);
-    const result = await this.contentsRepository.create({ ...contentData, user, board });
+    const content: ContentDto = { ...contentData, user, board };
+    const result = await this.contentsRepository.create(content);
     return result ? true : false;
   }
 
@@ -45,7 +46,7 @@ export class ContentService {
   public async update(
     boardName: string,
     contentId: number,
-    contentData: UpdateContentDto,
+    contentData: ContentDto,
   ): Promise<boolean> {
     const { user, board } = await this.findOne(boardName, contentId);
     const isSuccess = await this.contentsRepository.update(contentId, {
