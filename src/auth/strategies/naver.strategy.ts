@@ -5,7 +5,7 @@ import { Strategy, Profile } from 'passport-naver-v2';
 import { UserService } from '../../../src/shared/user';
 import { AuthService } from '../auth.service';
 import { Payload } from '../auth.interface';
-import { SNSUser } from 'src/shared/user/dto';
+import { SNSUserDto } from 'src/shared/user/dto';
 
 @Injectable()
 export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
@@ -26,7 +26,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     profile: Profile,
     done: CallableFunction,
   ): Promise<Payload> {
-    const naverUser: SNSUser = {
+    const naverUser: SNSUserDto = {
       username: profile.name || '',
       email: profile.email || '',
       social_id: profile.id,

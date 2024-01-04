@@ -4,7 +4,7 @@ import { Profile, Strategy } from 'passport-google-oauth20';
 
 import { UserService } from '../../../src/shared/user';
 import { AuthService } from '../auth.service';
-import { SNSUser } from 'src/shared/user/dto';
+import { SNSUserDto } from 'src/shared/user/dto';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -20,7 +20,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   }
 
-  // refreshToken을 얻고 싶다면 해당 메서드 설정 필수
   override authorizationParams(): { [key: string]: string } {
     return {
       access_type: 'offline',
@@ -34,7 +33,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: Profile,
     done: CallableFunction,
   ): Promise<void> {
-    const googleUser: SNSUser = {
+    const googleUser: SNSUserDto = {
       username: profile.displayName,
       email: profile._json.email || '',
       social_id: profile.id,

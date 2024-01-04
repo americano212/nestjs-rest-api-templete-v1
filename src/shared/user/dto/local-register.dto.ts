@@ -1,16 +1,10 @@
+import { PickType } from '@nestjs/mapped-types';
+import { CreateUserDto } from './create-user.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
-export class LocalRegisterDto {
-  @ApiProperty({ example: '홍길동' })
-  @IsString()
-  public username!: string;
-
+export class LocalRegisterDto extends PickType(CreateUserDto, ['username', 'email' as const]) {
   @ApiProperty({ example: 'test!password' })
   @IsString()
   public password!: string;
-
-  @ApiProperty({ example: 'test@example.com' })
-  @IsEmail()
-  public email!: string;
 }

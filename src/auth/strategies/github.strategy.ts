@@ -4,7 +4,7 @@ import { Profile, Strategy } from 'passport-github2';
 
 import { UserService } from '../../../src/shared/user';
 import { AuthService } from '../auth.service';
-import { SNSUser } from 'src/shared/user/dto';
+import { SNSUserDto } from 'src/shared/user/dto';
 
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
@@ -27,7 +27,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     done: CallableFunction,
   ): Promise<void> {
     if (!profile.emails) throw new HttpException('OAuth login need email', HttpStatus.BAD_REQUEST);
-    const githubUser: SNSUser = {
+    const githubUser: SNSUserDto = {
       username: profile.displayName,
       email: profile.emails[0].value,
       social_id: profile.id,

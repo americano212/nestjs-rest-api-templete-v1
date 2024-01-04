@@ -1,12 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { PickType } from '@nestjs/mapped-types';
+import { LocalRegisterDto } from 'src/shared/user/dto';
 
-export class LocalLoginDto {
-  @ApiProperty({ example: 'test@example.com' })
-  @IsString()
-  public email!: string;
-
-  @ApiProperty({ example: 'test!password' })
-  @IsString()
-  public password!: string;
-}
+export class LocalLoginDto extends PickType(LocalRegisterDto, ['email', 'password' as const]) {}

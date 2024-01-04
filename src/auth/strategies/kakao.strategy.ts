@@ -5,7 +5,7 @@ import { Strategy } from 'passport-kakao';
 import { UserService } from '../../../src/shared/user';
 import { AuthService } from '../auth.service';
 import { Payload } from '../auth.interface';
-import { SNSUser } from 'src/shared/user/dto';
+import { SNSUserDto } from 'src/shared/user/dto';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
@@ -27,7 +27,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     profile: any,
     done: CallableFunction,
   ): Promise<Payload> {
-    const kakaoUser: SNSUser = {
+    const kakaoUser: SNSUserDto = {
       username: profile.displayName,
       email: profile._json.kakao_account.email,
       social_id: String(profile.id),

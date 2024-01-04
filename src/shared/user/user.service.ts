@@ -6,8 +6,8 @@ import { User } from '#entities/index';
 import { UsersRepository } from './user.repository';
 import { RoleService } from '../role/providers';
 import { UtilService } from '../../common';
-import { LocalRegisterDto, AddRoleToUserDto } from './dto';
-import { SNSUser } from './dto';
+import { LocalRegisterDto, GiveRoleToUserDto } from './dto';
+import { SNSUserDto } from './dto';
 
 @Injectable()
 export class UserService {
@@ -18,7 +18,7 @@ export class UserService {
   ) {}
 
   @Transactional()
-  public async create(userData: LocalRegisterDto): Promise<User> {
+  public async createLocalUser(userData: LocalRegisterDto): Promise<User> {
     const { password, ...userWithoutPassword } = userData;
     const passwordHash = await this.util.passwordEncoding(password);
     const user = await this.usersRepository.create({
@@ -28,15 +28,15 @@ export class UserService {
     return user;
   }
 
-  public async createSNSUser(snsUser: SNSUser): Promise<User> {
-    const user = await this.usersRepository.create(snsUser);
+  public async createSNSUser(snsUserData: SNSUserDto): Promise<User> {
+    const user = await this.usersRepository.create(snsUserData);
     return user;
   }
 
-  public async addRole(addRoleData: AddRoleToUserDto): Promise<boolean> {
-    const { user_id, role_name } = addRoleData;
+  public async giveRole(giveRoleData: GiveRoleToUserDto): Promise<boolean> {
+    const { user_id, role_name } = giveRoleData;
 
-    const user = await this.usersRepository.getByUserId(user_id);
+    const user = await this.usersRepository.findOne(user_id);
     if (!user) throw new NotFoundException(`User ID ${user_id} NOT Found`);
 
     const isSuccess = await this.role.addRoleToUser(role_name, user);
@@ -46,7 +46,7 @@ export class UserService {
   }
 
   public async isExistEmail(email: string): Promise<boolean> {
-    const user = await this.usersRepository.getByEmail(email);
+    const user = await this.usersRepository.findOneByEmail(email);
     return user ? true : false;
   }
 }

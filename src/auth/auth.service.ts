@@ -5,7 +5,7 @@ import { ConfigService, UtilService } from '../common';
 import { UsersRepository } from '../shared/user';
 import { JwtPayload, JwtSign, Payload } from './auth.interface';
 import { User } from '#entities/index';
-import { SNSUser } from 'src/shared/user/dto';
+import { SNSUserDto } from 'src/shared/user/dto';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +17,7 @@ export class AuthService {
   ) {}
 
   public async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.usersRepository.getByEmail(email);
+    const user = await this.usersRepository.findOneByEmail(email);
     if (!user) return null;
     if (!user.passwordHash) return null;
     const isMatch = await this.util.passwordCompare(password, user.passwordHash);
@@ -26,10 +26,10 @@ export class AuthService {
     return user;
   }
 
-  public async validateSNSUser(snsUser: SNSUser): Promise<User> {
-    const user = await this.usersRepository.getByEmail(snsUser.email);
+  public async validateSNSUser(snsUserData: SNSUserDto): Promise<User> {
+    const user = await this.usersRepository.findOneByEmail(snsUserData.email);
     if (!user) throw Error();
-    if (snsUser.vendor !== user?.vendor || snsUser.social_id !== user?.social_id)
+    if (snsUserData.vendor !== user.vendor)
       throw new HttpException(`Email already exists in ${user.vendor}`, HttpStatus.BAD_REQUEST);
     return user;
   }
