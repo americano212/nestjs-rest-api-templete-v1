@@ -1,10 +1,10 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
 
 import { BoardService } from '../providers';
 import { AuthService, Payload } from 'src/auth';
 import { BoardGuardType } from '../enums';
-import { Reflector } from '@nestjs/core';
 import { BOARD_GUARD_KEY } from '../decorator';
 
 @Injectable()
