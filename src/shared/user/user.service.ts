@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Transactional } from 'typeorm-transactional';
 
-import { User } from '#entities/index';
+import { User } from '#entities/user.entity';
 
 import { UsersRepository } from './user.repository';
 import { RoleService } from '../role/providers';
