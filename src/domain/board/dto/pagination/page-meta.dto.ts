@@ -9,8 +9,9 @@ export class PageMetaDto {
   readonly hasNextPage: boolean;
 
   constructor({ pageOptionsDto, total }: PageMetaDtoParameters) {
-    this.page = pageOptionsDto.page <= 0 ? (this.page = 1) : pageOptionsDto.page;
-    this.take = pageOptionsDto.take ? pageOptionsDto.take : 10;
+    const { page, take } = pageOptionsDto;
+    this.page = page <= 0 ? (this.page = 1) : page;
+    this.take = take ? take : 10;
     this.total = total;
     this.last_page = Math.ceil(this.total / this.take);
     this.hasPreviousPage = this.page > 1;
