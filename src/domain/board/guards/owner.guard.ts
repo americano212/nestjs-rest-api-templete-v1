@@ -8,6 +8,11 @@ import { OWNER_GUARD_KEY } from '../decorator';
 import { Role } from 'src/common';
 import { ContentService } from '../providers';
 
+enum UNABLE_USER_ID {
+  OWNER_NOT_EXIST = -1,
+  REQ_USER_NOT_EXIST = 0,
+}
+
 @Injectable()
 export class OwnerGuard implements CanActivate {
   constructor(
@@ -15,6 +20,7 @@ export class OwnerGuard implements CanActivate {
     private readonly auth: AuthService,
     private reflector: Reflector,
   ) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const guardType = this.reflector.get<OwnerGuardType>(OWNER_GUARD_KEY, context.getHandler());
     if (!guardType) return true;
@@ -23,17 +29,26 @@ export class OwnerGuard implements CanActivate {
 
     const headerAuthorization = headers.authorization;
     if (!headerAuthorization) return false;
+
     const userRoles = await this.getUserRoles(headerAuthorization);
-    if (userRoles.includes(Role.SuperAdmin) || userRoles.includes(Role.Admin)) return true;
+    if (userRoles.includes(Role.SuperAdmin)) return true;
+
+    if (guardType === OwnerGuardType.ONLY_ADMIN) {
+      return userRoles.includes(Role.SuperAdmin) || userRoles.includes(Role.Admin) ? true : false;
+    }
 
     const userId = await this.getUserId(headerAuthorization);
 
-    let owner: number = -1;
+    let owner: number = UNABLE_USER_ID.OWNER_NOT_EXIST;
+
     if (guardType === OwnerGuardType.CONTENT_OWNER) {
       const boardName = params['board_name'];
       const contentId = Number(params['content_id']);
       const { user } = await this.content.findOne(boardName, contentId);
-      owner = user ? user.user_id : -1;
+      owner = user ? user.user_id : UNABLE_USER_ID.OWNER_NOT_EXIST;
+    }
+    if (guardType === OwnerGuardType.REPLY_OWNER) {
+      // TODO
     }
 
     return userId === owner ? true : false;
@@ -49,7 +64,8 @@ export class OwnerGuard implements CanActivate {
   private async getUserId(headerAuthorization: string): Promise<number> {
     const jwtToken = headerAuthorization.split('Bearer ')[1];
     const payload: Payload | null = this.auth.jwtVerify(jwtToken);
-    if (!payload) return 0;
-    return payload.user_id ? payload.user_id : 0;
+    if (!payload) return UNABLE_USER_ID.REQ_USER_NOT_EXIST;
+
+    return payload.user_id ? payload.user_id : UNABLE_USER_ID.REQ_USER_NOT_EXIST;
   }
 }
