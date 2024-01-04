@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Redirect, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { Request, Response } from 'express';
 
 import {
   AuthService,
@@ -28,16 +27,13 @@ export class AuthController {
   }
 
   @Get('logout')
-  public localLogout(@Req() req: Request, @Res() res: Response): void {
-    req.logout(() => {
-      res.redirect('/');
-    });
-  }
+  @Redirect('/')
+  public async localLogout(): Promise<void> {}
 
   // OAuth Login Controller
   @Get('login/google')
   @UseGuards(GoogleLoginGuard)
-  public async googleLogin() {}
+  public async googleLogin(): Promise<void> {}
 
   @Get('login/google/callback')
   @UseGuards(GoogleLoginGuard)
@@ -47,7 +43,7 @@ export class AuthController {
 
   @Get('login/github')
   @UseGuards(GithubLoginGuard)
-  public async githubLogin() {}
+  public async githubLogin(): Promise<void> {}
 
   @Get('login/github/callback')
   @UseGuards(GithubLoginGuard)
@@ -57,7 +53,7 @@ export class AuthController {
 
   @Get('login/kakao')
   @UseGuards(KakaoLoginGuard)
-  public async kakaoLogin() {}
+  public async kakaoLogin(): Promise<void> {}
 
   @Get('login/kakao/callback')
   @UseGuards(KakaoLoginGuard)
@@ -67,7 +63,7 @@ export class AuthController {
 
   @Get('login/naver')
   @UseGuards(NaverLoginGuard)
-  public async naverLogin() {}
+  public async naverLogin(): Promise<void> {}
 
   @Get('login/naver/callback')
   @UseGuards(NaverLoginGuard)

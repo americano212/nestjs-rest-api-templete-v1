@@ -1,3 +1,3 @@
 export class SuccessResponseDto {
-  public success!: boolean;
+  public isSuccess!: boolean;
 }
