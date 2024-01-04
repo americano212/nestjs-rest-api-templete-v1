@@ -38,6 +38,7 @@ export class ContentsRepository {
     const content = await this.contentsRepository.findOne({
       relations: { board: true, user: true },
       where: { board: { board_name: boardName }, content_id: contentId },
+      select: { user: { user_id: true }, board: { board_id: true } },
     });
     return content;
   }
