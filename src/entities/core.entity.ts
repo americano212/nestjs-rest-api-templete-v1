@@ -7,10 +7,10 @@ export class CoreEntity {
   created_at!: Date;
 
   @ApiProperty({ example: new Date(), description: '수정 일자' })
-  @UpdateDateColumn()
+  @UpdateDateColumn({ select: false })
   updated_at!: Date;
 
   @ApiProperty({ example: new Date(), description: '삭제 일자' })
-  @DeleteDateColumn()
+  @DeleteDateColumn({ select: false })
   deleted_at?: Date | null;
 }

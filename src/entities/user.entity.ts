@@ -18,19 +18,19 @@ export class User extends CoreEntity {
   @IsString()
   public passwordHash?: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', nullable: false, unique: true })
   @IsString()
   public email!: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, select: false })
   @IsString()
   public refreshToken?: string;
 
-  @Column({ type: 'varchar', default: '' })
+  @Column({ type: 'varchar', nullable: true, default: '', select: false })
   @IsString()
   public vendor?: string;
 
-  @Column({ type: 'varchar', nullable: true, unique: true })
+  @Column({ type: 'varchar', nullable: true, unique: true, select: false })
   @IsString()
   public social_id?: string;
 
