@@ -14,8 +14,7 @@ export class UserRolesRepository {
   ) {}
 
   public async create(userRoleData: CreateUserRoleDto): Promise<UserRole> {
-    const userRole = await this.userRolesRepository.save(userRoleData);
-    return userRole;
+    return await this.userRolesRepository.create(userRoleData);
   }
 
   public async findAllByUserId(userId: number): Promise<UserRole[]> {

@@ -1,8 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { PickType } from '@nestjs/mapped-types';
 
-export class CreateRoleDto {
-  @ApiProperty({ example: 'TestRole' })
-  @IsString()
-  public role_name!: string;
-}
+import { Role } from '#entities/role.entity';
+
+export class CreateRoleDto extends PickType(Role, ['role_name' as const]) {}

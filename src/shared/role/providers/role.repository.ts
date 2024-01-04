@@ -4,17 +4,17 @@ import { Repository } from 'typeorm';
 
 import { Role } from '#entities/role.entity';
 
+import { NullableType } from 'src/common/types';
+
 @Injectable()
 export class RolesRepository {
   constructor(@InjectRepository(Role) private rolesRepository: Repository<Role>) {}
 
   public async create(roleName: string): Promise<Role> {
-    const role = await this.rolesRepository.save({ role_name: roleName });
-    return role;
+    return await this.rolesRepository.create({ role_name: roleName });
   }
 
-  public async findRoleByName(roleName: string): Promise<Role | null> {
-    const role = await this.rolesRepository.findOneBy({ role_name: roleName });
-    return role ? role : null;
+  public async findRoleByName(roleName: string): Promise<NullableType<Role>> {
+    return await this.rolesRepository.findOneBy({ role_name: roleName });
   }
 }
