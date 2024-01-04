@@ -1,13 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { User as UserEntity } from '#entities/user.entity';
-import { Content as ContentEntity } from '#entities/board';
+import { Content } from '#entities/board';
 
 import { ContentsRepository } from './content.repository';
 import { BoardService } from './board.service';
 import { ContentDto } from '../dto';
 import { PageDto, PageOptionsDto } from '../dto/pagination';
-import { Content } from '../board.interface';
 
 @Injectable()
 export class ContentService {
@@ -20,24 +19,24 @@ export class ContentService {
     userId: number,
     boardName: string,
     contentData: ContentDto,
-  ): Promise<boolean> {
+  ): Promise<Content> {
     const board = await this.board.findByBoardName(boardName);
     const user = new UserEntity(userId);
     const content: ContentDto = { ...contentData, user, board };
-    const result = await this.contentsRepository.create(content);
-    return result ? true : false;
+
+    return await this.contentsRepository.create(content);
   }
 
   public async findAll(
     boardName: string,
     pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<Content>> {
-    const result = await this.contentsRepository.findAllByBoardName(boardName, pageOptionsDto);
-    if (result.meta.last_page < result.meta.page) throw new NotFoundException(`Invalid page`);
-    return result;
+    const content = await this.contentsRepository.findAllByBoardName(boardName, pageOptionsDto);
+    if (content.meta.last_page < content.meta.page) throw new NotFoundException(`Invalid page`);
+    return content;
   }
 
-  public async findOne(boardName: string, contentId: number): Promise<ContentEntity> {
+  public async findOne(boardName: string, contentId: number): Promise<Content> {
     const content = await this.contentsRepository.findOne(boardName, contentId);
     if (!content) throw new NotFoundException(`Invalid content_id OR board_name`);
     return content;
@@ -48,23 +47,16 @@ export class ContentService {
     contentId: number,
     contentData: ContentDto,
   ): Promise<boolean> {
-    const { user, board } = await this.findOne(boardName, contentId);
-    const isSuccess = await this.contentsRepository.update(contentId, {
-      ...contentData,
-      user,
-      board,
-    });
-    return isSuccess;
+    const {} = await this.findOne(boardName, contentId);
+    return await this.contentsRepository.update(contentId, contentData);
   }
 
   public async delete(boardName: string, contentId: number): Promise<boolean> {
     const {} = await this.findOne(boardName, contentId);
-    const isSuccess = await this.contentsRepository.delete(contentId);
-    return isSuccess;
+    return await this.contentsRepository.delete(contentId);
   }
 
   public async restore(contentId: number): Promise<boolean> {
-    const isSuccess = await this.contentsRepository.restore(contentId);
-    return isSuccess;
+    return await this.contentsRepository.restore(contentId);
   }
 }

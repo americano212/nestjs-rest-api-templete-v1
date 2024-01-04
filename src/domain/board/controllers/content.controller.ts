@@ -12,11 +12,12 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+import { Content } from '#entities/board';
+
 import { ContentService } from '../providers';
 import { ContentDto, CreateContentDto, PageDto, PageOptionsDto, UpdateContentDto } from '../dto';
 import { JwtAuthGuard, Payload } from 'src/auth';
 import { ReqUser, Role, Roles } from 'src/common';
-import { Content } from '../board.interface';
 import { BoardGuardType, OwnerGuardType } from '../enums';
 import { BoardRole, Owner } from '../decorator';
 import { BoardGuard, OwnerGuard } from '../guards';
@@ -39,11 +40,11 @@ export class ContentController {
     @Body() createContentData: CreateContentDto,
     @Ip() ip: string,
     @ReqUser() user: Payload,
-  ): Promise<SuccessResponseDto> {
+  ): Promise<Content> {
     const contentData: ContentDto = { ...createContentData, ip, author: user.username };
     const userId = user.user_id;
 
-    return { isSuccess: await this.content.create(userId, boardName, contentData) };
+    return await this.content.create(userId, boardName, contentData);
   }
 
   @ApiQuery({ name: 'page', required: false, description: '1' })
