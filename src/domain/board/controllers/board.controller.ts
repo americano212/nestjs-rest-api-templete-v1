@@ -1,11 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+
+import { Board } from '#entities/board';
 
 import { BoardService } from '../providers';
 import { CreateBoardDto, UpdateBoardDto } from '../dto';
 import { BoardGuard } from '../guards';
 import { Role, Roles } from 'src/common';
-import { Board } from '../board.interface';
 import { SuccessResponseDto } from 'src/common/dto';
 
 @ApiBearerAuth()
@@ -15,11 +16,10 @@ import { SuccessResponseDto } from 'src/common/dto';
 export class BoardController {
   constructor(private readonly board: BoardService) {}
 
-  @ApiBody({ type: CreateBoardDto })
   @Roles(Role.SuperAdmin)
   @Post()
-  public async create(@Body() boardData: CreateBoardDto): Promise<SuccessResponseDto> {
-    return { isSuccess: await this.board.create(boardData) };
+  public async create(@Body() boardData: CreateBoardDto): Promise<Board> {
+    return await this.board.create(boardData);
   }
 
   @ApiParam({ name: 'board_name', required: true, description: 'Admin Board' })
@@ -28,7 +28,6 @@ export class BoardController {
     return await this.board.findByBoardName(boardName);
   }
 
-  @ApiBody({ type: UpdateBoardDto })
   @Roles(Role.SuperAdmin)
   @Put()
   public async update(@Body() boardData: UpdateBoardDto): Promise<SuccessResponseDto> {

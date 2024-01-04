@@ -6,17 +6,17 @@ import { Board } from '#entities/board';
 
 import { CreateBoardDto } from '../dto/create-board.dto';
 import { UpdateBoardDto } from '../dto';
+import { NullableType } from 'src/common/types';
 
 @Injectable()
 export class BoardsRepository {
   constructor(@InjectRepository(Board) private boardsRepository: Repository<Board>) {}
 
-  public async create(boardData: CreateBoardDto): Promise<Board | null> {
-    const board = await this.boardsRepository.save(boardData);
-    return board ? board : null;
+  public async create(boardData: CreateBoardDto): Promise<Board> {
+    return await this.boardsRepository.create(boardData);
   }
 
-  public async findByBoardName(boardName: string): Promise<Board | null> {
+  public async findByBoardName(boardName: string): Promise<NullableType<Board>> {
     const board = await this.boardsRepository.findOneBy({ board_name: boardName });
     return board ? board : null;
   }

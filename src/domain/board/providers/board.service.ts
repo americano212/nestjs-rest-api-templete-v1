@@ -10,9 +10,8 @@ import { UpdateBoardDto } from '../dto';
 export class BoardService {
   constructor(private readonly boardsRepository: BoardsRepository) {}
 
-  public async create(boardData: CreateBoardDto): Promise<boolean> {
-    const board = await this.boardsRepository.create(boardData);
-    return board ? true : false;
+  public async create(boardData: CreateBoardDto): Promise<Board> {
+    return await this.boardsRepository.create(boardData);
   }
 
   public async findByBoardName(boardName: string): Promise<Board> {
@@ -23,18 +22,15 @@ export class BoardService {
 
   public async update(boardData: UpdateBoardDto): Promise<boolean> {
     const { board_id } = await this.findByBoardName(boardData.board_name);
-    const isSuccess = await this.boardsRepository.update(board_id, boardData);
-    return isSuccess;
+    return await this.boardsRepository.update(board_id, boardData);
   }
 
   public async delete(boardName: string): Promise<boolean> {
     const { board_id } = await this.findByBoardName(boardName);
-    const isSuccess = await this.boardsRepository.delete(board_id);
-    return isSuccess;
+    return await this.boardsRepository.delete(board_id);
   }
 
   public async restore(boardId: number): Promise<boolean> {
-    const isSuccess = await this.boardsRepository.restore(boardId);
-    return isSuccess;
+    return await this.boardsRepository.restore(boardId);
   }
 }
