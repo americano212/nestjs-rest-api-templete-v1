@@ -27,6 +27,11 @@ export class RolesGuard implements CanActivate {
     const payload: Payload | null = this.auth.jwtVerify(jwtToken);
     if (!payload) return false;
 
-    return requiredRoles.some((role) => payload.roles?.includes(role));
+    const userRoles: string[] = [];
+    payload.roles?.forEach((role) => {
+      userRoles.push(role.role_name);
+    });
+
+    return requiredRoles.some((role) => userRoles?.includes(role));
   }
 }

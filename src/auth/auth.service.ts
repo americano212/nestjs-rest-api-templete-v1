@@ -2,8 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { ConfigService, UtilService } from '../common';
-import { SNSUser, User, UsersRepository } from '../shared/user';
+import { UsersRepository } from '../shared/user';
 import { JwtPayload, JwtSign, Payload } from './auth.interface';
+import { User } from '#entities/index';
+import { SNSUser } from 'src/shared/user/dto';
 
 @Injectable()
 export class AuthService {

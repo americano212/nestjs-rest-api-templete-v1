@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, Profile } from 'passport-naver-v2';
 
-import { SNSUser, UserService } from '../../../src/shared/user';
+import { UserService } from '../../../src/shared/user';
 import { AuthService } from '../auth.service';
 import { Payload } from '../auth.interface';
+import { SNSUser } from 'src/shared/user/dto';
 
 @Injectable()
 export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
@@ -40,6 +41,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     const user = isExistEmail
       ? await this.auth.validateSNSUser(naverUser)
       : await this.user.createSNSUser(naverUser);
+
     return done(null, user);
   }
 }

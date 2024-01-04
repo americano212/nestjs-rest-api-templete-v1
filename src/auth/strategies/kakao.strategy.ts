@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-kakao';
 
-import { SNSUser, UserService } from '../../../src/shared/user';
+import { UserService } from '../../../src/shared/user';
 import { AuthService } from '../auth.service';
 import { Payload } from '../auth.interface';
+import { SNSUser } from 'src/shared/user/dto';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {

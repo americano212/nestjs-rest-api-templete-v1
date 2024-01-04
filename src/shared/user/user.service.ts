@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Transactional } from 'typeorm-transactional';
 
+import { User } from '#entities/index';
+
 import { UsersRepository } from './user.repository';
 import { RoleService } from '../role/providers';
 import { UtilService } from '../../common';
 import { LocalRegisterDto, AddRoleToUserDto } from './dto';
-import { SNSUser, User } from './user.interface';
+import { SNSUser } from './dto';
 
 @Injectable()
 export class UserService {

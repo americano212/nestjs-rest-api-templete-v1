@@ -3,8 +3,8 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { LocalRegisterDto, AddRoleToUserDto } from './dto';
 import { UserService } from './user.service';
-import { User } from './user.interface';
 import { SuccessResponseDto } from 'src/common/dto';
+import { User } from '#entities/index';
 
 @ApiTags('User')
 @Controller()

@@ -58,7 +58,11 @@ export class OwnerGuard implements CanActivate {
     const jwtToken = headerAuthorization.split('Bearer ')[1];
     const payload: Payload | null = this.auth.jwtVerify(jwtToken);
     if (!payload) return [];
-    return payload.roles ? payload.roles : [];
+    const roles: string[] = [];
+    payload.roles?.forEach((role) => {
+      roles.push(role.role_name);
+    });
+    return roles;
   }
 
   private async getUserId(headerAuthorization: string): Promise<number> {
