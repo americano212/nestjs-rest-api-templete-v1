@@ -1,4 +1,4 @@
-import { Logger as NestLogger } from '@nestjs/common';
+import { Logger as NestLogger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import type { NestExpressApplication } from '@nestjs/platform-express';
@@ -31,6 +31,9 @@ async function bootstrap(): Promise<string> {
   }
 
   app.enableShutdownHooks();
+
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
   await app.listen(process.env['PORT'] || 3000);
 
   return app.getUrl();
