@@ -5,6 +5,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategy';
 
 import { AuthModule } from './auth';
 import { CommonModule } from './common';
@@ -26,6 +27,7 @@ import { DomainModule } from './domain';
     TypeOrmModule.forRootAsync({
       useFactory: (config: ConfigService) => ({
         ...config.get<TypeOrmModuleOptions>('db'),
+        namingStrategy: new SnakeNamingStrategy(),
       }),
       inject: [ConfigService],
       async dataSourceFactory(option) {
