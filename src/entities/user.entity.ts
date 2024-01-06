@@ -1,9 +1,10 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { IsEmail, IsInt, IsString } from 'class-validator';
+
 import { CoreEntity } from './core.entity';
-import { IsInt, IsString } from 'class-validator';
 import { UserRole } from './user-role.entity';
 import { Content } from './board';
-import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('user')
 export class User extends CoreEntity {
@@ -22,7 +23,7 @@ export class User extends CoreEntity {
 
   @ApiProperty({ example: 'test@example.com' })
   @Column({ type: 'varchar', nullable: false, unique: true })
-  @IsString()
+  @IsEmail()
   public email!: string;
 
   @Column({ type: 'varchar', nullable: true, select: false })

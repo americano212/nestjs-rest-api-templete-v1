@@ -1,4 +1,5 @@
-import { UserRole } from '#entities/user-role.entity';
-import { PickType } from '@nestjs/mapped-types';
+import { PickType } from '@nestjs/swagger';
 
-export class CreateUserRoleDto extends PickType(UserRole, ['user', 'role', 'role_name' as const]) {}
+import { UserRole } from '#entities/user-role.entity';
+
+export class CreateUserRoleDto extends PickType(UserRole, ['user', 'role', 'role_name'] as const) {}

@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 import { User } from '#entities/user.entity';
 
@@ -13,6 +13,7 @@ import { Role, Roles } from 'src/common';
 export class UserController {
   constructor(private readonly user: UserService) {}
 
+  @ApiBody({ type: LocalRegisterDto })
   @Post('register')
   public async localRegister(@Body() localRegisterData: LocalRegisterDto): Promise<User> {
     return await this.user.createLocalUser(localRegisterData);
