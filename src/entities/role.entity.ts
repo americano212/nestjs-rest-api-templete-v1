@@ -8,12 +8,12 @@ import { ApiProperty } from '@nestjs/swagger';
 export class Role {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true, name: 'role_id' })
   @IsInt()
-  public role_id!: number;
+  public roleId!: number;
 
   @ApiProperty({ example: 'Test' })
   @Column({ type: 'varchar', nullable: false, unique: true })
   @IsString()
-  public role_name!: string;
+  public roleName!: string;
 
   @OneToMany(() => UserRole, (userRole) => userRole.role)
   users?: UserRole[];

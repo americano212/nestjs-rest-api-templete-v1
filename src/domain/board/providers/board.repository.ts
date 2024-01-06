@@ -17,22 +17,22 @@ export class BoardsRepository {
   }
 
   public async findByBoardName(boardName: string): Promise<NullableType<Board>> {
-    const board = await this.boardsRepository.findOneBy({ board_name: boardName });
+    const board = await this.boardsRepository.findOneBy({ boardName: boardName });
     return board ? board : null;
   }
 
   public async update(boardId: number, boardData: UpdateBoardDto): Promise<boolean> {
-    const result = await this.boardsRepository.update({ board_id: boardId }, boardData);
+    const result = await this.boardsRepository.update({ boardId: boardId }, boardData);
     return result.affected ? true : false;
   }
 
   public async delete(boardId: number): Promise<boolean> {
-    const result = await this.boardsRepository.softDelete({ board_id: boardId });
+    const result = await this.boardsRepository.softDelete({ boardId: boardId });
     return result.affected ? true : false;
   }
 
   public async restore(boardId: number): Promise<boolean> {
-    const result = await this.boardsRepository.restore({ board_id: boardId });
+    const result = await this.boardsRepository.restore({ boardId: boardId });
     return result.affected ? true : false;
   }
 }

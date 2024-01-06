@@ -30,7 +30,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     const githubUser: SNSUserDto = {
       username: profile.displayName,
       email: profile.emails[0].value,
-      social_id: profile.id,
+      socialId: profile.id,
       vendor: 'github',
     };
     console.log('accessToken : ' + accessToken);

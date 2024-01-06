@@ -10,7 +10,7 @@ export class UserRole {
     unsigned: true,
     name: 'user_role_id',
   })
-  user_role_id!: number;
+  userRoleId!: number;
 
   @Column({ type: 'varchar', nullable: false })
   @IsString()

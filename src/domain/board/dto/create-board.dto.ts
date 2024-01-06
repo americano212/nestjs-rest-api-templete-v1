@@ -1,16 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { Board } from '#entities/board';
+import { PickType } from '@nestjs/swagger';
 
-export class CreateBoardDto {
-  @ApiProperty({ example: 'Admin Board' })
-  @IsString()
-  public board_name!: string;
-
-  @ApiProperty({ example: ['SuperAdmin'] })
-  @IsString()
-  public board_read_roles!: string[];
-
-  @ApiProperty({ example: ['SuperAdmin'] })
-  @IsString()
-  public board_write_roles!: string[];
-}
+export class CreateBoardDto extends PickType(Board, [
+  'boardName',
+  'boardReadRoles',
+  'boardWriteRoles',
+] as const) {}

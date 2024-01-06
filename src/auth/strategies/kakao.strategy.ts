@@ -30,7 +30,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     const kakaoUser: SNSUserDto = {
       username: profile.displayName,
       email: profile._json.kakao_account.email,
-      social_id: String(profile.id),
+      socialId: String(profile.id),
       vendor: 'kakao',
     };
     console.log('accessToken : ' + accessToken);

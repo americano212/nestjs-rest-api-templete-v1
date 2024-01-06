@@ -60,7 +60,7 @@ export class Seed1703915494755 implements MigrationInterface {
     const isExistEmail = Number(result[0].cnt) ? true : false;
     if (isExistEmail) throw Error();
     const resultSuperAdmin = await queryRunner.query(
-      `INSERT INTO user (username, email, passwordHash) 
+      `INSERT INTO user (username, email, password_hash) 
       VALUES ('SuperAdmin', '${superAdminEmail}', '${superAdminPasswordHash}')`,
     );
     const superAdminId = resultSuperAdmin.insertId;

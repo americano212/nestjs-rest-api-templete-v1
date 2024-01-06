@@ -5,6 +5,6 @@ import { User } from '#entities/index';
 export class SNSUserDto extends PickType(User, [
   'username',
   'email',
-  'social_id',
+  'socialId',
   'vendor',
 ] as const) {}

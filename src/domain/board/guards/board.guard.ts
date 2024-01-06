@@ -39,13 +39,13 @@ export class BoardGuard implements CanActivate {
   }
 
   private async getBoardReadRequiredRoles(boardName: string): Promise<string[]> {
-    const { board_read_roles } = await this.board.findByBoardName(boardName);
-    return board_read_roles;
+    const { boardReadRoles } = await this.board.findByBoardName(boardName);
+    return boardReadRoles;
   }
 
   private async getBoardWriteRequiredRoles(boardName: string): Promise<string[]> {
-    const { board_write_roles } = await this.board.findByBoardName(boardName);
-    return board_write_roles;
+    const { boardWriteRoles } = await this.board.findByBoardName(boardName);
+    return boardWriteRoles;
   }
 
   private async getUserRoles(headerAuthorization: string): Promise<string[]> {

@@ -45,7 +45,7 @@ export class OwnerGuard implements CanActivate {
       const boardName = params['board_name'];
       const contentId = Number(params['content_id']);
       const { user } = await this.content.findOne(boardName, contentId);
-      owner = user ? user.user_id : UNABLE_USER_ID.OWNER_NOT_EXIST;
+      owner = user ? user.userId : UNABLE_USER_ID.OWNER_NOT_EXIST;
     }
     if (guardType === OwnerGuardType.REPLY_OWNER) {
       // TODO

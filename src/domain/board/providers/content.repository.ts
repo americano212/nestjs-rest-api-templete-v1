@@ -24,7 +24,7 @@ export class ContentsRepository {
       take: pageOptionsDto.take,
       skip: pageOptionsDto.skip,
       relations: { board: true },
-      where: { board: { board_name: boardName } },
+      where: { board: { boardName: boardName } },
     });
     const pageMetaDto = new PageMetaDto({ pageOptionsDto, total });
 
@@ -34,23 +34,23 @@ export class ContentsRepository {
   public async findOne(boardName: string, contentId: number): Promise<NullableType<Content>> {
     return await this.contentsRepository.findOne({
       relations: { board: true, user: true },
-      where: { board: { board_name: boardName }, content_id: contentId },
-      select: { user: { user_id: true }, board: { board_id: true } },
+      where: { board: { boardName: boardName }, contentId: contentId },
+      select: { user: { userId: true }, board: { boardId: true } },
     });
   }
 
   public async update(contentId: number, contentData: ContentDto): Promise<boolean> {
-    const result = await this.contentsRepository.update({ content_id: contentId }, contentData);
+    const result = await this.contentsRepository.update({ contentId: contentId }, contentData);
     return result.affected ? true : false;
   }
 
   public async delete(contentId: number): Promise<boolean> {
-    const result = await this.contentsRepository.softDelete({ content_id: contentId });
+    const result = await this.contentsRepository.softDelete({ contentId: contentId });
     return result.affected ? true : false;
   }
 
   public async restore(contentId: number): Promise<boolean> {
-    const result = await this.contentsRepository.restore({ content_id: contentId });
+    const result = await this.contentsRepository.restore({ contentId: contentId });
     return result.affected ? true : false;
   }
 }

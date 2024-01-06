@@ -29,7 +29,7 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     const naverUser: SNSUserDto = {
       username: profile.name || '',
       email: profile.email || '',
-      social_id: profile.id,
+      socialId: profile.id,
       vendor: 'naver',
     };
     console.log('accessToken : ' + accessToken);

@@ -36,7 +36,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const googleUser: SNSUserDto = {
       username: profile.displayName,
       email: profile._json.email || '',
-      social_id: profile.id,
+      socialId: profile.id,
       vendor: 'google',
     };
     console.log('accessToken : ' + accessToken);

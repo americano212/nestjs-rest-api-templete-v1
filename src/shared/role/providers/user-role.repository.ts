@@ -20,7 +20,7 @@ export class UserRolesRepository {
   public async findAllByUserId(userId: number): Promise<UserRole[]> {
     const userRoles = await this.userRolesRepository.find({
       relations: { user: true, role: true },
-      where: { user: { user_id: userId } },
+      where: { user: { userId: userId } },
     });
     return userRoles;
   }

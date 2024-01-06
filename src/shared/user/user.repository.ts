@@ -18,7 +18,7 @@ export class UsersRepository {
   public async findOne(userId: number): Promise<NullableType<User>> {
     return await this.usersRepository.findOne({
       relations: { roles: true },
-      where: { user_id: userId },
+      where: { userId: userId },
     });
   }
 
@@ -27,11 +27,11 @@ export class UsersRepository {
       relations: { roles: true },
       where: { email: email },
       select: {
-        user_id: true,
+        userId: true,
         username: true,
         email: true,
         vendor: true,
-        social_id: true,
+        socialId: true,
         passwordHash: true,
         roles: { role_name: true },
       },
@@ -47,7 +47,7 @@ export class UsersRepository {
   }
 
   public async setRefreshToken(userId: number, token: string): Promise<boolean> {
-    const result = await this.usersRepository.update({ user_id: userId }, { refreshToken: token });
+    const result = await this.usersRepository.update({ userId: userId }, { refreshToken: token });
     return result.affected ? true : false;
   }
 }

@@ -21,13 +21,13 @@ export class BoardService {
   }
 
   public async update(boardData: UpdateBoardDto): Promise<boolean> {
-    const { board_id } = await this.findByBoardName(boardData.board_name);
-    return await this.boardsRepository.update(board_id, boardData);
+    const { boardId } = await this.findByBoardName(boardData.boardName);
+    return await this.boardsRepository.update(boardId, boardData);
   }
 
   public async delete(boardName: string): Promise<boolean> {
-    const { board_id } = await this.findByBoardName(boardName);
-    return await this.boardsRepository.delete(board_id);
+    const { boardId } = await this.findByBoardName(boardName);
+    return await this.boardsRepository.delete(boardId);
   }
 
   public async restore(boardId: number): Promise<boolean> {

@@ -10,7 +10,7 @@ import { Content } from './board';
 export class User extends CoreEntity {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true, name: 'user_id' })
   @IsInt()
-  public user_id!: number;
+  public userId!: number;
 
   @ApiProperty({ example: '홍길동' })
   @Column({ type: 'varchar', nullable: true })
@@ -36,7 +36,7 @@ export class User extends CoreEntity {
 
   @Column({ type: 'varchar', nullable: true, unique: true, select: false })
   @IsString()
-  public social_id?: string;
+  public socialId?: string;
 
   @OneToMany(() => UserRole, (userRole) => userRole.user)
   public roles?: UserRole[];
@@ -46,6 +46,6 @@ export class User extends CoreEntity {
 
   constructor(userId?: number) {
     super();
-    if (userId) this.user_id = userId;
+    if (userId) this.userId = userId;
   }
 }

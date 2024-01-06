@@ -15,7 +15,7 @@ export class RoleService {
   ) {}
 
   public async create(roleData: CreateRoleDto): Promise<Role> {
-    return await this.rolesRepository.create(roleData.role_name);
+    return await this.rolesRepository.create(roleData.roleName);
   }
 
   public async giveRoleToUser(roleName: string, user: User): Promise<boolean> {
@@ -29,7 +29,7 @@ export class RoleService {
 
     const isExistRoleToUser = userRoles.includes(roleName);
     if (isExistRoleToUser)
-      throw new BadRequestException(`'${roleName}' already exist role to user '${user.user_id}'`);
+      throw new BadRequestException(`'${roleName}' already exist role to user '${user.userId}'`);
 
     const userRole = await this.userRolesRepository.create({ user, role, role_name: roleName });
     return userRole ? true : false;

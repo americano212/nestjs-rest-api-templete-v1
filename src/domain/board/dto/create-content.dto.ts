@@ -1,14 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { PickType } from '@nestjs/swagger';
+import { ContentDto } from './content.dto';
 
-export class CreateContentDto {
-  @ApiProperty({ example: 'Test Title' })
-  @IsString()
-  @IsNotEmpty()
-  public title!: string;
-
-  @ApiProperty({ example: 'Test Content' })
-  @IsString()
-  @IsNotEmpty()
-  public content!: string;
-}
+export class CreateContentDto extends PickType(ContentDto, ['title', 'content'] as const) {}
