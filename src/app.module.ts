@@ -20,7 +20,7 @@ import { DomainModule } from './domain';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Global 모듈로 설정
+      isGlobal: true,
       load: [configuration],
     }),
     TypeOrmModule.forRootAsync({
