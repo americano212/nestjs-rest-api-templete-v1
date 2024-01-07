@@ -9,6 +9,7 @@ import { AppModule } from './app.module';
 import { middleware } from './app.middleware';
 import { APIDocument } from './swagger.docs';
 import { winstonLogger } from './config';
+import { ValidationException } from './common/exceptions';
 
 async function bootstrap(): Promise<string> {
   initializeTransactionalContext();
@@ -32,7 +33,17 @@ async function bootstrap(): Promise<string> {
 
   app.enableShutdownHooks();
 
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      exceptionFactory: (errors) => {
+        const result = errors.map((error) => ({
+          [error.property]: error.constraints,
+        }));
+        return new ValidationException(result);
+      },
+      transform: true,
+    }),
+  );
 
   await app.listen(process.env['PORT'] || 3000);
 
