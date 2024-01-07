@@ -35,12 +35,7 @@ async function bootstrap(): Promise<string> {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      exceptionFactory: (errors) => {
-        const result = errors.map((error) => ({
-          [error.property]: error.constraints,
-        }));
-        return new ValidationException(result);
-      },
+      exceptionFactory: (errors) => new ValidationException(errors),
       transform: true,
     }),
   );

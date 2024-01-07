@@ -20,10 +20,15 @@ export class ExceptionsFilter {
     const req = ctx.getRequest<Request>();
     const statusCode = this.getHttpStatus(exception);
     const datetime = new Date();
-
+    console.log('exception', exception);
     message = exception instanceof HttpException ? exception.message : message;
     message = exception instanceof QueryFailedError ? 'Already Exist' : message;
-    message = exception instanceof ValidationException ? exception.getResponse() : message;
+
+    if (exception instanceof ValidationException) {
+      message = exception.errors.map((error) => ({
+        [error.property]: error.constraints,
+      }));
+    }
 
     const errorResponse = {
       statusCode: statusCode,
