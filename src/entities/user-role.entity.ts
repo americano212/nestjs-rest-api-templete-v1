@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column } from 't
 import { User } from './user.entity';
 import { Role } from './role.entity';
 import { IsNotEmpty, IsString, Length } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class UserRole {
@@ -12,6 +13,7 @@ export class UserRole {
   })
   userRoleId!: number;
 
+  @ApiProperty({ example: 'Test' })
   @Column({ type: 'varchar', nullable: false })
   @IsNotEmpty()
   @Length(4, 12)

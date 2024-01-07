@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { IsInt, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, Length } from 'class-validator';
 
 import { UserRole } from './user-role.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -12,6 +12,8 @@ export class Role {
 
   @ApiProperty({ example: 'Test' })
   @Column({ type: 'varchar', nullable: false, unique: true })
+  @IsNotEmpty()
+  @Length(4, 12)
   @IsString()
   public roleName!: string;
 

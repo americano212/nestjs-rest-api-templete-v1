@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { IsInt, IsString } from 'class-validator';
+import { IsIP, IsInt, IsNotEmpty, IsString, Length, Max } from 'class-validator';
 
 import { User, CoreEntity } from '..';
 import { Board } from '.';
@@ -13,21 +13,26 @@ export class Content extends CoreEntity {
 
   @ApiProperty({ example: 'Test Title' })
   @Column({ type: 'varchar', nullable: false })
+  @IsNotEmpty()
+  @Max(100)
   @IsString()
   public title!: string;
 
   @ApiProperty({ example: 'Test Content' })
   @Column({ type: 'text', nullable: false })
+  @IsNotEmpty()
   @IsString()
   public content!: string;
 
   @ApiProperty({ example: 'Author Name' })
   @Column({ type: 'varchar', nullable: true })
+  @Length(2, 10)
   @IsString()
   public author?: string | null;
 
   @ApiProperty({ example: '127.0.0.1' })
   @Column({ type: 'varchar', nullable: true })
+  @IsIP()
   @IsString()
   public ip?: string | null;
 
