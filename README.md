@@ -22,6 +22,7 @@ NestJS REST API templete for Korea user.
 - [x] Slack Alert when throw ERROR
 - [x] Logging(winston)
 - [x] Swagger
+- [x] Validate DTOs with Entities
 - [x] Unit Test(Jest)
 - [ ] E2E Test
 - [ ] File upload
