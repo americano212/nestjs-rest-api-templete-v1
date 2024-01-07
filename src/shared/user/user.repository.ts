@@ -33,7 +33,7 @@ export class UsersRepository {
         vendor: true,
         socialId: true,
         passwordHash: true,
-        roles: { role_name: true },
+        roles: { roleName: true },
       },
     });
   }

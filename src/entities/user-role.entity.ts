@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column } from 'typeorm';
 import { User } from './user.entity';
 import { Role } from './role.entity';
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString, Length } from 'class-validator';
 
 @Entity()
 export class UserRole {
@@ -13,8 +13,10 @@ export class UserRole {
   userRoleId!: number;
 
   @Column({ type: 'varchar', nullable: false })
+  @IsNotEmpty()
+  @Length(4, 12)
   @IsString()
-  public role_name!: string;
+  public roleName!: string;
 
   @ManyToOne(() => User, (user) => user.roles, { cascade: true })
   @JoinColumn({ name: 'user_id' })

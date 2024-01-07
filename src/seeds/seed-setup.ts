@@ -10,8 +10,8 @@ export class Seed1703915494755 implements MigrationInterface {
     const isUserTableExist = await this.checkTableExist('user', queryRunner);
     const isUserRoleTableExist = await this.checkTableExist('user_role', queryRunner);
     if (isRoleTableExist) {
-      for (const role_name in Role) {
-        await this.createSeedRole(role_name, queryRunner);
+      for (const roleName in Role) {
+        await this.createSeedRole(roleName, queryRunner);
       }
     }
     if (isUserTableExist && isUserRoleTableExist) await this.createSuperAdmin(queryRunner);
@@ -38,10 +38,10 @@ export class Seed1703915494755 implements MigrationInterface {
     return Number(result[0].cnt) ? true : false;
   }
 
-  private async createSeedRole(role_name: string, queryRunner: QueryRunner) {
-    const isExist = await queryRunner.query(`SELECT * FROM role WHERE role_name='${role_name}'`);
+  private async createSeedRole(roleName: string, queryRunner: QueryRunner) {
+    const isExist = await queryRunner.query(`SELECT * FROM role WHERE role_name='${roleName}'`);
     if (!isExist.length)
-      await queryRunner.query(`INSERT INTO role (role_name) VALUES ('${role_name}')`);
+      await queryRunner.query(`INSERT INTO role (role_name) VALUES ('${roleName}')`);
   }
 
   // TODO transaction

@@ -24,14 +24,14 @@ export class RoleService {
 
     const userRoles: string[] = [];
     user.roles?.forEach((user_role) => {
-      userRoles.push(user_role.role_name);
+      userRoles.push(user_role.roleName);
     });
 
     const isExistRoleToUser = userRoles.includes(roleName);
     if (isExistRoleToUser)
       throw new BadRequestException(`'${roleName}' already exist role to user '${user.userId}'`);
 
-    const userRole = await this.userRolesRepository.create({ user, role, role_name: roleName });
+    const userRole = await this.userRolesRepository.create({ user, role, roleName: roleName });
     return userRole ? true : false;
   }
 }
