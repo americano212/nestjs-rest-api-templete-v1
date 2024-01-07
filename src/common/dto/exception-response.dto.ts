@@ -6,5 +6,5 @@ export class ExceptionResponse {
   public path!: string;
   public method!: string;
   public message!: string;
-  public error?: string | Array<object> | object;
+  public detail?: string | Array<object> | object;
 }

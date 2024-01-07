@@ -1,14 +1,14 @@
 import { Catch, ArgumentsHost, HttpStatus, HttpException, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
-import { ValidationException } from '../exceptions';
+import { ExceptionResponse } from '../dto';
 
 enum MysqlErrorCode {
   ALREADY_EXIST = 'ER_DUP_ENTRY',
 }
 
 @Catch()
-export class ExceptionsFilter {
+export class AllExceptionsFilter {
   private readonly logger: Logger = new Logger();
 
   public catch(exception: unknown, host: ArgumentsHost): void {
@@ -24,13 +24,7 @@ export class ExceptionsFilter {
     message = exception instanceof HttpException ? exception.message : message;
     message = exception instanceof QueryFailedError ? 'Already Exist' : message;
 
-    if (exception instanceof ValidationException) {
-      message = exception.errors.map((error) => ({
-        [error.property]: error.constraints,
-      }));
-    }
-
-    const errorResponse = {
+    const exceptionResponse: ExceptionResponse = {
       statusCode: statusCode,
       timestamp: datetime,
       path: req.url,
@@ -39,12 +33,12 @@ export class ExceptionsFilter {
     };
 
     if (statusCode >= HttpStatus.INTERNAL_SERVER_ERROR) {
-      this.logger.error({ err: errorResponse, args: { req, res } });
+      this.logger.error({ err: exceptionResponse, args: { req, res } });
     } else {
-      this.logger.warn({ err: errorResponse, args });
+      this.logger.warn({ err: exceptionResponse, args });
     }
-
-    res.status(statusCode).json(errorResponse);
+    console.log('Check1');
+    res.status(statusCode).json(exceptionResponse);
   }
 
   private getHttpStatus(exception: unknown): HttpStatus {

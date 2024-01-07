@@ -14,7 +14,7 @@ import { BaseModule } from './base';
 import { AppController } from './app.controller';
 import { configuration } from './config';
 import { RolesGuard } from './common/guards/roles.guard';
-import { ExceptionsFilter } from './common/filters';
+import { AllExceptionsFilter, ValidationExceptionFilter } from './common/filters';
 import { ErrorsInterceptor } from './common/interceptors';
 import { DomainModule } from './domain';
 
@@ -48,7 +48,11 @@ import { DomainModule } from './domain';
     },
     {
       provide: APP_FILTER,
-      useClass: ExceptionsFilter,
+      useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ValidationExceptionFilter,
     },
     {
       provide: APP_INTERCEPTOR,
