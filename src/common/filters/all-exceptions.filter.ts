@@ -2,11 +2,11 @@ import { Catch, ArgumentsHost, HttpStatus, HttpException, Logger } from '@nestjs
 import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
 import { ExceptionResponse } from '../dto';
-
+// TODO Erase
 enum MysqlErrorCode {
   ALREADY_EXIST = 'ER_DUP_ENTRY',
 }
-
+// TODO extends BaseExceptionFilter
 @Catch()
 export class AllExceptionsFilter {
   private readonly logger: Logger = new Logger();
@@ -37,7 +37,7 @@ export class AllExceptionsFilter {
     } else {
       this.logger.warn({ err: exceptionResponse, args });
     }
-    console.log('Check1');
+
     res.status(statusCode).json(exceptionResponse);
   }
 

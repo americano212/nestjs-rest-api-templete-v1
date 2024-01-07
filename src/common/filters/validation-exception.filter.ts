@@ -10,22 +10,25 @@ export class ValidationExceptionFilter implements ExceptionFilter<ValidationExce
   catch(exception: ValidationException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
-    const req = ctx.getRequest<Request>();
+    const { url, method } = ctx.getRequest<Request>();
     const statusCode = getHttpStatus(exception);
+    const timestamp = new Date();
     const message = exception.message;
     const detail = exception.errors.map((error) => ({
       [error.property]: error.constraints,
     }));
-    const datetime = new Date();
+
     const exceptionResponse: ExceptionResponse = {
-      statusCode: statusCode,
-      timestamp: datetime,
-      path: req.url,
-      method: req.method,
-      message: message,
-      detail: detail,
+      statusCode,
+      timestamp,
+      path: url,
+      method,
+      message,
+      detail,
     };
-    console.log('Check2');
+
+    // TODO add logger
+
     res.status(statusCode).json(exceptionResponse);
   }
 }
