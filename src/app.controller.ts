@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, HttpCode } from '@nestjs/common';
 
 @Controller()
 export class AppController {
@@ -6,4 +6,8 @@ export class AppController {
   healthCheck(): string {
     return 'Hello World';
   }
+
+  @Get('/favicon.ico')
+  @HttpCode(204)
+  faviconCheck(): void {}
 }
