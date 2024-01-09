@@ -20,11 +20,11 @@ export const config = {
     port: process.env['PORT'],
   },
   aws: {
-    accessKey: process.env['AWS_ACCESS_KEY_ID'],
-    secretKey: process.env['AWS_SECRET_ACCESS_KEY'],
+    accessKey: process.env['AWS_ACCESS_KEY_ID'] || '',
+    secretKey: process.env['AWS_SECRET_ACCESS_KEY'] || '',
     region: process.env['AWS_REGION'],
     s3: {
-      bucketName: process.env['AWS_S3_BUCKET_NAME'],
+      bucketName: process.env['AWS_S3_BUCKET_NAME'] || '',
     },
     sms: {
       account: process.env['MAIL_AWS_ACCOUNT'],
