@@ -5,6 +5,7 @@ import {
   Get,
   Ip,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -65,7 +66,7 @@ export class ContentController {
   @Get('/:content_id')
   public async findOne(
     @Param('board_name') boardName: string,
-    @Param('content_id') contentId: number,
+    @Param('content_id', ParseIntPipe) contentId: number,
   ): Promise<Content> {
     return await this.content.findOne(boardName, contentId);
   }
@@ -78,7 +79,7 @@ export class ContentController {
   @UseGuards(JwtAuthGuard)
   public async update(
     @Param('board_name') boardName: string,
-    @Param('content_id') contentId: number,
+    @Param('content_id', ParseIntPipe) contentId: number,
     @Body() updateContentData: UpdateContentDto,
     @Ip() ip: string,
   ): Promise<SuccessResponseDto> {
@@ -94,7 +95,7 @@ export class ContentController {
   @Delete('/:content_id')
   public async delete(
     @Param('board_name') boardName: string,
-    @Param('content_id') contentId: number,
+    @Param('content_id', ParseIntPipe) contentId: number,
   ): Promise<SuccessResponseDto> {
     return { isSuccess: await this.content.delete(boardName, contentId) };
   }
@@ -103,7 +104,9 @@ export class ContentController {
   @ApiParam({ name: 'content_id', required: true, description: '1' })
   @Roles(Role.SuperAdmin)
   @Post('/restore/:content_id')
-  public async restore(@Param('content_id') contentId: number): Promise<SuccessResponseDto> {
+  public async restore(
+    @Param('content_id', ParseIntPipe) contentId: number,
+  ): Promise<SuccessResponseDto> {
     return { isSuccess: await this.content.restore(contentId) };
   }
 }

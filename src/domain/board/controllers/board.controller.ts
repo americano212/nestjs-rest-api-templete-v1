@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 
 import { Board } from '#entities/board';
@@ -44,7 +54,9 @@ export class BoardController {
   @ApiParam({ name: 'board_id', required: true, description: '1' })
   @Roles(Role.SuperAdmin)
   @Post('/restore/:board_id')
-  public async restore(@Param('board_id') boardId: number): Promise<SuccessResponseDto> {
+  public async restore(
+    @Param('board_id', ParseIntPipe) boardId: number,
+  ): Promise<SuccessResponseDto> {
     return { isSuccess: await this.board.restore(boardId) };
   }
 }
