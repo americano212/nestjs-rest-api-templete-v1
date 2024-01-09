@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
-import { FileService } from './providers/file.service';
 import { FileController } from './file.controller';
 
+import * as providers from './providers';
+
+const services = Object.values(providers);
+
 @Module({
-  providers: [FileService],
   controllers: [FileController],
+  providers: services,
+  exports: services,
 })
 export class FileModule {}
