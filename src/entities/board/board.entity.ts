@@ -1,9 +1,9 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IsInt, IsNotEmpty, IsString, Max } from 'class-validator';
 
 import { CoreEntity } from '..';
 import { Content } from '.';
-import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('board')
 export class Board extends CoreEntity {

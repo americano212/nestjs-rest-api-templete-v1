@@ -4,7 +4,7 @@ import { Role } from './role.entity';
 import { IsNotEmpty, IsString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Entity()
+@Entity('user_role')
 export class UserRole {
   @PrimaryGeneratedColumn({
     type: 'int',
