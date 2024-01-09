@@ -1,7 +1,8 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { CoreEntity } from '..';
 
+@Entity('upload_file')
 export class UploadFile extends CoreEntity {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   @IsInt()
@@ -15,12 +16,7 @@ export class UploadFile extends CoreEntity {
   @Column({ type: 'varchar', nullable: false })
   @IsNotEmpty()
   @IsString()
-  public encoding!: string;
-
-  @Column({ type: 'varchar', nullable: false })
-  @IsNotEmpty()
-  @IsString()
-  public mimeType!: string;
+  public url!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   @IsNotEmpty()
@@ -30,5 +26,10 @@ export class UploadFile extends CoreEntity {
   @Column({ type: 'varchar', nullable: false })
   @IsNotEmpty()
   @IsString()
-  public url!: string;
+  public encoding!: string;
+
+  @Column({ type: 'varchar', nullable: false })
+  @IsNotEmpty()
+  @IsString()
+  public mimeType!: string;
 }
