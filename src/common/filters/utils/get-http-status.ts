@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
+
 import { MysqlErrorCode } from 'src/common/enums';
 
 export function getHttpStatus(exception: unknown): HttpStatus {

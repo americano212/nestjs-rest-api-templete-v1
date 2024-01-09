@@ -14,10 +14,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
 
-    // TODO combine getExceptionDetail
     const statusCode = getHttpStatus(exception);
     const message = getMessage(exception);
-    const detail = getDetail(exception); // Exception-Response
+    const detail = getDetail(exception);
 
     const exceptionResponse: ExceptionResponse = {
       statusCode,
@@ -35,7 +34,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
     res.status(statusCode).json(exceptionResponse);
   }
 
-  // TODO seperate logger
   private exceptionLogging(exceptionResponse: ExceptionResponse, args?: object): void {
     if (exceptionResponse.statusCode >= HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.error({ err: exceptionResponse, args });

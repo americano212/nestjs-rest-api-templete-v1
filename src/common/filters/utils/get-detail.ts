@@ -1,6 +1,7 @@
 import { HttpException } from '@nestjs/common';
-import { ValidationException } from 'src/common/exceptions';
 import { QueryFailedError } from 'typeorm';
+
+import { ValidationException } from 'src/common/exceptions';
 
 export function getDetail(exception: unknown): string | Array<object> | object {
   let detail: string | Array<object> | object = '';
