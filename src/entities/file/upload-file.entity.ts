@@ -23,12 +23,12 @@ export class UploadFile extends CoreEntity {
   @IsInt()
   public size!: number;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: false, select: false })
   @IsNotEmpty()
   @IsString()
   public encoding!: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: false, select: false })
   @IsNotEmpty()
   @IsString()
   public mimeType!: string;

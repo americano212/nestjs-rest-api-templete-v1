@@ -9,14 +9,7 @@ import { UploadFileDto } from '../dto';
 export class FilesRepository {
   constructor(@InjectRepository(UploadFile) private filesRepository: Repository<UploadFile>) {}
 
-  public async create(uploadFileData: UploadFileDto) {
-    try {
-      const result = await this.filesRepository.save(uploadFileData);
-      console.log('result.repo', result);
-      return result;
-    } catch (err) {
-      console.log(err);
-      return;
-    }
+  public async create(uploadFileData: UploadFileDto): Promise<UploadFile> {
+    return await this.filesRepository.create(uploadFileData);
   }
 }

@@ -4,18 +4,17 @@ import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 
 import { ApiFile } from './decorators';
 import { FileService } from './providers/file.service';
+import { UploadFile } from '#entities/file';
 
 @ApiTags('file')
-@Controller('upload')
+@Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
   @ApiConsumes('multipart/form-data')
   @ApiFile()
-  @Post('s3')
+  @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const result = await this.fileService.uploadSingleFile(file);
-    console.log('result.co', result);
-    return result;
+  async uploadFile(@UploadedFile() file: Express.Multer.File): Promise<UploadFile> {
+    return await this.fileService.uploadSingleFile(file);
   }
 }

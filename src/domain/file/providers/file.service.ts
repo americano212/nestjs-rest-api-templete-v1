@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from 'src/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
+
+import { UploadFile } from '#entities/file';
+
+import { ConfigService } from 'src/common';
 import { UploadFileDto } from '../dto';
 import { FilesRepository } from './file.repository';
 
@@ -11,8 +14,9 @@ export class FileService {
     private readonly filesRepository: FilesRepository,
   ) {}
 
-  public async uploadSingleFile(file: Express.Multer.File) {
-    console.log(file); // TODO file === undefined Exception
+  public async uploadSingleFile(file: Express.Multer.File): Promise<UploadFile> {
+    if (!file) throw new BadRequestException('File is not Exist');
+
     const awsRegion = this.config.get('aws.region');
     const bucketName = this.config.get('aws.s3.bucketName');
     AWS.config.update({
@@ -32,13 +36,11 @@ export class FileService {
         ACL: 'public-read',
       })
       .promise();
-    console.log('uploadFileS3', uploadFileS3);
-    // TODO replace CDN
-    const urlHead = `https://${bucketName}.s3.${awsRegion}.amazonaws.com/`;
-    const url = urlHead + key;
-    console.log('url', urlHead + key);
+    if (!uploadFileS3.ETag) throw new BadRequestException('Failed upload File');
 
-    //TODO upload RDS
+    // TODO replace CDN
+    const url = `https://${bucketName}.s3.${awsRegion}.amazonaws.com/` + key;
+
     const uploadFileData: UploadFileDto = {
       originalName: file.originalname,
       url: url,
@@ -46,8 +48,7 @@ export class FileService {
       encoding: file.encoding, // TODO aws-sdk version Check
       mimeType: file.mimetype,
     };
-    console.log('uploadFileData', uploadFileData);
-    const result = await this.filesRepository.create(uploadFileData);
-    return { result, url };
+
+    return await this.filesRepository.create(uploadFileData);
   }
 }
