@@ -1,12 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsString } from 'class-validator';
+import { IntersectionType, PickType } from '@nestjs/swagger';
 
-export class GiveRoleToUserDto {
-  @ApiProperty({ example: 1 })
-  @IsInt()
-  public user_id!: number;
+import { User } from '#entities/index';
+import { UserRole } from '#entities/user-role.entity';
 
-  @ApiProperty({ example: 'TestRole' })
-  @IsString()
-  public role_name!: string;
-}
+export class GiveRoleToUserDto extends IntersectionType(
+  PickType(UserRole, ['roleName'] as const),
+  PickType(User, ['userId'] as const),
+) {}

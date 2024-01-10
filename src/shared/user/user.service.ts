@@ -35,13 +35,13 @@ export class UserService {
 
   @Transactional()
   public async giveRole(giveRoleData: GiveRoleToUserDto): Promise<boolean> {
-    const { user_id, role_name } = giveRoleData;
+    const { userId, roleName } = giveRoleData;
 
-    const user = await this.usersRepository.findOne(user_id);
-    if (!user) throw new NotFoundException(`User ID ${user_id} NOT Found`);
+    const user = await this.usersRepository.findOne(userId);
+    if (!user) throw new NotFoundException(`User ID ${userId} NOT Found`);
 
-    const isSuccess = await this.role.giveRoleToUser(role_name, user);
-    if (!isSuccess) throw new NotFoundException(`The role '${role_name}' invalid role`);
+    const isSuccess = await this.role.giveRoleToUser(roleName, user);
+    if (!isSuccess) throw new NotFoundException(`The role '${roleName}' invalid role`);
     return isSuccess;
   }
 
