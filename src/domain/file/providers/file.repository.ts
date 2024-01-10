@@ -10,6 +10,6 @@ export class FilesRepository {
   constructor(@InjectRepository(UploadFile) private filesRepository: Repository<UploadFile>) {}
 
   public async create(uploadFileData: UploadFileDto): Promise<UploadFile> {
-    return await this.filesRepository.create(uploadFileData);
+    return await this.filesRepository.save(await this.filesRepository.create(uploadFileData));
   }
 }
