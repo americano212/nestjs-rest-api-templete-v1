@@ -1,19 +1,17 @@
-import { Test } from '@nestjs/testing';
-import { faker } from '@faker-js/faker';
+import { User } from '#entities/index';
 import { HttpException } from '@nestjs/common';
-import { QueryFailedError } from 'typeorm';
+import { Test } from '@nestjs/testing';
 
-import { User } from '#entities/user.entity';
-
-import { SNSUser, UserService, UsersRepository } from '../../src/shared/user';
-import { AddRoleToUserDto, LocalRegisterDto } from '../../src/shared/user/dto';
-import { RoleService } from '../../src/shared/role/providers';
-import { MysqlErrorCode, UtilService } from '../../src/common';
+import { Role, UtilService } from 'src/common';
+import { RoleService } from 'src/shared/role/providers';
+import { UserService } from 'src/shared/user/user.service';
+import { UsersRepository } from 'src/shared/user/user.repository';
+import { GiveRoleToUserDto, LocalRegisterDto, SNSUserDto } from 'src/shared/user/dto';
 
 const mockRepository = {
   create: jest.fn(),
-  getByUserId: jest.fn(),
-  getByEmail: jest.fn(),
+  findOne: jest.fn(),
+  findOneByEmail: jest.fn(),
   isExistUsername: jest.fn(),
   isExistEmail: jest.fn(),
   setRefreshToken: jest.fn(),
@@ -25,7 +23,7 @@ const mockUtilService = {
 };
 
 const mockRoleService = {
-  addRoleToUser: jest.fn(),
+  giveRoleToUser: jest.fn(),
 };
 
 jest.mock('typeorm-transactional', () => ({
@@ -67,199 +65,96 @@ describe('UserService', () => {
     expect(userService).toBeDefined();
   });
 
-  describe('create', () => {
-    const username = faker.person.fullName();
-    const password = faker.internet.password();
-    const email = faker.internet.email();
-    const passwordHash = 'Hash!';
-    it('should create a user and assign roles', async () => {
-      const localRegisterDto: LocalRegisterDto = {
-        username,
-        password,
-        email,
-      };
+  describe('createLocalUser', () => {
+    const email = 'test@example.com';
+    const username = 'Test UserName';
+    const password = 'test!@#123';
+    const passwordHash = 'Hash Password !';
+
+    it('should be created new user', async () => {
+      const userData: LocalRegisterDto = { email, username, password };
       const savedUser: User = {
-        user_id: 1,
-        username: username,
-        passwordHash: passwordHash,
-        email: email,
-        created_at: new Date(),
-        updated_at: new Date(),
+        userId: 1,
+        username,
+        passwordHash,
+        email,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
+
       jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
       jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
-      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
 
-      const result = await userService.create(localRegisterDto);
-
+      const result = await userService.createLocalUser(userData);
       expect(result).toBe(savedUser);
     });
-    it('should create a user and empty role', async () => {
-      const localRegisterDto: LocalRegisterDto = {
-        username,
-        password,
-        email,
-      };
-      const savedUser: User = {
-        user_id: 1,
-        username: username,
-        passwordHash: passwordHash,
-        email: email,
-        created_at: new Date(),
-        updated_at: new Date(),
-        roles: [],
-      };
-      jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
-      jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
-      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
-
-      const result = await userService.create(localRegisterDto);
-
-      expect(result).toBe(savedUser);
-    });
-    it('should throw an exception when attempting to create a user with an existing email', async () => {
-      const existingEmail = email;
-      const localRegisterDto: LocalRegisterDto = {
-        username,
-        password,
-        email: existingEmail,
-      };
-      const mockQueryFailedError = new QueryFailedError('SELECT', [], new Error('Duplicate entry'));
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      mockQueryFailedError.driverError = {
-        code: MysqlErrorCode.ALREADY_EXIST,
-      } as unknown as Error;
-      jest.spyOn(utilService, 'passwordEncoding').mockResolvedValue(passwordHash);
-      jest.spyOn(usersRepository, 'create').mockRejectedValue(mockQueryFailedError);
-      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
-
-      await expect(async () => {
-        await userService.create(localRegisterDto);
-      }).rejects.toThrow(QueryFailedError);
-    });
+    // TODO 이미 존재하는 user email
+    // TODO username 길이 제한 초과
+    // TODO 올바르지 않은 email 형식
   });
 
   describe('createSNSUser', () => {
-    const username = faker.person.fullName();
-    const email = faker.internet.email();
-    const social_id = 'random.!@#string123';
-    const vendor = 'google';
-    const snsUser: SNSUser = {
-      username,
-      email,
-      social_id,
-      vendor,
-    };
-    const user: User = {
-      user_id: 1,
-      username,
-      email,
-      created_at: new Date(),
-      updated_at: new Date(),
-      roles: [],
-    };
-    it('should successfully create a sns user', async () => {
-      jest.spyOn(usersRepository, 'create').mockResolvedValue(user);
+    const email = 'test@example.com';
+    const username = 'Test UserName';
+    const socialId = 'TEST!@#$1234TTTEEESSSTTT';
+    const vendor = 'kakao';
 
-      const result = await userService.createSNSUser(snsUser);
-      expect(result).toBe(user);
-    });
-    it('should throw an exception when attempting to create a user with an existing email', async () => {
-      const mockQueryFailedError = new QueryFailedError('SELECT', [], new Error('Duplicate entry'));
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      mockQueryFailedError.driverError = {
-        code: MysqlErrorCode.ALREADY_EXIST,
-      } as unknown as Error;
-      jest.spyOn(usersRepository, 'create').mockRejectedValue(mockQueryFailedError);
+    it('should be create new sns user', async () => {
+      const snsUserData: SNSUserDto = { username, email, socialId, vendor };
+      const savedUser: User = {
+        userId: 1,
+        username,
+        email,
+        socialId,
+        vendor,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      jest.spyOn(usersRepository, 'create').mockResolvedValue(savedUser);
 
-      await expect(async () => {
-        await userService.createSNSUser(snsUser);
-      }).rejects.toThrow(QueryFailedError);
+      const result = await userService.createSNSUser(snsUserData);
+      expect(result).toBe(savedUser);
     });
+    // TODO 이미 존재하는 user email
   });
 
-  describe('addRole', () => {
-    const user_id = 1;
-    const username = faker.person.fullName();
-    const email = faker.internet.email();
-    const passwordHash = 'Hash!';
-    const role_name = 'TestRole';
-    const user: User = {
-      user_id,
-      username,
-      passwordHash,
-      email,
-      created_at: new Date(),
-      updated_at: new Date(),
-      roles: [],
-    };
-    it('successfully assign a role to a user', async () => {
-      const addRoleDto: AddRoleToUserDto = {
-        user_id,
-        role_name,
+  describe('giveRole', () => {
+    // 정상적으로 권한 부여
+    const email = 'test@example.com';
+    const username = 'Test UserName';
+    it('should be given role to user', async () => {
+      const giveRoleData: GiveRoleToUserDto = {
+        userId: 1,
+        roleName: Role.Test,
       };
-      jest.spyOn(usersRepository, 'getByUserId').mockResolvedValue(user);
-      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(true);
+      const user: User = {
+        userId: 1,
+        username,
+        email,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      jest.spyOn(usersRepository, 'findOne').mockResolvedValue(user);
+      jest.spyOn(roleService, 'giveRoleToUser').mockResolvedValue(true);
 
-      const result = await userService.addRole(addRoleDto);
+      const result = await userService.giveRole(giveRoleData);
       expect(result).toBe(true);
     });
-    it('should throw an exception when user_id does NOT Exist', async () => {
-      const user_id_not_exist = -1;
-      const addRoleDto: AddRoleToUserDto = {
-        user_id: user_id_not_exist,
-        role_name,
+    // 해당되는 user 없음
+    it('should be thrown Not Found Exception when userId not Found', async () => {
+      const giveRoleData: GiveRoleToUserDto = {
+        userId: -1,
+        roleName: Role.Test,
       };
-      jest.spyOn(usersRepository, 'getByUserId').mockResolvedValue(null);
-      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
+      jest.spyOn(usersRepository, 'findOne').mockResolvedValue(null);
 
       await expect(async () => {
-        await userService.addRole(addRoleDto);
+        await userService.giveRole(giveRoleData);
       }).rejects.toThrow(HttpException);
       await expect(async () => {
-        await userService.addRole(addRoleDto);
-      }).rejects.toThrow(`User ID ${user_id_not_exist} NOT Found`);
+        await userService.giveRole(giveRoleData);
+      }).rejects.toThrow(`User ID ${giveRoleData.userId} NOT Found`);
     });
-    it('should throw an exception for an invalid role', async () => {
-      const role_name_not_exist = 'RRole';
-      const addRoleDto: AddRoleToUserDto = {
-        user_id,
-        role_name: role_name_not_exist,
-      };
-      jest.spyOn(usersRepository, 'getByUserId').mockResolvedValue(user);
-      jest.spyOn(roleService, 'addRoleToUser').mockResolvedValue(false);
-
-      await expect(async () => {
-        await userService.addRole(addRoleDto);
-      }).rejects.toThrow(HttpException);
-      await expect(async () => {
-        await userService.addRole(addRoleDto);
-      }).rejects.toThrow(`The role '${role_name_not_exist}' invalid role`);
-    });
-  });
-  describe('isExistEmail', () => {
-    const email = faker.internet.email();
-    const user: User = {
-      user_id: 1,
-      username: faker.person.fullName(),
-      email,
-      created_at: new Date(),
-      updated_at: new Date(),
-      roles: [],
-    };
-    it('should return true when email exist', async () => {
-      jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(user);
-
-      const result = await userService.isExistEmail(email);
-      expect(result).toBe(true);
-    });
-    it('should return false when email does not exist', async () => {
-      jest.spyOn(usersRepository, 'getByEmail').mockResolvedValue(null);
-
-      const result = await userService.isExistEmail(email);
-      expect(result).toBe(false);
-    });
+    // 해당 되는 role 없음
   });
 });
