@@ -6,20 +6,17 @@ import type { Config } from 'jest';
  */
 const jestConfig: Config = {
   clearMocks: true,
-  coverageDirectory: 'coverage',
+  coverageDirectory: './coverage',
   coverageProvider: 'v8',
   moduleNameMapper: {
     '#(.*)': '<rootDir>/src/$1',
   },
   preset: 'ts-jest',
 
-  // The root directory that Jest should scan for tests and modules within
-  // rootDir: undefined,
+  moduleFileExtensions: ['js', 'json', 'ts'],
+  rootDir: './',
+  modulePaths: ['<rootDir>'],
 
-  // A list of paths to directories that Jest should use to search for files in
-  // roots: [
-  //   "<rootDir>"
-  // ],
   testEnvironment: 'node',
   testMatch: ['**/*.+(spec|test).[tj]s?(x)'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/', '/e2e/'],
