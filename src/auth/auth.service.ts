@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { ConfigService, UtilService } from '../common';
-import { UsersRepository } from '../shared/user';
+import { UsersRepository } from '../shared/user/user.repository';
 import { JwtPayload, JwtSign, Payload } from './auth.interface';
 import { User } from '#entities/index';
 import { SNSUserDto } from 'src/shared/user/dto';

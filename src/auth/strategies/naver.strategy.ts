@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, Profile } from 'passport-naver-v2';
 
-import { UserService } from '../../../src/shared/user';
+import { UserService } from '../../../src/shared/user/user.service';
 import { AuthService } from '../auth.service';
 import { Payload } from '../auth.interface';
 import { SNSUserDto } from 'src/shared/user/dto';

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-github2';
 
-import { UserService } from '../../../src/shared/user';
+import { UserService } from 'src/shared/user/user.service';
 import { AuthService } from '../auth.service';
 import { SNSUserDto } from 'src/shared/user/dto';
 
