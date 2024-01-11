@@ -1,10 +1,10 @@
 export interface JwtSign {
-  access_token: string;
-  refresh_token: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface Payload {
-  user_id: number;
+  userId: number;
   username?: string;
   roles?: RoleName[];
 }
@@ -16,5 +16,5 @@ export interface JwtPayload {
 }
 
 export interface RoleName {
-  role_name: string;
+  roleName: string;
 }

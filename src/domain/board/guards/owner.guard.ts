@@ -60,7 +60,7 @@ export class OwnerGuard implements CanActivate {
     if (!payload) return [];
     const roles: string[] = [];
     payload.roles?.forEach((role) => {
-      roles.push(role.role_name);
+      roles.push(role.roleName);
     });
     return roles;
   }
@@ -70,6 +70,6 @@ export class OwnerGuard implements CanActivate {
     const payload: Payload | null = this.auth.jwtVerify(jwtToken);
     if (!payload) return UNABLE_USER_ID.REQ_USER_NOT_EXIST;
 
-    return payload.user_id ? payload.user_id : UNABLE_USER_ID.REQ_USER_NOT_EXIST;
+    return payload.userId ? payload.userId : UNABLE_USER_ID.REQ_USER_NOT_EXIST;
   }
 }

@@ -54,7 +54,7 @@ export class BoardGuard implements CanActivate {
     if (!payload) return [];
     const roles: string[] = [];
     payload.roles?.forEach((role) => {
-      roles.push(role.role_name);
+      roles.push(role.roleName);
     });
     return roles;
   }

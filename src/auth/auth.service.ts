@@ -1,11 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
+import { User } from '#entities/index';
+
 import { ConfigService, UtilService } from '../common';
 import { UsersRepository } from '../shared/user/user.repository';
 import { JwtPayload, JwtSign, Payload } from './auth.interface';
-import { User } from '#entities/index';
 import { SNSUserDto } from 'src/shared/user/dto';
+import { NullableType } from 'src/common/types';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +18,7 @@ export class AuthService {
     private readonly config: ConfigService,
   ) {}
 
-  public async validateUser(email: string, password: string): Promise<User | null> {
+  public async validateUser(email: string, password: string): Promise<NullableType<User>> {
     const user = await this.usersRepository.findOneByEmail(email);
     if (!user) return null;
     if (!user.passwordHash) return null;
@@ -36,14 +38,14 @@ export class AuthService {
 
   public async jwtSign(data: Payload): Promise<JwtSign> {
     const payload: JwtPayload = {
-      sub: data.user_id,
+      sub: data.userId,
       username: data.username,
       roles: data.roles,
     };
-    const access_token = await this.generateAccessToken(payload);
-    const refresh_token = await this.generateRefreshToken(payload.sub);
-    await this.usersRepository.setRefreshToken(data.user_id, refresh_token);
-    return { access_token, refresh_token };
+    const accessToken = await this.generateAccessToken(payload);
+    const refreshToken = await this.generateRefreshToken(payload.sub);
+    await this.usersRepository.setRefreshToken(data.userId, refreshToken);
+    return { accessToken, refreshToken };
   }
 
   private async generateAccessToken(payload: JwtPayload): Promise<string> {
@@ -67,7 +69,7 @@ export class AuthService {
     try {
       const payload = <JwtPayload | null>this.jwt.decode(token);
       if (!payload) return null;
-      return { user_id: payload.sub, username: payload.username, roles: payload.roles };
+      return { userId: payload.sub, username: payload.username, roles: payload.roles };
     } catch {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
