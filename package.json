@@ -21,8 +21,15 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "test": "jest",
+    "test:e2e": "jest --config ./test/jest.e2e.ts -i",
+    "test:e2e:auto": "npm run test:entity:sync && npm run test:seed:run && jest --config ./test/jest.e2e.ts -i && npm run test:entity:drop",
     "test:debug": "jest --verbose",
-    "test:cov": "jest --coverage"
+    "test:e2e:debug": "jest --config ./test/jest.e2e.ts -i --verbose",
+    "test:cov": "jest --coverage",
+    "test:entity:sync": "NODE_ENV=test ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d bin/ormconfig.ts schema:sync",
+    "test:entity:drop": "NODE_ENV=test ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d bin/ormconfig.ts schema:drop",
+    "test:seed:run": "NODE_ENV=test ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d bin/ormconfig.ts migration:run",
+    "test:seed:revert": "NODE_ENV=test ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d bin/ormconfig.ts migration:revert"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.0",

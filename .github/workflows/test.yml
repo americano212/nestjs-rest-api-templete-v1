@@ -21,6 +21,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Create .env file
+        run: |
+            touch .env
+            cat << EOF >> .env
+            ${{ secrets.ENV }}
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -35,5 +41,8 @@ jobs:
       - name: Run Build
         run: npm run build
 
-      - name: Run Tests
+      - name: Run Unit Tests
         run: npm run test:cov
+
+      - name: Run e2e Tests
+        run: npm run test:e2e
