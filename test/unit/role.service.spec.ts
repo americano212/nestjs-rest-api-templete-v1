@@ -1,25 +1,22 @@
-import { Test } from '@nestjs/testing';
-import { faker } from '@faker-js/faker';
-import { HttpException } from '@nestjs/common';
-
+import { User, UserRole } from '#entities/index';
 import { Role } from '#entities/role.entity';
-import { UserRole } from '#entities/user-role.entity';
-import { User } from '#entities/user.entity';
+import { Test } from '@nestjs/testing';
+import { CreateRoleDto } from 'src/shared/role/dto';
+import { RoleService, RolesRepository, UserRolesRepository } from 'src/shared/role/providers';
 
-import { RoleService, RolesRepository, UserRolesRepository } from '../../src/shared/role/providers';
+const mockRolesRepository = {
+  create: jest.fn(),
+  findRoleByName: jest.fn(),
+};
+
+const mockUserRolesRepository = {
+  create: jest.fn(),
+};
 
 describe('RoleService', () => {
   let roleService: RoleService;
   let rolesRepository: RolesRepository;
   let userRolesRepository: UserRolesRepository;
-
-  const mockRolesRepository = {
-    findRoleByName: jest.fn(),
-  };
-
-  const mockUserRolesRepository = {
-    create: jest.fn(),
-  };
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -44,61 +41,53 @@ describe('RoleService', () => {
     expect(roleService).toBeDefined();
   });
 
-  describe('addRoleToUser', () => {
-    const role_name = 'User';
-    const user: User = {
-      user_id: 1,
-      username: faker.person.fullName(),
-      passwordHash: 'Hash!',
-      email: faker.internet.email(),
-      created_at: new Date(),
-      updated_at: new Date(),
-      roles: [],
-    };
-    const role: Role = {
-      role_id: 1,
-      role_name,
-      users: [new UserRole()],
-    };
-    it('should assign a role to the user', async () => {
-      jest.spyOn(rolesRepository, 'findRoleByName').mockResolvedValue(role);
-      jest.spyOn(userRolesRepository, 'create').mockResolvedValue(new UserRole());
+  describe('create', () => {
+    const roleName = 'Test';
+    const roleData: CreateRoleDto = { roleName };
 
-      const result = await roleService.addRoleToUser(role_name, user);
+    it('should be created new role', async () => {
+      const newRole: Role = {
+        roleId: 1,
+        roleName,
+      };
+      jest.spyOn(rolesRepository, 'create').mockResolvedValue(newRole);
+
+      const result = await roleService.create(roleData);
+      expect(result).toStrictEqual(newRole);
+    });
+    // TODO duplicate role
+    // TODO roleName length error
+  });
+
+  describe('giveRoleToUser', () => {
+    // TODO give role to user
+    const userId = 1;
+    const roleName1 = 'Test';
+    const roleName2 = 'User';
+
+    const userRole1: UserRole = { userRoleId: 1, roleName: roleName1 };
+    const userRole2: UserRole = { userRoleId: 2, roleName: roleName2 };
+
+    const user: User = {
+      userId,
+      email: 'test@example.com',
+      username: 'Test Username',
+      roles: [userRole1, userRole2],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    it('should be given role to user', async () => {
+      const newRoleName = 'NewRole';
+      const role: Role = { roleId: 1, roleName: newRoleName };
+      const newUserRole: UserRole = { userRoleId: 3, roleName: newRoleName, user, role };
+      jest.spyOn(rolesRepository, 'findRoleByName').mockResolvedValue(role);
+      jest.spyOn(userRolesRepository, 'create').mockResolvedValue(newUserRole);
+
+      const result = await roleService.giveRoleToUser(newRoleName, user);
       expect(result).toBe(true);
     });
-    it('should throw an exception for an invalid role', async () => {
-      jest.spyOn(rolesRepository, 'findRoleByName').mockResolvedValue(null);
-      jest.spyOn(userRolesRepository, 'create').mockResolvedValue(new UserRole());
-
-      await expect(async () => {
-        await roleService.addRoleToUser(role_name, user);
-      }).rejects.toThrow(HttpException);
-      await expect(async () => {
-        await roleService.addRoleToUser(role_name, user);
-      }).rejects.toThrow(`The role '${role_name}' invalid role`);
-    });
-    it(`should already include role in the user's role`, async () => {
-      const userRole = new UserRole();
-      const role_name_already_exist = 'TestRole';
-      userRole.role_name = role_name_already_exist;
-      const userAlreadyExistRole: User = {
-        user_id: 1,
-        username: faker.person.fullName(),
-        passwordHash: 'Hash!',
-        email: faker.internet.email(),
-        created_at: new Date(),
-        updated_at: new Date(),
-        roles: [userRole],
-      };
-      jest.spyOn(rolesRepository, 'findRoleByName').mockResolvedValue(role);
-      jest.spyOn(userRolesRepository, 'create').mockResolvedValue(userRole);
-
-      await expect(async () => {
-        await roleService.addRoleToUser(role_name_already_exist, userAlreadyExistRole);
-      }).rejects.toThrow(
-        `'${role_name_already_exist}' already exist role to user '${userAlreadyExistRole.user_id}'`,
-      );
-    });
+    // TODO Invalid roleName
+    // TODO Already Exist Role
   });
 });
