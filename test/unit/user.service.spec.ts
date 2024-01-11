@@ -119,7 +119,6 @@ describe('UserService', () => {
   });
 
   describe('giveRole', () => {
-    // 정상적으로 권한 부여
     const email = 'test@example.com';
     const username = 'Test UserName';
     it('should be given role to user', async () => {
@@ -140,7 +139,6 @@ describe('UserService', () => {
       const result = await userService.giveRole(giveRoleData);
       expect(result).toBe(true);
     });
-    // 해당되는 user 없음
     it('should be thrown Not Found Exception when userId not Found', async () => {
       const giveRoleData: GiveRoleToUserDto = {
         userId: -1,
@@ -155,6 +153,6 @@ describe('UserService', () => {
         await userService.giveRole(giveRoleData);
       }).rejects.toThrow(`User ID ${giveRoleData.userId} NOT Found`);
     });
-    // 해당 되는 role 없음
+    // TODO 해당 되는 role 없음
   });
 });
