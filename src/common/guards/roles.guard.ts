@@ -29,7 +29,7 @@ export class RolesGuard implements CanActivate {
 
     const userRoles: string[] = [];
     payload.roles?.forEach((role) => {
-      userRoles.push(role.role_name);
+      userRoles.push(role.roleName);
     });
 
     return requiredRoles.some((role) => userRoles?.includes(role));

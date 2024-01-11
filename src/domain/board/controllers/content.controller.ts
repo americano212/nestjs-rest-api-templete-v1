@@ -43,7 +43,7 @@ export class ContentController {
     @ReqUser() user: Payload,
   ): Promise<Content> {
     const contentData: ContentDto = { ...createContentData, ip, author: user.username };
-    const userId = user.user_id;
+    const userId = user.userId;
 
     return await this.content.create(userId, boardName, contentData);
   }

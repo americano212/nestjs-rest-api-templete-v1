@@ -23,8 +23,8 @@ export class RoleService {
     if (!role) throw new NotFoundException(`The role '${roleName}' invalid role`);
 
     const userRoles: string[] = [];
-    user.roles?.forEach((user_role) => {
-      userRoles.push(user_role.roleName);
+    user.roles?.forEach((userRole) => {
+      userRoles.push(userRole.roleName);
     });
 
     const isExistRoleToUser = userRoles.includes(roleName);
