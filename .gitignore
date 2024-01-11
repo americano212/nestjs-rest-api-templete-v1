@@ -35,3 +35,6 @@ lerna-debug.log*
 !.vscode/extensions.json
 .devcontainer
 *.env
+
+# Temp File
+*.temp.ts

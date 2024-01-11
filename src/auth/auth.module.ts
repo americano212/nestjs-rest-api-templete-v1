@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 
 import { AuthService } from './auth.service';
-import { UserModule } from '../shared/user';
+import { UserModule } from '../shared/user/user.module';
 import {
   LocalStrategy,
   KakaoStrategy,
