@@ -21,8 +21,8 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
   }
 
   public async validate(
-    accessToken: string,
-    refreshToken: string,
+    _accessToken: string,
+    _refreshToken: string,
     profile: Profile,
     done: CallableFunction,
   ): Promise<Payload> {
@@ -32,16 +32,9 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
       socialId: profile.id,
       vendor: 'naver',
     };
-    console.log('accessToken : ' + accessToken);
-    console.log('refreshToken : ' + refreshToken);
 
-    // 계정 존재 유무 체크
-    const isExistEmail = await this.user.isExistEmail(naverUser.email);
-
-    const user = isExistEmail
-      ? await this.auth.validateSNSUser(naverUser)
-      : await this.user.createSNSUser(naverUser);
-
+    let user = await this.auth.validateSNSUser(naverUser);
+    user = user ? user : await this.user.createSNSUser(naverUser);
     return done(null, user);
   }
 }

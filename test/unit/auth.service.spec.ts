@@ -1,8 +1,10 @@
 import { User } from '#entities/index';
+import { HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { AuthService, Payload, RoleName } from 'src/auth';
 import { ConfigService, UtilService } from 'src/common';
+import { SNSUserDto } from 'src/shared/user/dto';
 import { UsersRepository } from 'src/shared/user/user.repository';
 
 const mockConfigService = {
@@ -66,14 +68,13 @@ describe('AuthService', () => {
     const mockDate = new Date();
 
     const user: User = {
-      userId: 1,
+      userId,
       email,
       username,
       passwordHash,
       createdAt: mockDate,
       updatedAt: mockDate,
     };
-    // TODO authenticated return user data
 
     it('should be authenticated user', async () => {
       const userWithoutPasswordHash: User = {
@@ -89,18 +90,85 @@ describe('AuthService', () => {
       const result = await authService.validateUser(email, password);
       expect(result).toStrictEqual(userWithoutPasswordHash);
     });
-    // TODO 없는 유저
-    // TODO 다른 password
+
+    it('should be unauthenticated user, because user not exist', async () => {
+      jest.spyOn(usersRepository, 'findOneByEmail').mockResolvedValue(null);
+      jest.spyOn(utilService, 'passwordCompare').mockResolvedValue(true);
+
+      const result = await authService.validateUser(email, password);
+      expect(result).toBeNull();
+    });
+
+    it('should be unauthenticated user, because wrong password', async () => {
+      jest.spyOn(usersRepository, 'findOneByEmail').mockResolvedValue(user);
+      jest.spyOn(utilService, 'passwordCompare').mockResolvedValue(false);
+
+      const result = await authService.validateUser(email, password);
+      expect(result).toBeNull();
+    });
   });
   describe('validateSNSUser', () => {
-    // TODO sns authenticated return user data
-    // TODO 없는 유저
-    // TODO 해당 이메일로 다른 vendor에 생성
+    const userId = 1;
+    const email = 'test@example.com';
+    const vendor = 'naver';
+    const username = 'Test Username';
+    const socialId = 'socialid123456!@#@#$';
+    const mockDate = new Date();
+
+    const user: User = {
+      userId,
+      email,
+      vendor,
+      username,
+      socialId,
+      createdAt: mockDate,
+      updatedAt: mockDate,
+    };
+
+    const snsUserData: SNSUserDto = {
+      username,
+      email,
+      socialId,
+      vendor,
+    };
+
+    it('should be authenticated SNS user', async () => {
+      jest.spyOn(usersRepository, 'findOneByEmail').mockResolvedValue(user);
+
+      const result = await authService.validateSNSUser(snsUserData);
+      expect(result).toStrictEqual(user);
+    });
+
+    it('should be unauthenticated SNS user, because user email not exist', async () => {
+      jest.spyOn(usersRepository, 'findOneByEmail').mockResolvedValue(null);
+
+      const result = await authService.validateSNSUser(snsUserData);
+      expect(result).toBeNull();
+    });
+
+    it('should be unauthenticated SNS user, because user exist in other vendor', async () => {
+      const snsUserDataOtherVendor: SNSUserDto = {
+        username,
+        email,
+        socialId,
+        vendor: 'other vendor',
+      };
+
+      jest.spyOn(usersRepository, 'findOneByEmail').mockResolvedValue(user);
+
+      await expect(async () => {
+        await authService.validateSNSUser(snsUserDataOtherVendor);
+      }).rejects.toThrow(HttpException);
+      await expect(async () => {
+        await authService.validateSNSUser(snsUserDataOtherVendor);
+      }).rejects.toThrow(`Email already exists in ${user.vendor}`);
+    });
   });
+
   describe('jwtSign', () => {
     const role: RoleName = { roleName: 'Test' };
     const payload: Payload = { userId: 1, username: 'Test Username', roles: [role] };
-    // TODO generated JWT Token from payload
+
     it('should be generated JWT Tokens', async () => {
       jest.spyOn(configService, 'get').mockReturnValueOnce('1d');
       jest.spyOn(configService, 'get').mockReturnValueOnce('MOCK_ACCESS_SECRET');

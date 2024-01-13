@@ -21,8 +21,8 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
   }
 
   public async validate(
-    accessToken: string,
-    refreshToken: string,
+    _accessToken: string,
+    _refreshToken: string,
     profile: Profile,
     done: CallableFunction,
   ): Promise<void> {
@@ -33,13 +33,9 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
       socialId: profile.id,
       vendor: 'github',
     };
-    console.log('accessToken : ' + accessToken);
-    console.log('refreshToken : ' + refreshToken);
-    const isExistEmail = await this.user.isExistEmail(githubUser.email);
 
-    const user = isExistEmail
-      ? await this.auth.validateSNSUser(githubUser)
-      : await this.user.createSNSUser(githubUser);
+    let user = await this.auth.validateSNSUser(githubUser);
+    user = user ? user : await this.user.createSNSUser(githubUser);
     return done(null, user);
   }
 }

@@ -22,8 +22,8 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   }
 
   public async validate(
-    accessToken: string,
-    refreshToken: string,
+    _accessToken: string,
+    _refreshToken: string,
     profile: any,
     done: CallableFunction,
   ): Promise<Payload> {
@@ -33,13 +33,9 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
       socialId: String(profile.id),
       vendor: 'kakao',
     };
-    console.log('accessToken : ' + accessToken);
-    console.log('refreshToken : ' + refreshToken);
-    const isExistEmail = await this.user.isExistEmail(kakaoUser.email);
 
-    const user = isExistEmail
-      ? await this.auth.validateSNSUser(kakaoUser)
-      : await this.user.createSNSUser(kakaoUser);
+    let user = await this.auth.validateSNSUser(kakaoUser);
+    user = user ? user : await this.user.createSNSUser(kakaoUser);
     return done(null, user);
   }
 }

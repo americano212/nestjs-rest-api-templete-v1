@@ -28,8 +28,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   }
 
   public async validate(
-    accessToken: string,
-    refreshToken: string,
+    _accessToken: string,
+    _refreshToken: string,
     profile: Profile,
     done: CallableFunction,
   ): Promise<void> {
@@ -39,13 +39,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       socialId: profile.id,
       vendor: 'google',
     };
-    console.log('accessToken : ' + accessToken);
-    console.log('refreshToken : ' + refreshToken);
-    const isExistEmail = await this.user.isExistEmail(googleUser.email);
 
-    const user = isExistEmail
-      ? await this.auth.validateSNSUser(googleUser)
-      : await this.user.createSNSUser(googleUser);
+    let user = await this.auth.validateSNSUser(googleUser);
+    user = user ? user : await this.user.createSNSUser(googleUser);
     return done(null, user);
   }
 }
