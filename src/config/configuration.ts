@@ -1,5 +1,7 @@
+import * as dotenv from 'dotenv';
 import type { Config, Default, Objectype, Production } from './config.interface';
 
+dotenv.config();
 const util = {
   isObject<T>(value: T): value is T & Objectype {
     return value !== null && typeof value === 'object' && !Array.isArray(value);
