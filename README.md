@@ -24,10 +24,10 @@ NestJS REST API templete for Korea user.
 - [x] Swagger
 - [x] Validate DTOs with Entities
 - [x] Unit Test(Jest)
-- [ ] E2E Test
-- [ ] File upload
+- [x] E2E Test
+- [x] File upload
 - [ ] Mailing
-- [ ] CI
+- [x] CI
 - [x] Example Domain(Board with content)
 
 ## Configuration
