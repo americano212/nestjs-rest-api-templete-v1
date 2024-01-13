@@ -1,8 +1,11 @@
 import { User, UserRole } from '#entities/index';
 import { Role } from '#entities/role.entity';
+import { HttpException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { MysqlErrorCode } from 'src/common';
 import { CreateRoleDto } from 'src/shared/role/dto';
 import { RoleService, RolesRepository, UserRolesRepository } from 'src/shared/role/providers';
+import { QueryFailedError } from 'typeorm';
 
 const mockRolesRepository = {
   create: jest.fn(),
@@ -55,12 +58,22 @@ describe('RoleService', () => {
       const result = await roleService.create(roleData);
       expect(result).toStrictEqual(newRole);
     });
-    // TODO duplicate role
-    // TODO roleName length error
+
+    it('should handle role creation failure', async () => {
+      const mockQueryFailedError = new QueryFailedError('SELECT', [], {
+        name: 'Duplicate entry',
+        message: MysqlErrorCode.ALREADY_EXIST,
+      } as Error);
+
+      jest.spyOn(rolesRepository, 'create').mockRejectedValue(mockQueryFailedError);
+
+      await expect(async () => {
+        await roleService.create(roleData);
+      }).rejects.toThrow(QueryFailedError);
+    });
   });
 
   describe('giveRoleToUser', () => {
-    // TODO give role to user
     const userId = 1;
     const roleName1 = 'Test';
     const roleName2 = 'User';
@@ -87,7 +100,20 @@ describe('RoleService', () => {
       const result = await roleService.giveRoleToUser(newRoleName, user);
       expect(result).toBe(true);
     });
-    // TODO Invalid roleName
-    // TODO Already Exist Role
+
+    it('should handle given role to user failure, because role already exist in user', async () => {
+      const oldRoleName = roleName1;
+      const role: Role = { roleId: 1, roleName: oldRoleName };
+      const newUserRole: UserRole = { userRoleId: 3, roleName: oldRoleName, user, role };
+      jest.spyOn(rolesRepository, 'findRoleByName').mockResolvedValue(role);
+      jest.spyOn(userRolesRepository, 'create').mockResolvedValue(newUserRole);
+
+      await expect(async () => {
+        await roleService.giveRoleToUser(oldRoleName, user);
+      }).rejects.toThrow(HttpException);
+      await expect(async () => {
+        await roleService.giveRoleToUser(oldRoleName, user);
+      }).rejects.toThrow(`'${oldRoleName}' already exist role to user '${user.userId}'`);
+    });
   });
 });
