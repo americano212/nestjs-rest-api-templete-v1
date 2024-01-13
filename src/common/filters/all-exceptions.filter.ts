@@ -29,7 +29,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const args = req.body;
     this.exceptionLogging(exceptionResponse, args);
-    console.log('check-all');
 
     res.status(statusCode).json(exceptionResponse);
   }

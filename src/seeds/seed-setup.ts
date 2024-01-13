@@ -15,6 +15,7 @@ export class Seed1703915494755 implements MigrationInterface {
       }
     }
     if (isUserTableExist && isUserRoleTableExist) await this.createSuperAdmin(queryRunner);
+    console.log('Seeding Done!\n');
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
