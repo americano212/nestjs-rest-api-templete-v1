@@ -9,10 +9,6 @@ import supertest from 'supertest';
 import { Repository } from 'typeorm';
 import { User } from '#entities/user.entity';
 
-// jest.mock('typeorm-transactional', () => ({
-//   Transactional: () => () => ({}),
-// }));
-
 describe('user', () => {
   let app: INestApplication<Express> | undefined;
   let request: supertest.SuperTest<supertest.Test>;
@@ -32,16 +28,17 @@ describe('user', () => {
     userRepository = moduleRef.get('UserRepository');
   });
 
+  const email = 'test@example.com';
+  const username = 'test username';
+  const password = 'test1234';
+
   test('POST: /user/register', async () => {
-    const localRegisterData: LocalRegisterDto = {
-      email: 'test@example.com',
-      username: 'username',
-      password: 'test1234',
-    };
+    const localRegisterData: LocalRegisterDto = { email, username, password };
     const { status, body } = await request.post('/user/register').send(localRegisterData);
 
     expect([200, 201]).toContain(status);
-    expect(body).toHaveProperty('email', 'test@example.com');
+    expect(body).toHaveProperty('email', email);
+    expect(body).toHaveProperty('username', username);
   });
 
   afterAll(async () => {
@@ -49,6 +46,6 @@ describe('user', () => {
   });
 
   afterEach(async () => {
-    await userRepository.query(`DELETE FROM user WHERE email='test@example.com'`);
+    await userRepository.query(`DELETE FROM user WHERE email='${email}'`);
   });
 });
