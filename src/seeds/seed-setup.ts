@@ -66,7 +66,7 @@ export class Seed1703915494755 implements MigrationInterface {
     const superAdminId = resultSuperAdmin.insertId;
 
     const getSuperAdminRoleId = await queryRunner.query(
-      `SELECT role_id FROM role WHERE role_name='SUPERADMIN'`,
+      `SELECT role_id FROM role WHERE role_name='${Role.SuperAdmin}'`,
     );
     const superAdminRoleId = Number(
       getSuperAdminRoleId[0].role_id ? getSuperAdminRoleId[0].role_id : 0,
@@ -75,7 +75,7 @@ export class Seed1703915494755 implements MigrationInterface {
 
     const resultUserRole = await queryRunner.query(`
     INSERT INTO user_role (role_name, user_id, role_id)
-    VALUES ('${superAdminUsername}', ${superAdminId}, ${superAdminRoleId})
+    VALUES ('${Role.SuperAdmin}', ${superAdminId}, ${superAdminRoleId})
     `);
 
     if (!resultUserRole.affectedRows) throw Error();
