@@ -60,14 +60,14 @@
     "passport-kakao": "^1.0.1",
     "passport-local": "^1.0.0",
     "passport-naver-v2": "^2.0.8",
-    "typeorm": "^0.3.17",
+    "typeorm": "^0.3.19",
     "typeorm-naming-strategy": "^2.0.5",
     "typeorm-transactional": "^0.5.0",
     "winston": "^3.11.0",
     "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "10.3.0",
+    "@nestjs/cli": "^10.3.0",
     "@nestjs/schematics": "^10.1.0",
     "@nestjs/testing": "^10.2.8",
     "@types/bcrypt": "^5.0.2",
