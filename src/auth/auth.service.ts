@@ -28,9 +28,9 @@ export class AuthService {
     return user;
   }
 
-  public async validateSNSUser(snsUserData: SNSUserDto): Promise<User> {
+  public async validateSNSUser(snsUserData: SNSUserDto): Promise<NullableType<User>> {
     const user = await this.usersRepository.findOneByEmail(snsUserData.email);
-    if (!user) throw Error();
+    if (!user) return null;
     if (snsUserData.vendor !== user.vendor)
       throw new HttpException(`Email already exists in ${user.vendor}`, HttpStatus.BAD_REQUEST);
     return user;
