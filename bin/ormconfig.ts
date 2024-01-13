@@ -10,6 +10,8 @@ const ormconfig = async (): Promise<DataSource> => {
 
   return new DataSource({
     ...config.db,
+    logging: false,
+    logger: 'file',
     namingStrategy: new SnakeNamingStrategy(),
     entities: [`src/**/*.entity{.ts,.js}`],
     migrations: [`src/seeds/**/*.{js,ts}`],

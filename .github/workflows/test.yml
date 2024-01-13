@@ -46,3 +46,6 @@ jobs:
 
       - name: Run e2e Tests
         run: npm run test:e2e:auto
+
+      - name: Erase Test log file
+        run: rm ormlogs.log
