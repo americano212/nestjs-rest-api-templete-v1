@@ -75,8 +75,17 @@ node dist/src/main
 ## Test
 
 Test run on `jest`.
-Template already contains an example of unit tests.
+Template already contains an example of unit and e2e tests.
 
+### Unit Test
+```bash
+# 1. Test by 'Jest'
+npm run test:e2e
+# 2. Auto e2e test. (It include creating test DB CLI too.)
+npm run test:e2e:auto
+```
+
+### End-to-End Test
 ```bash
 # 1. Test by 'Jest'
 npm test
