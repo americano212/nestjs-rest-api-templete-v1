@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 import { User } from '#entities/user.entity';
 
@@ -8,6 +8,7 @@ import { UserService } from './user.service';
 import { SuccessResponseDto } from 'src/common/dto';
 import { Role, Roles } from 'src/common';
 
+@ApiBearerAuth()
 @ApiTags('User')
 @Controller('user')
 export class UserController {

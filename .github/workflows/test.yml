@@ -23,9 +23,9 @@ jobs:
 
       - name: Create .env file
         run: |
-            touch .env
-            cat << EOF >> .env
-            ${{ secrets.ENV }}
+          touch .env
+          cat << EOF >> .env
+          ${{ secrets.ENV }}
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -45,4 +45,4 @@ jobs:
         run: npm run test:cov
 
       - name: Run e2e Tests
-        run: npm run test:e2e
+        run: npm run test:e2e:auto

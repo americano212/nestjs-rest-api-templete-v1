@@ -10,6 +10,7 @@ const VENDOR_KEYS: string[] = ['kakao', 'naver', 'google', 'github'];
 
 @Entity('user')
 export class User extends CoreEntity {
+  @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true, name: 'user_id' })
   @IsInt()
   public userId!: number;
