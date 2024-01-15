@@ -22,7 +22,7 @@
     "start:debug": "nest start --debug --watch",
     "test": "jest",
     "test:e2e": "jest --config ./test/jest.e2e.ts -i",
-    "test:e2e:auto": "npm run test:entity:drop && npm run test:entity:sync && npm run test:seed:run && jest --config ./test/jest.e2e.ts -i",
+    "test:e2e:auto": "npm run test:entity:drop && npm run test:entity:sync && npm run test:seed:run && jest --config ./test/jest.e2e.ts -i --verbose",
     "test:debug": "jest --verbose",
     "test:e2e:debug": "jest --config ./test/jest.e2e.ts -i --verbose",
     "test:cov": "jest --coverage",

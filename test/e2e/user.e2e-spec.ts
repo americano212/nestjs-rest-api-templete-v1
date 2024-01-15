@@ -8,11 +8,11 @@ import { initializeTransactionalContext } from 'typeorm-transactional';
 import { User } from '#entities/user.entity';
 
 import { AppModule } from 'src/app.module';
+import { middleware } from 'src/app.middleware';
+import { ValidationException } from 'src/common/exceptions';
 import { GiveRoleToUserDto, LocalRegisterDto } from 'src/shared/user/dto';
 import { Role } from 'src/common';
 import { LocalLoginDto } from 'src/base/dto';
-import { middleware } from 'src/app.middleware';
-import { ValidationException } from 'src/common/exceptions';
 
 describe('user', () => {
   let app: INestApplication<Express> | undefined;
