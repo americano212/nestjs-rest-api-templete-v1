@@ -10,7 +10,8 @@ export class ErrorsInterceptor implements NestInterceptor {
   intercept(_: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(
       catchError((err) => {
-        this.slackService.sendSlackMessage(`🚨${err}🚨`);
+        const isProduction = process.env['NODE_ENV'] === 'production';
+        if (isProduction) this.slackService.sendSlackMessage(`🚨${err}🚨`);
         return throwError(() => err);
       }),
     );
