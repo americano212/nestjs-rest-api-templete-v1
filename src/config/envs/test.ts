@@ -8,9 +8,9 @@ export const config = {
     username: process.env['TEST_DB_USER'] || 'username',
     password: process.env['TEST_DB_PASSWORD'] || 'password',
     database: process.env['TEST_DB_NAME'] || 'dbname',
-    extra: {
-      connectionLimit: 5,
-    },
+    keepConnectionAlive: true,
+    connectTimeout: 15000,
+    extra: { connectionLimit: 5 },
     autoLoadEntities: true,
   },
   jwt: {
