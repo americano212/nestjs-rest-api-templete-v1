@@ -29,11 +29,15 @@ export class Seed1703915494755 implements MigrationInterface {
   }
 
   private async checkTableExist(table_name: string, queryRunner: QueryRunner): Promise<boolean> {
-    const db_name = process.env['DB_NAME'];
+    const dbName =
+      process.env['NODE_ENV'] === 'production' || process.env['NODE_ENV'] === 'development'
+        ? process.env['DEV_DB_NAME']
+        : process.env['TEST_DB_NAME'];
+
     const result = await queryRunner.query(`
     SELECT count(*) as cnt
     FROM information_schema.tables
-    WHERE table_schema = '${db_name}'
+    WHERE table_schema = '${dbName}'
     AND table_name = '${table_name}'`);
 
     return Number(result[0].cnt) ? true : false;
