@@ -29,7 +29,9 @@
     "test:entity:sync": "NODE_ENV=test ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d bin/ormconfig.ts schema:sync",
     "test:entity:drop": "NODE_ENV=test ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d bin/ormconfig.ts schema:drop",
     "test:seed:run": "NODE_ENV=test ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d bin/ormconfig.ts migration:run",
-    "test:seed:revert": "NODE_ENV=test ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d bin/ormconfig.ts migration:revert"
+    "test:seed:revert": "NODE_ENV=test ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d bin/ormconfig.ts migration:revert",
+    "test:docker:up": "docker-compose -f docker-compose.test.yml up -d",
+    "test:docker:down": "docker-compose -f docker-compose.test.yml down"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.490.0",
