@@ -44,8 +44,14 @@ jobs:
       - name: Run Unit Tests
         run: npm run test:cov
 
+      - name : Test DB up
+        run: npm run test:docker:up
+
       - name: Run e2e Tests
         run: npm run test:e2e:auto
+
+      - name : Test DB down
+        run: npm run test:docker:down
 
       - name: Erase Test log file
         run: rm ormlogs.log
