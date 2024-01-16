@@ -28,9 +28,9 @@ const ormconfig = async (): Promise<DataSource> => {
         console.log('[SUCCESS] Data Source has been initialized!');
       })
       .catch(async (err: DatabaseConnectionException) => {
-        console.error('[FAIL] Error during Data Source initialization');
+        console.error('[FAILED] Error during Data Source initialization');
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-          console.log('[RECONNECT] reconnect');
+          console.log('[RECONNECT] Retrying connection');
           await wait(2000);
           await connectionCheck();
         } else {
