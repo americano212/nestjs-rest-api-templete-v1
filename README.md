@@ -25,7 +25,6 @@ NestJS REST API templete for Korea user.
 - [x] Unit Test(Jest)
 - [x] E2E Test
 - [x] File upload
-- [ ] Mailing
 - [x] CI
 - [x] Example Domain(Board with content)
 
@@ -77,6 +76,7 @@ Test run on `jest`.
 Template already contains an example of unit and e2e tests.
 
 ### Unit Test
+
 ```bash
 # 1. Test by 'Jest'
 npm run test:e2e
@@ -85,13 +85,31 @@ npm run test:e2e:auto
 ```
 
 ### End-to-End Test
+
 ```bash
-# 1. Test by 'Jest'
-npm test
-# 2. Test by Debug mode(show console.log)
-npm run test:debug
-# 3. Test with show coverage
-npm run test:cov
+# 1. Load local test DB by docker
+npm run test:docker:up
+# 2. Run E2E test auto mode
+npm run test:e2e:auto
+# 3. Quit E2E test
+npm run test:docker:down
+```
+
+OR
+
+```bash
+# 1. Load local test DB by docker
+npm run test:docker:up
+# 2. Initialize Database
+npm run test:entity:drop
+# 3. Synchronization Database
+npm run test:entity:sync
+# 4. Seeding Database
+npm run test:seed:run
+# 5. Run E2E test
+npm run test:e2e:debug
+# 6. Quit E2E test
+npm run test:docker:down
 ```
 
 ## Links
