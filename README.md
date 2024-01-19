@@ -16,7 +16,6 @@ NestJS REST API templete for Korea user.
   - [x] Naver
   - [x] Google
   - [x] Github
-  - [ ] LinkedIn
 - [x] Customizing Roles(Admin, User...)
 - [x] JWT Authorization
 - [x] Slack Alert when throw ERROR
