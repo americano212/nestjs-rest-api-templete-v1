@@ -46,7 +46,7 @@
     "@nestjs/typeorm": "^10.0.1",
     "@slack/webhook": "^7.0.2",
     "@types/nanoid": "^3.0.0",
-    "@types/uuid": "^9.0.7",
+    "@types/uuid": "^10.0.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
